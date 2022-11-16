@@ -14,7 +14,7 @@ import lombok.Data;
 public class SuperClass {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private long createdOn;
 	private long modifiedOn;//updatedOn

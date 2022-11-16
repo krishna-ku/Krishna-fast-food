@@ -17,9 +17,9 @@ import com.restaurant.entity.Order;
 import com.restaurant.entity.OrderItem;
 import com.restaurant.entity.User;
 import com.restaurant.enums.OrderStatus;
+import com.restaurant.exception.NullRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.MenuRepo;
-import com.restaurant.repository.OrderItemRepo;
 import com.restaurant.repository.OrderRepo;
 import com.restaurant.repository.UserRepo;
 import com.restaurant.service.OrderService;
@@ -29,15 +29,12 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private OrderRepo orderRepo;
-	
+
 	@Autowired
 	private UserRepo userRepo;
-	
+
 	@Autowired
 	private MenuRepo menuRepo;
-
-//	@Autowired
-//	private OrderItemRepo orderItemRepo;
 
 	/**
 	 * Placed Order.
@@ -46,30 +43,20 @@ public class OrderServiceImpl implements OrderService {
 	 * @return OrderDto
 	 * @see com.restaurant.dto.OrderDto
 	 */
-//	@Override
-//	public OrderDto placedOrder(OrderDto orderDto) {
-//		
-////		List<OrderItem> orderItems =orderDto.getOrderItems().stream().map(itemdto->new OrderItem()).collect(Collectors.toList());
-////		Order order=new Order();
-////		order.setOrderItems(orderItems);
-////		order.setOrderStatus("Waiting");
-////		orderRepo.save(order);
-//		
-//		return null;
-//	}
+	public OrderDto placedOrder(List<OrderItemDto> orderItemDto, long id) {
 
-	public OrderDto placedOrder(List<OrderItemDto> orderItemDto,long id) {
+		User user = userRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
+		String customer = user.getFirstName() + " " + user.getLastName();// handle last name
 
-
-		User user=userRepo.findById(id).orElseThrow(()->new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
-		
 		Order order = new Order();
 		List<OrderItem> orderItems = orderItemDto.stream().map(o -> {
 			OrderItem orderItem = new OrderItem(o);
-			
-//			Menu menu=this.menuRepo.findById(o.getMenuId()).orElseThrow(() ->new ResourceNotFoundException("Menu", "Menu id", 0));
-//			orderItem.setMenu(menu);
-			
+
+			Menu menu = this.menuRepo.findById(o.getMenuId())
+					.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, o.getMenuId()));
+			orderItem.setMenu(menu);
+
 			orderItem.setOrder(order);
 			return orderItem;
 
@@ -77,16 +64,9 @@ public class OrderServiceImpl implements OrderService {
 		order.setStatus(OrderStatus.WAITING);
 		order.setOrderItems(orderItems);
 		order.setUser(user);
+		order.setCustomer(customer);
 		orderRepo.save(order);
 
-//		OrderDto orderDto = new OrderDto(order);
-//		OrderDto orderDto = new OrderDto(order);
-
-//		OrderItem orderItem=new OrderItem();
-////		orderItem.setMenu(menu);
-//		orderItem.setItemQuantity(orderItemDto.getItemQuantity());
-//		orderItemRepo.save(orderItem);
-		
 		return new OrderDto(order);
 	}
 
@@ -101,37 +81,38 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderDto updateOrder(List<OrderItemDto> orderItemList, Long id) {
 
-		Order order = orderRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order", "Order id", id));
+		Order order = orderRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, id));
 
 		if (order != null) {
 
 			order.setStatus(OrderStatus.WAITING);
 			List<OrderItem> orderItems = order.getOrderItems();
-			Map<Long, OrderItem> collect = orderItems.stream().collect(Collectors.toMap(OrderItem::getId, Function.identity()));//search id etc directly//menuid 
-			List<OrderItem> updatedOrderItemList=new ArrayList<>();
+			Map<Long, OrderItem> collect = orderItems.stream()
+					.collect(Collectors.toMap(o -> o.getMenu().getId(), Function.identity()));
+			List<OrderItem> updatedOrderItemList = new ArrayList<>();
 //			List<OrderItem> deleteOrderItemList=new ArrayList<>();
 			for (OrderItemDto orderItemDto : orderItemList) {
-				
-				if(collect.containsKey(orderItemDto.getId()))//get menuId 
-					{
+
+				if (collect.containsKey(orderItemDto.getMenuId())) {
 					OrderItem item = collect.get(orderItemDto.getId());
 					item.setItemQuantity(orderItemDto.getItemQuantity());
 					updatedOrderItemList.add(item);
-				}else {
-					OrderItem newOrderItem=new OrderItem(orderItemDto);
+				} else {
+					OrderItem newOrderItem = new OrderItem(orderItemDto);
 					newOrderItem.setOrder(order);
 					updatedOrderItemList.add(newOrderItem);
-					
+
 				}
 			}
 			order.setOrderItems(updatedOrderItemList);
 			orderRepo.save(order);
-			
-			return  new OrderDto(order);
+
+			return new OrderDto(order);
 
 		}
 
-		return null;
+		throw new NullRequestException("menuId is not found please enter correct menuId");
 	}
 
 	/**
@@ -156,15 +137,9 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<OrderDto> getAllOrders() {
 
-//		List<Order> orders = orderRepo.findAll();
-//		OrderDto orderDto = orders.stream().map(o->new )
-//				List<OrderDto> orderItems = orders.stream().map(o -> {
-//					OrderItem orderItem = new OrderItem(o);
-//					return orderItem;
-//
-//				}).collect(Collectors.toList());
-
-		return null;
+		List<Order> orders = orderRepo.findAll();
+//		return orders.stream().map(o-> new OrderDto(o)).collect(Collectors.toList());
+		return orders.stream().map(OrderDto::new).collect(Collectors.toList());
 	}
 
 	/**
@@ -175,31 +150,10 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	@Override
 	public OrderDto getOrderById(Long id) {
-		return null;
+
+		Order order = orderRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, id));
+		return new OrderDto(order);
 	}
-
-	/**
-	 * convert OrderDto object into Order
-	 * 
-	 * @param OrderDto
-	 * @return Order
-	 */
-//	private Order dtoToOrder(OrderDto orderDto) {
-//		Order order = new Order();
-//		order.setOrderStatus(orderDto.getOrderStatus());
-//		return order;
-//	}
-
-	/**
-	 * convert Order object into OrderDto
-	 * 
-	 * @param Order
-	 * @return OrderDto
-	 */
-//	private OrderDto orderToDto(Order order) {
-//		OrderDto orderDto = new OrderDto();
-//		orderDto.setOrderStatus(order.getOrderStatus());
-//		return orderDto;
-//	}
 
 }

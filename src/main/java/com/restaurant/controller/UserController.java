@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.restaurant.dto.ApiResponse;
 import com.restaurant.dto.UserDto;
 import com.restaurant.service.UserService;
 
@@ -62,9 +63,9 @@ public class UserController {
 	 * 
 	 */
 	@DeleteMapping("/{id}")
-	public ResponseEntity<UserDto> deleteUser(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long id) {
 		this.userService.deleteUser(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse("User delete successfully",true),HttpStatus.OK);
 	}
 
 	/**

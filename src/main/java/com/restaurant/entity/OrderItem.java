@@ -24,12 +24,12 @@ public class OrderItem extends SuperClass {
 	//@JoinColumn(name = "orderId")
 	private Order order;
 	
-//	@OneToOne
-//	@JoinColumn(name = "menu_id")
-//	private Menu menu;
+	@OneToOne
+	@JoinColumn(name = "menu_ids")
+	private Menu menu;
 
 	public OrderItem(OrderItemDto orderItemDto) {
-		this.itemQuantity=orderItemDto.getItemQuantity();
 		this.menuId=orderItemDto.getMenuId();
+		this.itemQuantity=orderItemDto.getItemQuantity();
 	}
 }

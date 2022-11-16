@@ -28,6 +28,8 @@ public class Order extends SuperClass {
 	@JoinColumn(name = "userId")
 	private User user;
 	
+	private String customer;
+	
 	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
 	List<OrderItem> orderItems=new ArrayList<>();
 	

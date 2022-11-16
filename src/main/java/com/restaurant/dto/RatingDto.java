@@ -4,11 +4,16 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Range;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.restaurant.entity.Rating;
 import com.restaurant.entity.User;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RatingDto {
 
 	private long id;
@@ -20,4 +25,10 @@ public class RatingDto {
 	private String review;
 	
 	private User user;
+	
+	public RatingDto(Rating rating) {
+		this.id=rating.getId();
+		this.rating=rating.getRating();
+		this.review=rating.getReview();
+	}
 }

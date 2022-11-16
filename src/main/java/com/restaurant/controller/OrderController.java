@@ -7,8 +7,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,7 +40,6 @@ public class OrderController {
 	@PostMapping("/{id}")
 	public OrderDto placeOrder(@RequestBody @Valid List<OrderItemDto> orderItemDto,@PathVariable long id) {
 		orderItemDto.forEach(System.out::println);
-		//orderItemDto.forEach(o -> System.out.println(o));
 		return orderService.placedOrder(orderItemDto,id);
 
 	}
@@ -65,5 +64,26 @@ public class OrderController {
 		this.orderService.deleteOrder(id);
 		return new ResponseEntity<>(new ApiResponse("Order is deleted successfully",true),HttpStatus.OK);
 	}
+	
+	@GetMapping
+	public ResponseEntity<List<OrderDto>> getAllOrders(){
+		List<OrderDto> allOrders = orderService.getAllOrders();
+		return new ResponseEntity<>(allOrders,HttpStatus.OK);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<OrderDto> getOrderById(@PathVariable long id) {
+		
+		return ResponseEntity.ok(orderService.getOrderById(id));
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

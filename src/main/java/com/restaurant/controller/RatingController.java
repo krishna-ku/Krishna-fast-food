@@ -36,9 +36,9 @@ public class RatingController {
 	@PostMapping("/{id}")
 	public ResponseEntity<RatingDto> createRating(@Valid @RequestBody RatingDto ratingDto, @PathVariable long id) {
 
-		RatingDto newRating = ratingService.createRating(ratingDto,id);
+		RatingDto rating = ratingService.createRating(ratingDto,id);
 
-		return new ResponseEntity<>(newRating, HttpStatus.CREATED);
+		return new ResponseEntity<>(rating ,HttpStatus.CREATED);
 	}
 
 	/**

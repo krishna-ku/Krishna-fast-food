@@ -118,6 +118,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	}
 	
+	@ExceptionHandler(NullRequestException.class)
+
+	public ResponseEntity<ApiResponse> handleNullRequestException(NullRequestException ex) {
+		String messsage = ex.getMessage();
+
+		ApiResponse apiResponse = new ApiResponse(messsage, false);
+
+		return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+	
 	
 
 }

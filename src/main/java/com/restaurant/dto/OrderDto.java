@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotEmpty;
 
 import com.restaurant.entity.Order;
-import com.restaurant.entity.User;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +16,7 @@ public class OrderDto {
 
 	// convert order into orderDto
 	public OrderDto(Order order) {
+		this.customer=order.getCustomer();
 		this.id = order.getId();
 		this.orderStatus = order.getStatus().toString();
 
@@ -34,7 +34,7 @@ public class OrderDto {
 	@NotEmpty
 	private String orderStatus;//use regex for validation this field
 
-	private UserDto customer;
+	private String customer;
 
 	// @NotEmpty
 	private List<OrderItemDto> orderItems;

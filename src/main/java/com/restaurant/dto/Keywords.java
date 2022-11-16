@@ -14,4 +14,7 @@ public class Keywords {
 	
 	public static final String RATING="Rating";
 	public static final String RATING_ID="RatingId";
+	
+	public static final String ORDER="Order";
+	public static final String ORDER_ID="OrderId";
 }

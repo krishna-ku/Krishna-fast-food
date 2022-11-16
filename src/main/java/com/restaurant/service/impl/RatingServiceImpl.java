@@ -32,37 +32,19 @@ public class RatingServiceImpl implements RatingService {
 	 * @see com.restaurant.dto.RatingDto
 	 */
 	@Override
-	public RatingDto createRating(RatingDto ratingDto, long id) {
+	public RatingDto createRating(RatingDto ratingDto, long id) {// rating dto
 
-		User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
+		User user = userRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
 
-		Rating rating = this.dtoToRating(ratingDto);
+		Rating rating = new Rating(ratingDto);
 
 		rating.setUser(user);
 
-		Rating saveRating = this.ratingRepo.save(rating);
+		this.ratingRepo.save(rating);
 
-		return this.ratingToDto(saveRating);
+		return new RatingDto(rating);
 	}
-
-	/**
-	 * update Rating
-	 * 
-	 * @param id
-	 * @return updated Rating object
-	 * @see com.restaurant.dto.RatingDto
-	 */
-//	@Override
-//	public RatingDto updatRating(RatingDto ratingDto, long id) {
-//
-//		Rating rating = this.ratingRepo.findById(id)
-//				.orElseThrow(() -> new ResourceNotFoundException("Rating", "Rating id", id));
-//		rating.setRating(ratingDto.getRating());
-//		rating.setReview(ratingDto.getReview());
-//		Rating updateRating = this.ratingRepo.save(rating);
-//
-//		return this.ratingToDto(updateRating);
-//	}
 
 	/**
 	 * delete Rating
@@ -89,10 +71,10 @@ public class RatingServiceImpl implements RatingService {
 	public List<RatingDto> getAllRatings() {
 
 		List<Rating> ratings = this.ratingRepo.findAll();
-		
-//		List<RatingDto> ratingDtos = ratings.stream().map(rating -> ratingToDto(rating)).collect(Collectors.toList());
 
-		return ratings.stream().map(this::ratingToDto).collect(Collectors.toList());
+//		List<RatingDto> ratingDtos = ratings.stream().map(rating -> ratingToDto(rating)).collect(Collectors.toList());
+		return ratings.stream().map(rating -> new RatingDto(rating)).collect(Collectors.toList());
+//		return ratings.stream().map(new::Rating).collect(Collectors.toList());
 	}
 
 	/**
@@ -108,40 +90,7 @@ public class RatingServiceImpl implements RatingService {
 		Rating rating = this.ratingRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, id));
 
-		return ratingToDto(rating);
-	}
-
-	/**
-	 * convert RatingDto object into Rating
-	 * 
-	 * @param RatingDto
-	 * @return Rating
-	 * @see com.restaurant.entity.Rating
-	 */
-	private Rating dtoToRating(RatingDto ratingDto) {
-
-		Rating rating = new Rating();
-		rating.setId(ratingDto.getId());
-		rating.setRating(ratingDto.getRating());
-		rating.setReview(ratingDto.getReview());
-
-		return rating;
-	}
-
-	/**
-	 * convert Rating into RatingDto
-	 * 
-	 * @param Rating
-	 * @return RatingDto
-	 * @see com.restaurant.dto.RatingDto
-	 */
-	private RatingDto ratingToDto(Rating rating) {
-		RatingDto ratingDto = new RatingDto();
-		ratingDto.setId(rating.getId());
-		ratingDto.setRating(rating.getRating());
-		ratingDto.setReview(rating.getReview());
-
-		return ratingDto;
+		return new RatingDto(rating);
 	}
 
 }

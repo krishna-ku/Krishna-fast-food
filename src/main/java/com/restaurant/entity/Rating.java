@@ -5,10 +5,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import com.restaurant.dto.RatingDto;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Rating extends SuperClass {
 	
 	
@@ -23,4 +27,9 @@ public class Rating extends SuperClass {
 	@OneToOne
 	@JoinColumn(name = "order_Id")
 	private Order orders;
+	
+	public Rating(RatingDto ratingDto) {
+		this.rating=ratingDto.getRating();
+		this.review=ratingDto.getReview();
+	}
 }
