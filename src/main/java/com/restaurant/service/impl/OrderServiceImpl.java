@@ -147,7 +147,6 @@ public class OrderServiceImpl implements OrderService {
 	public List<OrderDto> getAllOrders() {
 
 		List<Order> orders = orderRepo.findAll();
-//		return orders.stream().map(o-> new OrderDto(o)).collect(Collectors.toList());
 		return orders.stream().map(OrderDto::new).collect(Collectors.toList());
 	}
 
@@ -164,5 +163,6 @@ public class OrderServiceImpl implements OrderService {
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, id));
 		return new OrderDto(order);
 	}
+	
 
 }
