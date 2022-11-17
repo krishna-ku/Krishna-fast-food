@@ -147,7 +147,6 @@ public class OrderServiceImpl implements OrderService {
 	public List<OrderDto> getAllOrders() {
 
 		List<Order> orders = orderRepo.findAll();
-//		return orders.stream().map(o-> new OrderDto(o)).collect(Collectors.toList());
 		return orders.stream().map(OrderDto::new).collect(Collectors.toList());
 	}
 
@@ -165,6 +164,5 @@ public class OrderServiceImpl implements OrderService {
 		return new OrderDto(order);
 	}
 	
-	//code by krishna
 
 }
