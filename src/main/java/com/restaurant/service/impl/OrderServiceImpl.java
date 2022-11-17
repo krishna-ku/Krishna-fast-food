@@ -18,6 +18,7 @@ import com.restaurant.entity.Order;
 import com.restaurant.entity.OrderItem;
 import com.restaurant.entity.User;
 import com.restaurant.enums.OrderStatus;
+import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.NullRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.MenuRepo;
@@ -53,9 +54,13 @@ public class OrderServiceImpl implements OrderService {
 		Order order = new Order();
 		List<OrderItem> orderItems = orderItemDto.stream().map(o -> {
 			
-//			if(o.getItemQuantity()<10)
+			if(o.getItemQuantity()>10 && o.getItemQuantity()<=0) throw new BadRequestException("Item quantity should not be more than 10");
+			
+//			menuRepo.findByName(o.get)
 			
 			OrderItem orderItem = new OrderItem(o);
+			
+//			orderItem.getMenu().getPrice();
 
 			Menu menu = this.menuRepo.findById(o.getMenuId())
 					.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, o.getMenuId()));

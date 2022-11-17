@@ -7,7 +7,7 @@ import com.restaurant.dto.RatingDto;
 public interface RatingService {
 	
 	//create rating
-	RatingDto createRating(RatingDto ratingDto,long id);
+	RatingDto createRating(RatingDto ratingDto,long orderId,long userId);
 	
 	//update rating
 //	RatingDto updatRating(RatingDto ratingDto,long id);

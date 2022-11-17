@@ -14,22 +14,23 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 public class OrderItem extends SuperClass {
-	
-	private long menuId;
+
+//	private long menuId;//orderitem.getmenu.getid
 	private int itemQuantity;
-	
-	//Map<String, String> map=new HashMap<>();
-	
+
+//	private String name;
+
 	@ManyToOne
-	//@JoinColumn(name = "orderId")
+	// @JoinColumn(name = "orderId")
 	private Order order;
-	
+
 	@OneToOne
 	@JoinColumn(name = "menu_ids")
 	private Menu menu;
 
 	public OrderItem(OrderItemDto orderItemDto) {
-		this.menuId=orderItemDto.getMenuId();
-		this.itemQuantity=orderItemDto.getItemQuantity();
+//		this.menuId=orderItemDto.getMenuId();
+		this.itemQuantity = orderItemDto.getItemQuantity();
+
 	}
 }

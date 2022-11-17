@@ -33,10 +33,10 @@ public class RatingController {
 	 * @param RatingDto
 	 * @return RatingDto {@link com.restaurant.dto.RatingDto}
 	 */
-	@PostMapping("/{id}")
-	public ResponseEntity<RatingDto> createRating(@Valid @RequestBody RatingDto ratingDto, @PathVariable long id) {
+	@PostMapping("/{orderId}/{userId}")
+	public ResponseEntity<RatingDto> createRating(@Valid @RequestBody RatingDto ratingDto, @PathVariable long orderId,@PathVariable long userId) {
 
-		RatingDto rating = ratingService.createRating(ratingDto,id);
+		RatingDto rating = ratingService.createRating(ratingDto,orderId,userId);
 
 		return new ResponseEntity<>(rating ,HttpStatus.CREATED);
 	}

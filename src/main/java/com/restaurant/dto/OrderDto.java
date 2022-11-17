@@ -17,7 +17,7 @@ public class OrderDto {
 	// convert order into orderDto
 	public OrderDto(Order order) {
 		this.customer=order.getCustomer();
-		this.id = order.getId();
+		this.orderId = order.getId();
 		this.orderStatus = order.getStatus().toString();
 
 //		this.customer = order.getUser();
@@ -30,7 +30,7 @@ public class OrderDto {
 		}).collect(Collectors.toList());
 	}
 
-	private long id;
+	private long orderId;
 	@NotEmpty
 	private String orderStatus;//use regex for validation this field
 

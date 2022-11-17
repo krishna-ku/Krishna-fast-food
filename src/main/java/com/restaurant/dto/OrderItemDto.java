@@ -16,13 +16,16 @@ import lombok.NoArgsConstructor;
 public class OrderItemDto {
 
 	public OrderItemDto(OrderItem o) {
-		this.menuId = o.getMenuId();
+		this.menuId = o.getMenu().getId();
 		this.itemQuantity = o.getItemQuantity();
+		this.name=o.getMenu().getName();
 		this.id = o.getId();
 
 	}
 
 	private long id;
+	
+	private String name;
 
 	@NotEmpty
 	@Range(min = 1, max = 10, message = "maximum 10 itemQuantity you can add")

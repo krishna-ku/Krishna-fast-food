@@ -33,13 +33,13 @@ public class UserServiceImpl implements UserService {
 
 		User user1 = userRepo.findByEmail(userDto.getEmail());// validate by pattern matcher
 
-		if (user1 == null) {
+		if (user1 == null && Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches()) {
 
 			User user = new User(userDto);
 
 			return new UserDto(userRepo.save(user));
 		} else {
-			throw new BadRequestException("Email already exists");
+			throw new BadRequestException("Email already exists or invalid email pleas follow this structure user@gmail.com");
 		}
 	}
 

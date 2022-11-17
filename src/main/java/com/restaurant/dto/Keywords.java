@@ -1,5 +1,7 @@
 package com.restaurant.dto;
 
+import java.util.regex.Pattern;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -17,4 +19,6 @@ public class Keywords {
 	
 	public static final String ORDER="Order";
 	public static final String ORDER_ID="OrderId";
+	
+	public static final Pattern EMAIL_REGEX=Pattern.compile("[A-Za-z0-9]+@gmail.com");
 }
