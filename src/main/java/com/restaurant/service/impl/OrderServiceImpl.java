@@ -3,6 +3,7 @@ package com.restaurant.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -51,6 +52,9 @@ public class OrderServiceImpl implements OrderService {
 
 		Order order = new Order();
 		List<OrderItem> orderItems = orderItemDto.stream().map(o -> {
+			
+//			if(o.getItemQuantity()<10)
+			
 			OrderItem orderItem = new OrderItem(o);
 
 			Menu menu = this.menuRepo.findById(o.getMenuId())
@@ -95,13 +99,18 @@ public class OrderServiceImpl implements OrderService {
 			for (OrderItemDto orderItemDto : orderItemList) {
 
 				if (collect.containsKey(orderItemDto.getMenuId())) {
-					OrderItem item = collect.get(orderItemDto.getId());
+					OrderItem item = collect.get(orderItemDto.getMenuId());
 					item.setItemQuantity(orderItemDto.getItemQuantity());
 					updatedOrderItemList.add(item);
 				} else {
+					Menu menu = menuRepo.findById(orderItemDto.getMenuId()).orElse(null);
+					if(menu!=null) {
 					OrderItem newOrderItem = new OrderItem(orderItemDto);
 					newOrderItem.setOrder(order);
+					newOrderItem.setMenu(menu);
 					updatedOrderItemList.add(newOrderItem);
+					
+					}
 
 				}
 			}
@@ -112,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
 
 		}
 
-		throw new NullRequestException("menuId is not found please enter correct menuId");
+		throw new NullRequestException("menuId is not found please enter correct menuId");//not working
 	}
 
 	/**

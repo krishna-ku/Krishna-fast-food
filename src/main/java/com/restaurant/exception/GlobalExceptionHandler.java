@@ -107,7 +107,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	}
 	
-	@ExceptionHandler(BadRequestException.class)
+	@ExceptionHandler(BadRequestException.class)// use in orders
 
 	public ResponseEntity<ApiResponse> handleBadRequest(BadRequestException ex) {
 		String messsage = ex.getMessage();
