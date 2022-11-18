@@ -20,19 +20,25 @@ public class OrderDto {
 		this.orderId = order.getId();
 		this.orderStatus = order.getStatus().toString();
 
-//		this.customer = order.getUser();
 
 		this.orderItems = order.getOrderItems().stream().map(o -> {
+			
+			this.totalPrice+=o.getMenu().getPrice()*o.getItemQuantity();
 
-//			OrderItemDto orderItem= new OrderItemDto(o);
 			return new OrderItemDto(o);
 
 		}).collect(Collectors.toList());
+		totalPriceWithGst=totalPrice+(totalPrice*Keywords.GST_PERCENTAGE);
+//		totalPriceWithGstAndServiceTax+=totalPrice*Keywords.SERVICE_TAX;
 	}
 
 	private long orderId;
 	@NotEmpty
 	private String orderStatus;//use regex for validation this field
+	
+	private float totalPriceWithGst;
+	
+	private float totalPrice;
 
 	private String customer;
 

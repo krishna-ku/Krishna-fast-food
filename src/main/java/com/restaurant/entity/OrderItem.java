@@ -18,14 +18,13 @@ public class OrderItem extends SuperClass {
 //	private long menuId;//orderitem.getmenu.getid
 	private int itemQuantity;
 
-//	private String name;
 
 	@ManyToOne
 	// @JoinColumn(name = "orderId")
 	private Order order;
 
 	@OneToOne
-	@JoinColumn(name = "menu_ids")
+	@JoinColumn(name = "menu_id")
 	private Menu menu;
 
 	public OrderItem(OrderItemDto orderItemDto) {

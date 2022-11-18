@@ -3,7 +3,6 @@ package com.restaurant.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -49,18 +48,16 @@ public class OrderServiceImpl implements OrderService {
 
 		User user = userRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
-		String customer = user.getFirstName() + " " + user.getLastName();// handle last name
+		String customer = user.getFirstName() + " " + user.getLastName();
 
 		Order order = new Order();
 		List<OrderItem> orderItems = orderItemDto.stream().map(o -> {
-			
-			if(o.getItemQuantity()>10 && o.getItemQuantity()<=0) throw new BadRequestException("Item quantity should not be more than 10");
-			
-//			menuRepo.findByName(o.get)
-			
+
+			if (o.getItemQuantity() < 0 || o.getItemQuantity() > 10) {
+				throw new BadRequestException("Item quantity should not be more than 10");
+			}
+
 			OrderItem orderItem = new OrderItem(o);
-			
-//			orderItem.getMenu().getPrice();
 
 			Menu menu = this.menuRepo.findById(o.getMenuId())
 					.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, o.getMenuId()));
@@ -103,18 +100,21 @@ public class OrderServiceImpl implements OrderService {
 //			List<OrderItem> deleteOrderItemList=new ArrayList<>();
 			for (OrderItemDto orderItemDto : orderItemList) {
 
+				if (orderItemDto.getItemQuantity() > 10 || orderItemDto.getItemQuantity() < 0)
+					throw new BadRequestException("Item quantity should not be more than 10");
+
 				if (collect.containsKey(orderItemDto.getMenuId())) {
 					OrderItem item = collect.get(orderItemDto.getMenuId());
 					item.setItemQuantity(orderItemDto.getItemQuantity());
 					updatedOrderItemList.add(item);
 				} else {
 					Menu menu = menuRepo.findById(orderItemDto.getMenuId()).orElse(null);
-					if(menu!=null) {
-					OrderItem newOrderItem = new OrderItem(orderItemDto);
-					newOrderItem.setOrder(order);
-					newOrderItem.setMenu(menu);
-					updatedOrderItemList.add(newOrderItem);
-					
+					if (menu != null) {
+						OrderItem newOrderItem = new OrderItem(orderItemDto);
+						newOrderItem.setOrder(order);
+						newOrderItem.setMenu(menu);
+						updatedOrderItemList.add(newOrderItem);
+
 					}
 
 				}
@@ -126,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
 
 		}
 
-		throw new NullRequestException("menuId is not found please enter correct menuId");//not working
+		throw new NullRequestException("menuId is not found please enter correct menuId");// not working
 	}
 
 	/**
@@ -168,6 +168,5 @@ public class OrderServiceImpl implements OrderService {
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, id));
 		return new OrderDto(order);
 	}
-	
 
 }

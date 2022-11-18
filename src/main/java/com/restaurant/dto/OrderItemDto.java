@@ -19,6 +19,7 @@ public class OrderItemDto {
 		this.menuId = o.getMenu().getId();
 		this.itemQuantity = o.getItemQuantity();
 		this.name=o.getMenu().getName();
+		this.pricePerItem=o.getMenu().getPrice();
 		this.id = o.getId();
 
 	}
@@ -26,6 +27,8 @@ public class OrderItemDto {
 	private long id;
 	
 	private String name;
+	
+	private float pricePerItem;
 
 	@NotEmpty
 	@Range(min = 1, max = 10, message = "maximum 10 itemQuantity you can add")

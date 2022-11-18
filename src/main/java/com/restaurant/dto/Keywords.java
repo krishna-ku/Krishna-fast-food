@@ -20,5 +20,9 @@ public class Keywords {
 	public static final String ORDER="Order";
 	public static final String ORDER_ID="OrderId";
 	
-	public static final Pattern EMAIL_REGEX=Pattern.compile("[A-Za-z0-9]+@gmail.com");
+	public static final Pattern EMAIL_REGEX=Pattern.compile("[a-z][a-z0-9.]+@[a-z]+.[a-z]{2,6}");//[range of regex] 
+	
+	public static final float GST_PERCENTAGE=0.18f;
+	
+	public static final float SERVICE_TAX=0.5f;
 }
