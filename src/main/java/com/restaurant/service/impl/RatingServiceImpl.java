@@ -1,5 +1,6 @@
 package com.restaurant.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
-import com.restaurant.dto.OrderDto;
 import com.restaurant.dto.RatingDto;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.Rating;
@@ -26,7 +26,7 @@ public class RatingServiceImpl implements RatingService {
 
 	@Autowired
 	private UserRepo userRepo;
-	
+
 	@Autowired
 	private OrderRepo orderRepo;
 
@@ -34,21 +34,26 @@ public class RatingServiceImpl implements RatingService {
 	 * add Rating.
 	 * 
 	 * @param RatingDto
+	 * @param orderId
+	 * @param userId
 	 * @return RatingDto
 	 * @see com.restaurant.dto.RatingDto
 	 */
 	@Override
-	public RatingDto createRating(RatingDto ratingDto, long orderId,long userId) {// rating dto
+	public RatingDto createRating(RatingDto ratingDto, long orderId, long userId) {
 
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-		
-		Order order=orderRepo.findById(orderId).orElseThrow(()-> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
+
+		Order order = orderRepo.findById(orderId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
 
 		Rating rating = new Rating(ratingDto);
-		
-		rating.setOrders(order);
 
+		rating.setOrders(order);
+		
+		rating.setCreatedOn(new Date());
+		
 		rating.setUser(user);
 
 		this.ratingRepo.save(rating);
@@ -63,10 +68,10 @@ public class RatingServiceImpl implements RatingService {
 	 * @return void
 	 */
 	@Override
-	public void deleteRating(long id) {
+	public void deleteRating(long ratingId) {
 
-		Rating rating = this.ratingRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, id));
+		Rating rating = this.ratingRepo.findById(ratingId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, ratingId));
 		this.ratingRepo.delete(rating);
 	}
 
@@ -95,10 +100,10 @@ public class RatingServiceImpl implements RatingService {
 	 * @see com.restaurant.dto.RatingDto
 	 */
 	@Override
-	public RatingDto getRatingById(long id) {
+	public RatingDto getRatingById(long ratingId) {
 
-		Rating rating = this.ratingRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, id));
+		Rating rating = this.ratingRepo.findById(ratingId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, ratingId));
 
 		return new RatingDto(rating);
 	}

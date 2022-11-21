@@ -13,13 +13,13 @@ public interface RatingService {
 //	RatingDto updatRating(RatingDto ratingDto,long id);
 	
 	//delete rating
-	void deleteRating(long id);
+	void deleteRating(long ratingId);
 	
 	//get all ratings
 	List<RatingDto> getAllRatings();
 	
 	//get rating by id
-	RatingDto getRatingById(long id);
+	RatingDto getRatingById(long ratingId);
 	
 	
 	

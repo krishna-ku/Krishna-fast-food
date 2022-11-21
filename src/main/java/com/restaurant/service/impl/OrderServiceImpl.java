@@ -1,6 +1,7 @@
 package com.restaurant.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -44,17 +45,19 @@ public class OrderServiceImpl implements OrderService {
 	 * @return OrderDto
 	 * @see com.restaurant.dto.OrderDto
 	 */
-	public OrderDto placedOrder(List<OrderItemDto> orderItemDto, long id) {
+	public OrderDto placedOrder(OrderDto orderDto, long userId) {
 
-		User user = userRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
+		User user = userRepo.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 		String customer = user.getFirstName() + " " + user.getLastName();
-
+		
 		Order order = new Order();
-		List<OrderItem> orderItems = orderItemDto.stream().map(o -> {
+		
+		
+		List<OrderItem> orderItems = orderDto.getOrderItems().stream().map(o -> {
 
-			if (o.getItemQuantity() < 0 || o.getItemQuantity() > 10) {
-				throw new BadRequestException("Item quantity should not be more than 10");
+			if (o.getItemQuantity() < 1 || o.getItemQuantity() > 10) {
+				throw new BadRequestException("Item quantity should not be less than 1 or more than 10");
 			}
 
 			OrderItem orderItem = new OrderItem(o);
@@ -69,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
 		}).collect(Collectors.toList());
 		order.setStatus(OrderStatus.WAITING);
 		order.setOrderItems(orderItems);
+		order.setCreatedOn(new Date());
 		order.setUser(user);
 		order.setCustomer(customer);
 		orderRepo.save(order);
@@ -85,30 +89,33 @@ public class OrderServiceImpl implements OrderService {
 	 * @see com.restaurant.dto.OrderDto
 	 */
 	@Override
-	public OrderDto updateOrder(List<OrderItemDto> orderItemList, Long id) {
+	public OrderDto updateOrder(List<OrderItemDto> orderItemList, Long orderId) {
 
-		Order order = orderRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, id));
+		Order order = orderRepo.findById(orderId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
 
 		if (order != null) {
 
 			order.setStatus(OrderStatus.WAITING);
 			List<OrderItem> orderItems = order.getOrderItems();
+			order.setUpdatingOn(new Date());
 			Map<Long, OrderItem> collect = orderItems.stream()
 					.collect(Collectors.toMap(o -> o.getMenu().getId(), Function.identity()));
 			List<OrderItem> updatedOrderItemList = new ArrayList<>();
 //			List<OrderItem> deleteOrderItemList=new ArrayList<>();
 			for (OrderItemDto orderItemDto : orderItemList) {
 
-				if (orderItemDto.getItemQuantity() > 10 || orderItemDto.getItemQuantity() < 0)
-					throw new BadRequestException("Item quantity should not be more than 10");
+				if (orderItemDto.getItemQuantity() > 10 || orderItemDto.getItemQuantity() < 1)
+					throw new BadRequestException("Item quantity should not be less than 1 or more than 10");
 
 				if (collect.containsKey(orderItemDto.getMenuId())) {
 					OrderItem item = collect.get(orderItemDto.getMenuId());
 					item.setItemQuantity(orderItemDto.getItemQuantity());
 					updatedOrderItemList.add(item);
 				} else {
-					Menu menu = menuRepo.findById(orderItemDto.getMenuId()).orElse(null);
+					Menu menu = menuRepo.findById(orderItemDto.getMenuId())
+							.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID,
+									orderItemDto.getMenuId()));
 					if (menu != null) {
 						OrderItem newOrderItem = new OrderItem(orderItemDto);
 						newOrderItem.setOrder(order);
@@ -126,7 +133,7 @@ public class OrderServiceImpl implements OrderService {
 
 		}
 
-		throw new NullRequestException("menuId is not found please enter correct menuId");// not working
+		throw new NullRequestException("menuId is not found please enter correct menuId");
 	}
 
 	/**
@@ -136,9 +143,9 @@ public class OrderServiceImpl implements OrderService {
 	 * @return void
 	 */
 	@Override
-	public void deleteOrder(long id) {
+	public void deleteOrder(long orderId) {
 
-		this.orderRepo.deleteById(id);
+		this.orderRepo.deleteById(orderId);
 
 	}
 
@@ -162,10 +169,10 @@ public class OrderServiceImpl implements OrderService {
 	 * @return Order by id
 	 */
 	@Override
-	public OrderDto getOrderById(Long id) {
+	public OrderDto getOrderById(Long orderId) {
 
-		Order order = orderRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, id));
+		Order order = orderRepo.findById(orderId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
 		return new OrderDto(order);
 	}
 

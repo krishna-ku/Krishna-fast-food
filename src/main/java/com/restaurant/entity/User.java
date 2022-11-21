@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-public class User extends SuperClass {
+public class User extends BaseClass {
 
 	
 	private String firstName;

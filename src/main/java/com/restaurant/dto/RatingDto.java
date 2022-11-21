@@ -17,18 +17,18 @@ import lombok.NoArgsConstructor;
 public class RatingDto {
 
 	private long id;
-	
+
 	@Range(min = 1, max = 5, message = "Rating between 1 to 5")
 	private int rating;
-	
+
 	@Size(min = 0, max = 100, message = "Review minimum between 10 to 100 !!")
 	private String review;
-	
+
 	private User user;
-	
+
 	public RatingDto(Rating rating) {
-		this.id=rating.getId();
-		this.rating=rating.getRating();
-		this.review=rating.getReview();
+		this.id = rating.getId();
+		this.rating = rating.getRating();
+		this.review = rating.getReview();
 	}
 }

@@ -33,7 +33,7 @@ public class RatingController {
 	 * @param RatingDto
 	 * @return RatingDto {@link com.restaurant.dto.RatingDto}
 	 */
-	@PostMapping("/{orderId}/{userId}")
+	@PostMapping("/{orderId}/user/{userId}")
 	public ResponseEntity<RatingDto> createRating(@Valid @RequestBody RatingDto ratingDto, @PathVariable long orderId,@PathVariable long userId) {
 
 		RatingDto rating = ratingService.createRating(ratingDto,orderId,userId);
@@ -62,9 +62,9 @@ public class RatingController {
 	 * @param id
 	 * 
 	 */
-	@DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long id){
-		this.ratingService.deleteRating(id);
+	@DeleteMapping("/{ratingId}")
+	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long ratingId){
+		this.ratingService.deleteRating(ratingId);
 		return new ResponseEntity<>(new ApiResponse("Rating delete successfully",true),HttpStatus.OK);
 	}
 
@@ -88,10 +88,10 @@ public class RatingController {
 	 * @return RatingDto of particular id
 	 * @see com.restaurant.dto.RatingDto
 	 */
-	@GetMapping("/{id}")
-	public ResponseEntity<RatingDto> getRatingById(@PathVariable long id) {
+	@GetMapping("/{ratingId}")
+	public ResponseEntity<RatingDto> getRatingById(@PathVariable long ratingId) {
 
-		return ResponseEntity.ok(ratingService.getRatingById(id));
+		return ResponseEntity.ok(ratingService.getRatingById(ratingId));
 	}
 
 }

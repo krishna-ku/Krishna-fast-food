@@ -1,6 +1,9 @@
 package com.restaurant.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -13,7 +16,11 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-public class OrderItem extends SuperClass {
+public class OrderItem {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
 //	private long menuId;//orderitem.getmenu.getid
 	private int itemQuantity;

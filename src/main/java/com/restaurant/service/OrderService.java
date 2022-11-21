@@ -8,18 +8,18 @@ import com.restaurant.dto.OrderItemDto;
 public interface OrderService {
 
 	// create user
-	OrderDto placedOrder(List<OrderItemDto> orderItemDto,long id);
+	OrderDto placedOrder(OrderDto orderDto,long userId);
 
 	// update user
-	OrderDto updateOrder(List<OrderItemDto> orderItemDto, Long id);
+	OrderDto updateOrder(List<OrderItemDto> orderItemDto, Long orderId);
 
 	// delete user
-	void deleteOrder(long id);
+	void deleteOrder(long orderId);
 
 	// get users
 	List<OrderDto> getAllOrders();
 
 	// get user
-	OrderDto getOrderById(Long id);
+	OrderDto getOrderById(Long orderId);
 
 }

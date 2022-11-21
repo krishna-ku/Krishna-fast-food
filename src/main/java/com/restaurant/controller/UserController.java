@@ -50,9 +50,9 @@ public class UserController {
 	 * @param UserDto
 	 * @return Updated UserDto {@link com.restaurant.dto.UserDto}
 	 */
-	@PutMapping("/{id}")
-	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable long id) {
-		UserDto updatedUser = this.userService.updateUser(userDto, id);
+	@PutMapping("/{userId}")
+	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable long userId) {
+		UserDto updatedUser = this.userService.updateUser(userDto, userId);
 		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 	}
 
@@ -62,9 +62,9 @@ public class UserController {
 	 * @param id
 	 * 
 	 */
-	@DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long id) {
-		this.userService.deleteUser(id);
+	@DeleteMapping("/{userId}")
+	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+		this.userService.deleteUser(userId);
 		return new ResponseEntity<>(new ApiResponse("User delete successfully",true),HttpStatus.OK);
 	}
 
@@ -86,10 +86,10 @@ public class UserController {
 	 * @return UserDto
 	 * @see com.restaurant.dto.UserDto
 	 */
-	@GetMapping("/{id}")
-	public ResponseEntity<UserDto> getUserById(@PathVariable long id) {
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserDto> getUserById(@PathVariable long userId) {
 
-		return ResponseEntity.ok(userService.getUserById(id));
+		return ResponseEntity.ok(userService.getUserById(userId));
 
 	}
 

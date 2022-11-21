@@ -10,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.restaurant.enums.OrderStatus;
 
@@ -17,7 +18,7 @@ import lombok.Data;
 
 @Data
 @Entity(name = "Orders")
-public class Order extends SuperClass {
+public class Order extends BaseClass {
 	
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;
@@ -33,5 +34,7 @@ public class Order extends SuperClass {
 	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
 	List<OrderItem> orderItems=new ArrayList<>();
 	
+	@OneToOne
+	private Restaurant restaurant;
 	
 }

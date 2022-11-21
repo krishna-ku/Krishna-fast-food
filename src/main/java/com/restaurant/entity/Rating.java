@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-public class Rating extends SuperClass {
+public class Rating extends BaseClass {
 	
 	
 	//@Column(name = "Rating out of 5")

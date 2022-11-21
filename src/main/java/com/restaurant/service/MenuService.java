@@ -10,15 +10,15 @@ public interface MenuService {
 	MenuDto createMenu(MenuDto menu);
 
 	// update user
-	MenuDto updateMenu(MenuDto menuDto, Long id);
+	MenuDto updateMenu(MenuDto menuDto, Long menuId);
 
 	// delete user
-	void deleteMenu(long id);
+	void deleteMenu(long menuId);
 
 	// get users
 	List<MenuDto> getAllMenus();
 
 	// get user
-	MenuDto getMenuById(Long id);
+	MenuDto getMenuById(Long menuId);
 
 }
