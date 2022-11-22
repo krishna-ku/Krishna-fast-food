@@ -31,15 +31,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto createUser(UserDto userDto) {
 
-		User user1 = userRepo.findByEmail(userDto.getEmail());// validate by pattern matcher
+		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches())
+			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");
 
-		if (user1 == null) {
+		User user = userRepo.findByEmail(userDto.getEmail());
 
-			User user = new User(userDto);
+		if (user == null) {
 
-			return new UserDto(userRepo.save(user));
+			User newUser = new User(userDto);
+			return new UserDto(userRepo.save(newUser));
+
 		} else {
-			throw new BadRequestException("Email already exists");
+			throw new BadRequestException("Email already exist !!");
 		}
 	}
 
@@ -47,14 +50,14 @@ public class UserServiceImpl implements UserService {
 	 * update User.
 	 * 
 	 * @param userDto
-	 * @param id
+	 * @param userId
 	 * @return updated UserDto
 	 * @see com.restaurant.dto.UserDto
 	 */
-	public UserDto updateUser(UserDto userDto, Long id) {// validation here for email and id also
+	public UserDto updateUser(UserDto userDto, Long userId) {// validation here for email and id also
 
-		User user2 = this.userRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
+		User user2 = this.userRepo.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
 		if (!StringUtils.isEmpty(userDto.getFirstName())) {
 			user2.setFirstName(userDto.getFirstName());
@@ -78,14 +81,14 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * delete User
 	 * 
-	 * @param id
+	 * @param userId
 	 * @return void
 	 */
 	@Override
-	public void deleteUser(long id) {
+	public void deleteUser(long userId) {
 
-		User user = userRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
+		User user = userRepo.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
 		this.userRepo.delete(user);
 	}
@@ -108,15 +111,15 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * find User by id
 	 * 
-	 * @param id
+	 * @param userId
 	 * @return User by id
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public UserDto getUserById(Long id) {
+	public UserDto getUserById(Long userId) {
 
-		User user = this.userRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
+		User user = this.userRepo.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
 		return new UserDto(user);
 	}

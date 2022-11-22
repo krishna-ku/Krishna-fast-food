@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-public class Menu extends SuperClass {
+public class Menu extends BaseClass {
 
 	private String name;
 

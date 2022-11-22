@@ -2,21 +2,18 @@ package com.restaurant.controller;
 
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
@@ -50,9 +47,9 @@ public class UserController {
 	 * @param UserDto
 	 * @return Updated UserDto {@link com.restaurant.dto.UserDto}
 	 */
-	@PutMapping("/{id}")
-	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable long id) {
-		UserDto updatedUser = this.userService.updateUser(userDto, id);
+	@PutMapping("/{userId}")
+	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable long userId) {
+		UserDto updatedUser = this.userService.updateUser(userDto, userId);
 		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 	}
 
@@ -62,9 +59,9 @@ public class UserController {
 	 * @param id
 	 * 
 	 */
-	@DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long id) {
-		this.userService.deleteUser(id);
+	@DeleteMapping("/{userId}")
+	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+		this.userService.deleteUser(userId);
 		return new ResponseEntity<>(new ApiResponse("User delete successfully",true),HttpStatus.OK);
 	}
 
@@ -86,10 +83,10 @@ public class UserController {
 	 * @return UserDto
 	 * @see com.restaurant.dto.UserDto
 	 */
-	@GetMapping("/{id}")
-	public ResponseEntity<UserDto> getUserById(@PathVariable long id) {
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserDto> getUserById(@PathVariable long userId) {
 
-		return ResponseEntity.ok(userService.getUserById(id));
+		return ResponseEntity.ok(userService.getUserById(userId));
 
 	}
 

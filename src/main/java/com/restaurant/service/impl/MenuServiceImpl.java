@@ -34,8 +34,8 @@ public class MenuServiceImpl implements MenuService {
 		Menu menuExist = this.menuRepo.findByName(menuDto.getName());
 
 		if (menuExist == null) {
-			Menu menu = new Menu(menuDto);
-			return new MenuDto(menuRepo.save(menu));
+			Menu newMenu = new Menu(menuDto);
+			return new MenuDto(menuRepo.save(newMenu));
 		} else {
 			throw new BadRequestException("Menu is already exists");
 		}
@@ -50,10 +50,10 @@ public class MenuServiceImpl implements MenuService {
 	 * @see com.restaurant.dto.MenuDto
 	 */
 	@Override
-	public MenuDto updateMenu(MenuDto menuDto, Long id) {
+	public MenuDto updateMenu(MenuDto menuDto, Long menuId) {
 
-		Menu updatedMenu = menuRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, id));
+		Menu updatedMenu = menuRepo.findById(menuId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
 
 		if (!StringUtils.isEmpty(menuDto.getName())) {
 			updatedMenu.setName(menuDto.getName());
@@ -78,10 +78,10 @@ public class MenuServiceImpl implements MenuService {
 	 */
 
 	@Override
-	public void deleteMenu(long id) {
+	public void deleteMenu(long menuId) {
 
-		Menu menu = this.menuRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, id));
+		Menu menu = this.menuRepo.findById(menuId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
 
 		menuRepo.delete(menu);
 	}
@@ -110,10 +110,10 @@ public class MenuServiceImpl implements MenuService {
 	 * @see com.restaurant.dto.MenuDto
 	 */
 	@Override
-	public MenuDto getMenuById(Long id) {
+	public MenuDto getMenuById(Long menuId) {
 
-		Menu menu = menuRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, id));
+		Menu menu = menuRepo.findById(menuId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
 
 		return new MenuDto(menu);
 	}

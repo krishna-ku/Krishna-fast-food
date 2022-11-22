@@ -1,6 +1,9 @@
 package com.restaurant.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -13,23 +16,23 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-public class OrderItem extends SuperClass {
-	
-	private long menuId;
+public class OrderItem extends BaseClass {
+
+//	private long menuId;//orderitem.getmenu.getid
 	private int itemQuantity;
-	
-	//Map<String, String> map=new HashMap<>();
-	
+
+
 	@ManyToOne
-	//@JoinColumn(name = "orderId")
+	// @JoinColumn(name = "orderId")
 	private Order order;
-	
+
 	@OneToOne
-	@JoinColumn(name = "menu_ids")
+	@JoinColumn(name = "menu_id")
 	private Menu menu;
 
 	public OrderItem(OrderItemDto orderItemDto) {
-		this.menuId=orderItemDto.getMenuId();
-		this.itemQuantity=orderItemDto.getItemQuantity();
+//		this.menuId=orderItemDto.getMenuId();
+		this.itemQuantity = orderItemDto.getItemQuantity();
+
 	}
 }

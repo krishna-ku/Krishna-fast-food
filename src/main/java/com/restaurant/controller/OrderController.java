@@ -37,10 +37,10 @@ public class OrderController {
 	 * @return OrderDto
 	 * @see com.restaurant.dto.OrderDto
 	 */
-	@PostMapping("/{id}")
-	public OrderDto placeOrder(@RequestBody @Valid List<OrderItemDto> orderItemDto,@PathVariable long id) {
-		orderItemDto.forEach(System.out::println);
-		return orderService.placedOrder(orderItemDto,id);
+	@PostMapping("/{userId}")
+	public OrderDto placeOrder(@RequestBody @Valid OrderDto orderDto,@PathVariable long userId) {
+//		orderItemDto.forEach(System.out::println);
+		return orderService.placedOrder(orderDto,userId);
 
 	}
 	
@@ -52,16 +52,16 @@ public class OrderController {
 	 * @param List<OderItemDto?
 	 * @return Updated OrderItemDto {@link com.restaurant.dto.OrderItemDto}
 	 */
-	@PutMapping("/{id}")
-	public OrderDto updateOrder(@RequestBody List<OrderItemDto> orderItemDto,@PathVariable long id) {
+	@PutMapping("/{orderId}")
+	public OrderDto updateOrder(@RequestBody List<OrderItemDto> orderItemDto,@PathVariable long orderId) {
 		orderItemDto.forEach(System.out::println);
 		//orderItemDto.forEach(o -> System.out.println(o));
-		return orderService.updateOrder(orderItemDto, id);
+		return orderService.updateOrder(orderItemDto, orderId);
 	}
 	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long id){
-		this.orderService.deleteOrder(id);
+	@DeleteMapping("/{orderId}")
+	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long orderId){
+		this.orderService.deleteOrder(orderId);
 		return new ResponseEntity<>(new ApiResponse("Order is deleted successfully",true),HttpStatus.OK);
 	}
 	
@@ -71,10 +71,10 @@ public class OrderController {
 		return new ResponseEntity<>(allOrders,HttpStatus.OK);
 	}
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<OrderDto> getOrderById(@PathVariable long id) {
+	@GetMapping("/{orderId}")
+	public ResponseEntity<OrderDto> getOrderById(@PathVariable long orderId) {
 		
-		return ResponseEntity.ok(orderService.getOrderById(id));
+		return ResponseEntity.ok(orderService.getOrderById(orderId));
 		
 	}
 	

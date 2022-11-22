@@ -48,9 +48,9 @@ public class MenuController {
 	 * @param menuDto
 	 * @return Updated MenuDto {@link com.restaurant.dto.MenuDto}
 	 */
-	@PutMapping("/{id}")
-	public ResponseEntity<MenuDto> updateMenu(@RequestBody MenuDto menuDto, @PathVariable long id) {
-		return ResponseEntity.ok(menuService.updateMenu(menuDto, id));
+	@PutMapping("/{menuId}")
+	public ResponseEntity<MenuDto> updateMenu(@RequestBody MenuDto menuDto, @PathVariable long menuId) {
+		return ResponseEntity.ok(menuService.updateMenu(menuDto, menuId));
 	}
 
 	/**
@@ -60,9 +60,9 @@ public class MenuController {
 	 * @param id
 	 * 
 	 */
-	@DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse> deleteMenu(@PathVariable long id) {
-		menuService.deleteMenu(id);
+	@DeleteMapping("/{menuId}")
+	public ResponseEntity<ApiResponse> deleteMenu(@PathVariable long menuId) {
+		menuService.deleteMenu(menuId);
 		return new ResponseEntity<>(new ApiResponse("Menu delete successfully",true),HttpStatus.OK);
 	}
 
@@ -85,9 +85,9 @@ public class MenuController {
 	 *@param id
 	 * @return MenuDto of particular id {@link com.restaurant.dto.MenuDto}
 	 */
-	@GetMapping("/{id}")
-	public ResponseEntity<MenuDto> getMenuById(@PathVariable long id) {
-		return ResponseEntity.ok(menuService.getMenuById(id));
+	@GetMapping("/{menuId}")
+	public ResponseEntity<MenuDto> getMenuById(@PathVariable long menuId) {
+		return ResponseEntity.ok(menuService.getMenuById(menuId));
 	}
 
 }

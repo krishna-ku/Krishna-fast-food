@@ -1,9 +1,12 @@
 package com.restaurant.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -18,6 +21,7 @@ import com.restaurant.entity.Order;
 import com.restaurant.entity.OrderItem;
 import com.restaurant.entity.User;
 import com.restaurant.enums.OrderStatus;
+import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.NullRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.MenuRepo;
@@ -44,17 +48,22 @@ public class OrderServiceImpl implements OrderService {
 	 * @return OrderDto
 	 * @see com.restaurant.dto.OrderDto
 	 */
-	public OrderDto placedOrder(List<OrderItemDto> orderItemDto, long id) {
+	public OrderDto placedOrder(OrderDto orderDto, long userId) {
 
-		User user = userRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, id));
-		String customer = user.getFirstName() + " " + user.getLastName();// handle last name
+		User user = userRepo.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
+		String customer = user.getFirstName() + " " + user.getLastName();
 
 		Order order = new Order();
-		List<OrderItem> orderItems = orderItemDto.stream().map(o -> {
-			
-//			if(o.getItemQuantity()<10)
-			
+		
+		Set<Long> set=new HashSet<>();
+
+		List<OrderItem> orderItems = orderDto.getOrderItems().stream().map(o -> {
+
+			if(set.contains(o.getMenuId())) {
+				return null;
+			}
+			set.add(o.getMenuId());
 			OrderItem orderItem = new OrderItem(o);
 
 			Menu menu = this.menuRepo.findById(o.getMenuId())
@@ -64,7 +73,8 @@ public class OrderServiceImpl implements OrderService {
 			orderItem.setOrder(order);
 			return orderItem;
 
-		}).collect(Collectors.toList());
+		}).filter(Objects::nonNull).collect(Collectors.toList());
+		
 		order.setStatus(OrderStatus.WAITING);
 		order.setOrderItems(orderItems);
 		order.setUser(user);
@@ -83,10 +93,10 @@ public class OrderServiceImpl implements OrderService {
 	 * @see com.restaurant.dto.OrderDto
 	 */
 	@Override
-	public OrderDto updateOrder(List<OrderItemDto> orderItemList, Long id) {
+	public OrderDto updateOrder(List<OrderItemDto> orderItemList, Long orderId) {
 
-		Order order = orderRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, id));
+		Order order = orderRepo.findById(orderId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
 
 		if (order != null) {
 
@@ -98,18 +108,23 @@ public class OrderServiceImpl implements OrderService {
 //			List<OrderItem> deleteOrderItemList=new ArrayList<>();
 			for (OrderItemDto orderItemDto : orderItemList) {
 
+				if (orderItemDto.getItemQuantity() > 10 || orderItemDto.getItemQuantity() < 1)
+					throw new BadRequestException("Item quantity should not be less than 1 or more than 10");
+
 				if (collect.containsKey(orderItemDto.getMenuId())) {
 					OrderItem item = collect.get(orderItemDto.getMenuId());
 					item.setItemQuantity(orderItemDto.getItemQuantity());
 					updatedOrderItemList.add(item);
 				} else {
-					Menu menu = menuRepo.findById(orderItemDto.getMenuId()).orElse(null);
-					if(menu!=null) {
-					OrderItem newOrderItem = new OrderItem(orderItemDto);
-					newOrderItem.setOrder(order);
-					newOrderItem.setMenu(menu);
-					updatedOrderItemList.add(newOrderItem);
-					
+					Menu menu = menuRepo.findById(orderItemDto.getMenuId())
+							.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID,
+									orderItemDto.getMenuId()));
+					if (menu != null) {
+						OrderItem newOrderItem = new OrderItem(orderItemDto);
+						newOrderItem.setOrder(order);
+						newOrderItem.setMenu(menu);
+						updatedOrderItemList.add(newOrderItem);
+
 					}
 
 				}
@@ -121,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
 
 		}
 
-		throw new NullRequestException("menuId is not found please enter correct menuId");//not working
+		throw new NullRequestException("menuId is not found please enter correct menuId");
 	}
 
 	/**
@@ -131,9 +146,9 @@ public class OrderServiceImpl implements OrderService {
 	 * @return void
 	 */
 	@Override
-	public void deleteOrder(long id) {
+	public void deleteOrder(long orderId) {
 
-		this.orderRepo.deleteById(id);
+		this.orderRepo.deleteById(orderId);
 
 	}
 
@@ -157,12 +172,11 @@ public class OrderServiceImpl implements OrderService {
 	 * @return Order by id
 	 */
 	@Override
-	public OrderDto getOrderById(Long id) {
+	public OrderDto getOrderById(Long orderId) {
 
-		Order order = orderRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, id));
+		Order order = orderRepo.findById(orderId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
 		return new OrderDto(order);
 	}
-	
 
 }
