@@ -19,7 +19,7 @@ import lombok.Data;
 @Data
 @Entity(name = "Orders")
 public class Order extends BaseClass {
-	
+
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;
 
@@ -28,13 +28,13 @@ public class Order extends BaseClass {
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private User user;
-	
+
 	private String customer;
-	
-	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
-	List<OrderItem> orderItems=new ArrayList<>();
-	
+
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	List<OrderItem> orderItems = new ArrayList<>();
+
 	@OneToOne
 	private Restaurant restaurant;
-	
+
 }

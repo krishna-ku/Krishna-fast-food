@@ -1,6 +1,5 @@
 package com.restaurant.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +35,6 @@ public class MenuServiceImpl implements MenuService {
 
 		if (menuExist == null) {
 			Menu newMenu = new Menu(menuDto);
-			newMenu.setCreatedOn(new Date());
 			return new MenuDto(menuRepo.save(newMenu));
 		} else {
 			throw new BadRequestException("Menu is already exists");
@@ -68,8 +66,6 @@ public class MenuServiceImpl implements MenuService {
 		if (!StringUtils.isEmpty(menuDto.getDescription())) {
 			updatedMenu.setDescription(menuDto.getDescription());
 		}
-		
-		updatedMenu.setUpdatingOn(new Date());
 
 		return new MenuDto(menuRepo.save(updatedMenu));
 	}

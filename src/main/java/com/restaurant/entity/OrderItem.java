@@ -16,11 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-public class OrderItem {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+public class OrderItem extends BaseClass {
 
 //	private long menuId;//orderitem.getmenu.getid
 	private int itemQuantity;

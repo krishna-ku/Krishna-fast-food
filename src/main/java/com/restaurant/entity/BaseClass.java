@@ -7,8 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import lombok.Data;
 
@@ -20,7 +20,7 @@ public class BaseClass {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private Date createdOn;
-	private Date updatingOn;// updatedOn
+	private Date updatedOn;
 	@Column(columnDefinition = "boolean default false")
 	private boolean deleted;
 	// private String createdBy;
@@ -32,6 +32,12 @@ public class BaseClass {
 		this.createdOn = new Date();// preupdate for update for updatedOn
 //		this.updatingOn=System.currentTimeMillis();
 	}
+
+	@PreUpdate
+	void preUpdateDateTime() {
+		this.updatedOn = new Date();
+	}
+
 //	@PostPersist
 //	void postPersists() {
 //		this.updatingOn=System.currentTimeMillis();

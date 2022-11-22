@@ -22,7 +22,7 @@ public class OrderDto {
 		this.customer = order.getCustomer();
 		this.orderId = order.getId();
 		this.orderStatus = order.getStatus().toString();
-		this.restaurantName = order.getRestaurant().getName();
+//		this.restaurantName = order.getRestaurant().getName();
 		this.orderDate = new Date();
 		this.orderItems = order.getOrderItems().stream().map(o -> {
 

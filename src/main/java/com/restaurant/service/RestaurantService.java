@@ -10,15 +10,18 @@ public interface RestaurantService {
 	RestaurantDto createRestaurant(RestaurantDto restaurantDto);
 
 	// update restaurant
-	RestaurantDto updateUser(RestaurantDto restauratDto, Long restaurantId);
+	RestaurantDto updateRestaurant(RestaurantDto restauratDto, Long restaurantId);
 
 	// delete user
-	void deleteUser(long restaurantId);
+	void deleteRestaurant(long restaurantId);
 
 	// get users
 	List<RestaurantDto> getAllRestaurat();
 
 	// get user
 	RestaurantDto getRestauratById(Long restaurantId);
+	
+	//get restaurant details
+	RestaurantDto getRestaurantDetails();
 
 }

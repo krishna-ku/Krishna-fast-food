@@ -1,7 +1,5 @@
 package com.restaurant.service.impl;
 
-import java.sql.Time;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,18 +30,17 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public UserDto createUser(UserDto userDto) {
-				
-		if(!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches())
+
+		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches())
 			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");
-		
+
 		User user = userRepo.findByEmail(userDto.getEmail());
 
 		if (user == null) {
-			
+
 			User newUser = new User(userDto);
-			newUser.setCreatedOn(new Date());
 			return new UserDto(userRepo.save(newUser));
-			
+
 		} else {
 			throw new BadRequestException("Email already exist !!");
 		}
@@ -53,7 +50,7 @@ public class UserServiceImpl implements UserService {
 	 * update User.
 	 * 
 	 * @param userDto
-	 * @param id
+	 * @param userId
 	 * @return updated UserDto
 	 * @see com.restaurant.dto.UserDto
 	 */
@@ -77,15 +74,14 @@ public class UserServiceImpl implements UserService {
 		if (!StringUtils.isEmpty(userDto.getPassword())) {
 			user2.setPassword(userDto.getPassword());
 		}
-		
-//		user2.setUpdatingOn(new Date());		
+
 		return new UserDto(userRepo.save(user2));
 	}
 
 	/**
 	 * delete User
 	 * 
-	 * @param id
+	 * @param userId
 	 * @return void
 	 */
 	@Override
@@ -115,7 +111,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * find User by id
 	 * 
-	 * @param id
+	 * @param userId
 	 * @return User by id
 	 * @see com.restaurant.entity.User
 	 */

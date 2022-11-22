@@ -19,6 +19,9 @@ public class Keywords {
 
 	public static final String ORDER = "Order";
 	public static final String ORDER_ID = "OrderId";
+	
+	public static final String RESTAURANT="Restaurant";
+	public static final String RESTAURANT_ID="RestaurantId";
 
 	public static final Pattern EMAIL_REGEX = Pattern.compile("[a-z][a-z0-9.]+@[a-z]+.[a-z]{2,6}");
 

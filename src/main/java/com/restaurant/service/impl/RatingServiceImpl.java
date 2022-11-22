@@ -1,6 +1,5 @@
 package com.restaurant.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,9 +50,7 @@ public class RatingServiceImpl implements RatingService {
 		Rating rating = new Rating(ratingDto);
 
 		rating.setOrders(order);
-		
-		rating.setCreatedOn(new Date());
-		
+
 		rating.setUser(user);
 
 		this.ratingRepo.save(rating);

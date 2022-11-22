@@ -1,9 +1,12 @@
 package com.restaurant.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -50,16 +53,17 @@ public class OrderServiceImpl implements OrderService {
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 		String customer = user.getFirstName() + " " + user.getLastName();
-		
+
 		Order order = new Order();
 		
-		
+		Set<Long> set=new HashSet<>();
+
 		List<OrderItem> orderItems = orderDto.getOrderItems().stream().map(o -> {
 
-			if (o.getItemQuantity() < 1 || o.getItemQuantity() > 10) {
-				throw new BadRequestException("Item quantity should not be less than 1 or more than 10");
+			if(set.contains(o.getMenuId())) {
+				return null;
 			}
-
+			set.add(o.getMenuId());
 			OrderItem orderItem = new OrderItem(o);
 
 			Menu menu = this.menuRepo.findById(o.getMenuId())
@@ -69,10 +73,10 @@ public class OrderServiceImpl implements OrderService {
 			orderItem.setOrder(order);
 			return orderItem;
 
-		}).collect(Collectors.toList());
+		}).filter(Objects::nonNull).collect(Collectors.toList());
+		
 		order.setStatus(OrderStatus.WAITING);
 		order.setOrderItems(orderItems);
-		order.setCreatedOn(new Date());
 		order.setUser(user);
 		order.setCustomer(customer);
 		orderRepo.save(order);
@@ -98,7 +102,6 @@ public class OrderServiceImpl implements OrderService {
 
 			order.setStatus(OrderStatus.WAITING);
 			List<OrderItem> orderItems = order.getOrderItems();
-			order.setUpdatingOn(new Date());
 			Map<Long, OrderItem> collect = orderItems.stream()
 					.collect(Collectors.toMap(o -> o.getMenu().getId(), Function.identity()));
 			List<OrderItem> updatedOrderItemList = new ArrayList<>();
