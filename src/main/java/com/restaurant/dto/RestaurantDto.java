@@ -1,13 +1,9 @@
 package com.restaurant.dto;
 
-import java.util.Date;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 
 import com.restaurant.entity.Restaurant;
-import com.restaurant.enums.RestaurantStatus;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,29 +21,36 @@ public class RestaurantDto {
 	private String address;
 
 	@NotEmpty
-	private String about;
+	private String description;
 
 	@NotEmpty
 	private String contactNo;
-	
+
+	private String openTiming;
+
+	private String closeTiming;
+
+//	@Column(columnDefinition = "boolean default false") // by default close
 	private String status;
-	
-	@Enumerated(EnumType.STRING)
-	private RestaurantStatus restaurantStatus;
 
-	private Date openTiming;
+//	private Date openTiming;
 
-	private Date closingTime;
+//	private Date closingTime;
 
 	public RestaurantDto(Restaurant restaurant) {
 		this.id = restaurant.getId();
 		this.name = restaurant.getName();
 		this.address = restaurant.getAddress();
-		this.about = restaurant.getAbout();
-		this.contactNo=restaurant.getContactNo();
-		this.openTiming=restaurant.getOpeningTime();
-		this.closingTime=restaurant.getClosingTime();
-		this.status=restaurant.isStatus()?RestaurantStatus.OPEN.toString():RestaurantStatus.CLOSE.toString();
+		this.description = restaurant.getDescription();
+		this.contactNo = restaurant.getContactNo();
+		this.openTiming = restaurant.getOpenTiming();
+		this.closeTiming = restaurant.getCloseTiming();
+		this.status=restaurant.getStatus();
+		
+//		this.openTiming=restaurant.getOpeningTime();
+//		this.closingTime=restaurant.getClosingTime();
+//		this.status=restaurant.isStatus()?status.OPEN:status.CLOSE;
+//		this.status=restaurant.isStatus()?true:false;
 	}
 
 }

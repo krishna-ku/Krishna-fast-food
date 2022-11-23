@@ -2,6 +2,9 @@ package com.restaurant.entity;
 
 import javax.persistence.Entity;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import com.restaurant.dto.MenuDto;
 
 import lombok.Data;
@@ -10,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
+@SQLDelete(sql = "UPDATE Menu SET deleted=true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Menu extends BaseClass {
 
 	private String name;

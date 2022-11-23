@@ -31,11 +31,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public RestaurantDto createRestaurant(RestaurantDto restaurantDto) {
 				
-		if(restaurantDto.getContactNo().length()<10 || restaurantDto.getContactNo().length()>10)
+		if(restaurantDto.getContactNo().length()!=10)
 			{throw new BadRequestException("Please enter valid phone number");}
 		
 		Restaurant restaurant=new Restaurant(restaurantDto);
-//		Date date= new SimpleDateFormat("HH:mm:ss").parse(restaurant.getOpeningTime());
 		
 		return new RestaurantDto(restaurantRepo.save(restaurant));
 	}
@@ -49,12 +48,12 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 * @see com.restaurant.dto.RestaurantDto
 	 */
 	@Override
-	public RestaurantDto updateRestaurant(RestaurantDto restaurantDto, Long restaurantId) {
+	public RestaurantDto updateRestaurant(RestaurantDto restaurantDto) {
 		
-		Restaurant restaurant = restaurantRepo.findById(restaurantId).orElseThrow(()->new ResourceNotFoundException(Keywords.RESTAURANT, Keywords.RESTAURANT_ID, restaurantId));
+		Restaurant restaurant = restaurantRepo.findById(restaurantDto.getId()).orElseThrow(()->new ResourceNotFoundException(Keywords.RESTAURANT, Keywords.RESTAURANT_ID, restaurantDto.getId()));
 		
-		if(restaurantDto.getContactNo().length()<10 || restaurantDto.getContactNo().length()>10)
-		{throw new BadRequestException("Please enter valid phone number");}
+//		if(restaurantDto.getContactNo().length()!=10 || restaurantDto.getContactNo().length()!=0)
+//		{throw new BadRequestException("Please enter valid phone number");}
 		
 		if(!StringUtils.isEmpty(restaurantDto.getName()))
 			restaurant.setName(restaurantDto.getName());
@@ -62,11 +61,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 		if(!StringUtils.isEmpty(restaurantDto.getAddress()))
 			restaurant.setAddress(restaurantDto.getAddress());
 		
-		if(!StringUtils.isEmpty(restaurantDto.getAbout()))
-			restaurant.setAddress(restaurantDto.getAddress());
+		if(!StringUtils.isEmpty(restaurantDto.getDescription()))
+			restaurant.setDescription(restaurantDto.getDescription());
 		
 		if(!StringUtils.isEmpty(restaurantDto.getContactNo()))
 			restaurant.setContactNo(restaurantDto.getContactNo());
+		
+//		if(!StringUtils.isEmpty(restaurantDto.isStatus()))
+//			restaurant.setStatus(restaurantDto.isStatus());
 		
 		return new RestaurantDto(restaurantRepo.save(restaurant));
 	}

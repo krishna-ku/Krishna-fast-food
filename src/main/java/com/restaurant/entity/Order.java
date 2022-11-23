@@ -12,12 +12,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import com.restaurant.enums.OrderStatus;
 
 import lombok.Data;
 
 @Data
 @Entity(name = "Orders")
+@SQLDelete(sql = "UPDATE Order SET deleted=true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Order extends BaseClass {
 
 	@Enumerated(EnumType.STRING)
@@ -35,6 +40,7 @@ public class Order extends BaseClass {
 	List<OrderItem> orderItems = new ArrayList<>();
 
 	@OneToOne
+	@JoinColumn(name = "restaurant_id")
 	private Restaurant restaurant;
 
 }

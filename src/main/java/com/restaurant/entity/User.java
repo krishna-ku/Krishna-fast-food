@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Email;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import com.restaurant.dto.UserDto;
 
@@ -18,16 +19,17 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE User SET deleted=true WHERE id=?")
+@Where(clause = "deleted=false")
 public class User extends BaseClass {
 
-	
 	private String firstName;
 	private String lastName;
-	
+
 //	@Column(unique = true)
 //	@Email(message = "Email address is not valid !!",regexp = "[A-Za-z0-9._]+@gmail.com")
 	private String email;
-	
+
 	private String password;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -36,8 +38,6 @@ public class User extends BaseClass {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	List<Rating> rating = new ArrayList<>();
 
-	
-	
 //	public User(String firstName, String lastName, String email, String password) {
 //		this.firstName = firstName;
 //		this.lastName = lastName;
@@ -45,10 +45,10 @@ public class User extends BaseClass {
 //		this.password = password;
 //	}
 	public User(UserDto userDto) {
-		this.firstName=userDto.getFirstName();
-		this.lastName=userDto.getLastName();
-		this.email=userDto.getEmail();
-		this.password=userDto.getPassword();
+		this.firstName = userDto.getFirstName();
+		this.lastName = userDto.getLastName();
+		this.email = userDto.getEmail();
+		this.password = userDto.getPassword();
 	}
 
 }

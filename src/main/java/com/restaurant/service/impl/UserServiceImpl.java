@@ -54,10 +54,13 @@ public class UserServiceImpl implements UserService {
 	 * @return updated UserDto
 	 * @see com.restaurant.dto.UserDto
 	 */
-	public UserDto updateUser(UserDto userDto, Long userId) {// validation here for email and id also
+	public UserDto updateUser(UserDto userDto, Long userId) {
 
 		User user2 = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
+		
+//		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches()) {
+//			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");}
 
 		if (!StringUtils.isEmpty(userDto.getFirstName())) {
 			user2.setFirstName(userDto.getFirstName());

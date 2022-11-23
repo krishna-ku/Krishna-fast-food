@@ -1,9 +1,6 @@
 package com.restaurant.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -20,7 +17,6 @@ public class OrderItem extends BaseClass {
 
 //	private long menuId;//orderitem.getmenu.getid
 	private int itemQuantity;
-
 
 	@ManyToOne
 	// @JoinColumn(name = "orderId")

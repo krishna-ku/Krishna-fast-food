@@ -29,8 +29,7 @@ public class BaseClass {
 	@PrePersist
 	void beforePersist() {
 		this.deleted = false;
-		this.createdOn = new Date();// preupdate for update for updatedOn
-//		this.updatingOn=System.currentTimeMillis();
+		this.createdOn = new Date();
 	}
 
 	@PreUpdate
@@ -38,8 +37,4 @@ public class BaseClass {
 		this.updatedOn = new Date();
 	}
 
-//	@PostPersist
-//	void postPersists() {
-//		this.updatingOn=System.currentTimeMillis();
-//	}
 }
