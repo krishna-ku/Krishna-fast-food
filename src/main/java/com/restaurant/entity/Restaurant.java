@@ -45,7 +45,7 @@ public class Restaurant extends BaseClass {
 		this.openTiming = restaurantDto.getOpenTiming();
 		this.closeTiming = restaurantDto.getCloseTiming();
 		
-		if(restaurantDto.getStatus().equals("OPEN"))
+		if("OPEN".equals(restaurantDto.getStatus()))
 			this.status=restaurantDto.getStatus();
 		else {
 			this.status="CLOSE";

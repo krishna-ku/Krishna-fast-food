@@ -3,7 +3,11 @@ package com.restaurant.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepo userRepo;
+
+	@Autowired
+	private EntityManager entityManager;
 
 	/**
 	 * add User.
@@ -58,9 +65,9 @@ public class UserServiceImpl implements UserService {
 
 		User user2 = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-		
+
 //		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches()) {
-//			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");}
+//			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");}check after getting email in response body
 
 		if (!StringUtils.isEmpty(userDto.getFirstName())) {
 			user2.setFirstName(userDto.getFirstName());
@@ -125,6 +132,25 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
 		return new UserDto(user);
+	}
+
+	/**
+	 * return lists of deleted and undeleted users
+	 * 
+	 * @param isDeleted=true or false
+	 * @return list of deleted or undeleted User
+	 * @see com.restaurant.entity.User
+	 */
+	public List<UserDto> findAllFilter(boolean isDeleted) {
+		Session session = entityManager.unwrap(Session.class);
+		Filter filter = session.enableFilter("deletedUserFilter");
+		filter.setParameter("isDeleted", isDeleted);
+		List<User> users = userRepo.findAll();
+		session.disableFilter("deletedUserFilter");
+
+		List<UserDto> userDtos = users.stream().map(u -> new UserDto(u)).collect(Collectors.toList());
+
+		return userDtos;
 	}
 
 }

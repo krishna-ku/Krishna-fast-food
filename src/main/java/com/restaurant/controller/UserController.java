@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
@@ -62,7 +63,7 @@ public class UserController {
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
 		this.userService.deleteUser(userId);
-		return new ResponseEntity<>(new ApiResponse("User delete successfully",true),HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse("User delete successfully", true), HttpStatus.OK);
 	}
 
 	/**
@@ -90,10 +91,17 @@ public class UserController {
 
 	}
 
-//	@ExceptionHandler(ConstraintViolationException.class)
-//	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//	ResponseEntity<String> handleConstraintValidationException(ConstraintViolationException ex) {
-//		return new ResponseEntity<>("Error:" + ex.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//	}
+	/**
+	 * get details of user isDelted or notDeleted service url :/user/
+	 * 
+	 * @param isDeleted=true or false
+	 * @return list of users
+	 */
+	@GetMapping("/")
+	public ResponseEntity<List<UserDto>> findAll(
+			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
+		List<UserDto> users = userService.findAllFilter(isDeleted);
+		return new ResponseEntity<>(users, HttpStatus.OK);
+	}
 
 }
