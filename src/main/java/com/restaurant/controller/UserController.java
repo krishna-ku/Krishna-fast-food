@@ -103,5 +103,10 @@ public class UserController {
 		List<UserDto> users = userService.findAllFilter(isDeleted);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
-
+	
+	@PutMapping("/{userId}/")
+	public ResponseEntity<String> activateUserEntity(@PathVariable long userId){
+	 	return ResponseEntity.ok(userService.activateUser(userId));
+	}
+	
 }

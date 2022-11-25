@@ -3,6 +3,10 @@ package com.restaurant.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +26,9 @@ public class RatingServiceImpl implements RatingService {
 
 	@Autowired
 	private RatingRepo ratingRepo;
+
+	@Autowired
+	private EntityManager entityManager;
 
 	@Autowired
 	private UserRepo userRepo;
@@ -84,9 +91,7 @@ public class RatingServiceImpl implements RatingService {
 
 		List<Rating> ratings = this.ratingRepo.findAll();
 
-//		List<RatingDto> ratingDtos = ratings.stream().map(rating -> ratingToDto(rating)).collect(Collectors.toList());
 		return ratings.stream().map(rating -> new RatingDto(rating)).collect(Collectors.toList());
-//		return ratings.stream().map(new::Rating).collect(Collectors.toList());
 	}
 
 	/**
@@ -103,6 +108,23 @@ public class RatingServiceImpl implements RatingService {
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, ratingId));
 
 		return new RatingDto(rating);
+	}
+
+	/**
+	 * return lists of deleted and undeleted ratings
+	 * 
+	 * @param isDeleted=true or false
+	 * @return list of deleted or undeleted ratings
+	 * @see com.restaurant.entity.Rating
+	 */
+	public List<RatingDto> findAllFilter(boolean isDeleted) {
+		Session session = entityManager.unwrap(Session.class);
+		Filter filter = session.enableFilter("deletedRatingFilter");
+		filter.setParameter("isDeleted", isDeleted);
+		List<Rating> rating = ratingRepo.findAll();
+		session.disableFilter("deletedRatingFilter");
+
+		return rating.stream().map(u -> new RatingDto(u)).collect(Collectors.toList());
 	}
 
 }

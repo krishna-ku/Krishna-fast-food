@@ -20,7 +20,6 @@ public class UserDto {
 	private String firstName;
 
 	@Pattern(regexp = "[A-Za-z]{0,10}", message = "LastName should be alphabets and minimum 10 !!")
-//	@Size(min = 0,max = 10)
 	private String lastName;
 
 	private String email;

@@ -3,6 +3,7 @@ package com.restaurant.service;
 import java.util.List;
 
 import com.restaurant.dto.RestaurantDto;
+import com.restaurant.dto.UserDto;
 
 public interface RestaurantService {
 
@@ -20,8 +21,11 @@ public interface RestaurantService {
 
 	// get user
 	RestaurantDto getRestauratById(Long restaurantId);
-	
-	//get restaurant details
+
+	// get restaurant details
 	RestaurantDto getRestaurantDetails();
+
+	// get all restaurants by header
+	List<RestaurantDto> findAllFilter(boolean isDeleted);
 
 }

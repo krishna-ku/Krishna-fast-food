@@ -1,5 +1,7 @@
 package com.restaurant.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
@@ -44,9 +47,8 @@ public class RestaurantController {
 	 * @param restaurantDto
 	 * @return Updated restaurantDto {@link com.restaurant.dto.restaurantDto}
 	 */
-	@PutMapping("/{restaurantId}")
-	public ResponseEntity<RestaurantDto> updateRestaurant(@RequestBody RestaurantDto restaurantDto,
-			@PathVariable long restaurantId) {
+	@PutMapping
+	public ResponseEntity<RestaurantDto> updateRestaurant(@RequestBody RestaurantDto restaurantDto) {
 		return ResponseEntity.ok(restaurantService.updateRestaurant(restaurantDto));
 	}
 
@@ -61,10 +63,28 @@ public class RestaurantController {
 		restaurantService.deleteRestaurant(restaurantId);
 		return new ResponseEntity<>(new ApiResponse("Restaurant Deleted Successfully", true), HttpStatus.OK);
 	}
-	
+
+	/**
+	 * get list of restaurants Service url: /restaurant method : GET
+	 * 
+	 * @return list of Restaurants {@link com.restaurant.entity.Restaurant}
+	 */
 	@GetMapping
-	public ResponseEntity<RestaurantDto> getRestaurantDetails(){
+	public ResponseEntity<RestaurantDto> getRestaurantDetails() {
 		return ResponseEntity.ok(restaurantService.getRestaurantDetails());
+	}
+
+	/**
+	 * get details of user isDelted or notDeleted service url :/restaurant/
+	 * 
+	 * @param isDeleted=true or false
+	 * @return list of restaurants
+	 */
+	@GetMapping("/")
+	public ResponseEntity<List<RestaurantDto>> findAll(
+			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
+		List<RestaurantDto> restaurantDtos = restaurantService.findAllFilter(isDeleted);
+		return new ResponseEntity<>(restaurantDtos, HttpStatus.OK);
 	}
 
 }

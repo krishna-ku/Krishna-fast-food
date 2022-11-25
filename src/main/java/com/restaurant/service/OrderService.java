@@ -4,11 +4,12 @@ import java.util.List;
 
 import com.restaurant.dto.OrderDto;
 import com.restaurant.dto.OrderItemDto;
+import com.restaurant.dto.UserDto;
 
 public interface OrderService {
 
 	// create user
-	OrderDto placedOrder(OrderDto orderDto,long userId);
+	OrderDto placedOrder(OrderDto orderDto, long userId);
 
 	// update user
 	OrderDto updateOrder(List<OrderItemDto> orderItemDto, Long orderId);
@@ -21,5 +22,8 @@ public interface OrderService {
 
 	// get user
 	OrderDto getOrderById(Long orderId);
+
+	// get orders by header
+	List<OrderDto> findAllFilter(boolean isDeleted);
 
 }

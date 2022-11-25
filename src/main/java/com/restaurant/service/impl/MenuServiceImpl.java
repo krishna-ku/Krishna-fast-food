@@ -3,13 +3,19 @@ package com.restaurant.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
 import com.restaurant.dto.MenuDto;
+import com.restaurant.dto.UserDto;
 import com.restaurant.entity.Menu;
+import com.restaurant.entity.User;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.MenuRepo;
@@ -20,6 +26,9 @@ public class MenuServiceImpl implements MenuService {
 
 	@Autowired
 	private MenuRepo menuRepo;
+	
+	@Autowired
+	private EntityManager entityManager;
 
 	/**
 	 * add Menu.
@@ -116,6 +125,23 @@ public class MenuServiceImpl implements MenuService {
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
 
 		return new MenuDto(menu);
+	}
+	
+	/**
+	 * return lists of deleted and undeleted menus
+	 * 
+	 * @param isDeleted=true or false
+	 * @return list of deleted or undeleted menus
+	 * @see com.restaurant.entity.MenuDtos
+	 */
+	public List<MenuDto> findAllFilter(boolean isDeleted) {
+		Session session = entityManager.unwrap(Session.class);
+		Filter filter = session.enableFilter("deletedMenuFilter");
+		filter.setParameter("isDeleted", isDeleted);
+		List<Menu> menus = menuRepo.findAll();
+		session.disableFilter("deletedMenuFilter");
+
+		return menus.stream().map(u -> new MenuDto(u)).collect(Collectors.toList());
 	}
 
 }

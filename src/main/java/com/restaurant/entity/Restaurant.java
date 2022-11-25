@@ -2,6 +2,9 @@ package com.restaurant.entity;
 
 import javax.persistence.Entity;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -14,7 +17,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE Restaurant SET deleted=true WHERE id=?")
-@Where(clause = "deleted=false")
+//@Where(clause = "deleted=false")
+@FilterDef(name = "deletedRestaurantFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedRestaurantFilter", condition = "deleted = :isDeleted")
 public class Restaurant extends BaseClass {
 
 	private String name;

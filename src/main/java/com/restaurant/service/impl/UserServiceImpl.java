@@ -44,7 +44,6 @@ public class UserServiceImpl implements UserService {
 		User user = userRepo.findByEmail(userDto.getEmail());
 
 		if (user == null) {
-
 			User newUser = new User(userDto);
 			return new UserDto(userRepo.save(newUser));
 
@@ -66,9 +65,6 @@ public class UserServiceImpl implements UserService {
 		User user2 = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
-//		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches()) {
-//			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");}check after getting email in response body
-
 		if (!StringUtils.isEmpty(userDto.getFirstName())) {
 			user2.setFirstName(userDto.getFirstName());
 		}
@@ -78,6 +74,9 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if (!StringUtils.isEmpty(userDto.getEmail())) {
+			if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches()) {
+				throw new BadRequestException("Invalid email format please follow this format user@gmail.com");
+			}
 			user2.setEmail(userDto.getEmail());
 		}
 
@@ -113,9 +112,7 @@ public class UserServiceImpl implements UserService {
 	public List<UserDto> getAllUsers() {
 		List<User> users = this.userRepo.findAll();
 
-//		List<UserDto> userDtos = users.stream().map(user -> this.userToDto(user)).collect(Collectors.toList());
 		return users.stream().map(user -> new UserDto(user)).collect(Collectors.toList());
-//		return users.stream().map(this::userToDto).collect(Collectors.toList());
 	}
 
 	/**
@@ -148,9 +145,17 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userRepo.findAll();
 		session.disableFilter("deletedUserFilter");
 
-		List<UserDto> userDtos = users.stream().map(u -> new UserDto(u)).collect(Collectors.toList());
+		return users.stream().map(u -> new UserDto(u)).collect(Collectors.toList());
+	}
 
-		return userDtos;
+	public String activateUser(long userId) {
+
+		User user = userRepo.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
+		if (user != null)
+			user.setDeleted(false);
+		userRepo.save(user);
+		return "User is active";
 	}
 
 }

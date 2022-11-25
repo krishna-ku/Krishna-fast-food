@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
@@ -25,65 +26,68 @@ import com.restaurant.service.OrderService;
 @RestController
 @RequestMapping("/order")
 public class OrderController {
-	
+
 	@Autowired
 	private OrderService orderService;
-	
+
 	/**
-	 * Add OrderItems
-	 * service url : /order
-	 * method : Post
+	 * Add OrderItems service url : /order method : Post
+	 * 
 	 * @param List<OrderItemDto>
 	 * @return OrderDto
 	 * @see com.restaurant.dto.OrderDto
 	 */
 	@PostMapping("/{userId}")
-	public OrderDto placeOrder(@RequestBody @Valid OrderDto orderDto,@PathVariable long userId) {
+	public OrderDto placeOrder(@RequestBody @Valid OrderDto orderDto, @PathVariable long userId) {
 //		orderItemDto.forEach(System.out::println);
-		return orderService.placedOrder(orderDto,userId);
+		return orderService.placedOrder(orderDto, userId);
 
 	}
-	
+
 	/**
-	 * Update OrderItems by id
-	 * service url: /order/id
-	 * method : PUT
+	 * Update OrderItems by id service url: /order/id method : PUT
+	 * 
 	 * @param id
 	 * @param List<OderItemDto?
 	 * @return Updated OrderItemDto {@link com.restaurant.dto.OrderItemDto}
 	 */
 	@PutMapping("/{orderId}")
-	public OrderDto updateOrder(@RequestBody List<OrderItemDto> orderItemDto,@PathVariable long orderId) {
+	public OrderDto updateOrder(@RequestBody List<OrderItemDto> orderItemDto, @PathVariable long orderId) {
 		orderItemDto.forEach(System.out::println);
-		//orderItemDto.forEach(o -> System.out.println(o));
+		// orderItemDto.forEach(o -> System.out.println(o));
 		return orderService.updateOrder(orderItemDto, orderId);
 	}
-	
+
 	@DeleteMapping("/{orderId}")
-	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long orderId){
+	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long orderId) {
 		this.orderService.deleteOrder(orderId);
-		return new ResponseEntity<>(new ApiResponse("Order is deleted successfully",true),HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse("Order is deleted successfully", true), HttpStatus.OK);
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<List<OrderDto>> getAllOrders(){
+	public ResponseEntity<List<OrderDto>> getAllOrders() {
 		List<OrderDto> allOrders = orderService.getAllOrders();
-		return new ResponseEntity<>(allOrders,HttpStatus.OK);
+		return new ResponseEntity<>(allOrders, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{orderId}")
 	public ResponseEntity<OrderDto> getOrderById(@PathVariable long orderId) {
-		
+
 		return ResponseEntity.ok(orderService.getOrderById(orderId));
-		
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	/**
+	 * get details of user isDelted or notDeleted service url :/order/
+	 * 
+	 * @param isDeleted=true or false
+	 * @return list of users
+	 */
+	@GetMapping("/")
+	public ResponseEntity<List<OrderDto>> findAll(
+			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
+		List<OrderDto> orderDtos = orderService.findAllFilter(isDeleted);
+		return new ResponseEntity<>(orderDtos, HttpStatus.OK);
+	}
+
 }

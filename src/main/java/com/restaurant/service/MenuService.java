@@ -20,5 +20,8 @@ public interface MenuService {
 
 	// get user
 	MenuDto getMenuById(Long menuId);
+	
+	//get menus deleted or undeleted by header
+	List<MenuDto> findAllFilter(boolean isDeleted);
 
 }

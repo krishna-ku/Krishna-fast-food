@@ -22,5 +22,8 @@ public interface UserService {
 	UserDto getUserById(Long userId);
 
 	// get users by header
-	public List<UserDto> findAllFilter(boolean isDeleted);
+	List<UserDto> findAllFilter(boolean isDeleted);
+	
+	//make user active
+	String activateUser(long userId);
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
@@ -27,24 +28,23 @@ public class RatingController {
 	private RatingService ratingService;
 
 	/**
-	 * Add Rating
-	 * service url : /rating
-	 * method : Post
+	 * Add Rating service url : /rating method : Post
+	 * 
 	 * @param RatingDto
 	 * @return RatingDto {@link com.restaurant.dto.RatingDto}
 	 */
 	@PostMapping("/{orderId}/user/{userId}")
-	public ResponseEntity<RatingDto> createRating(@Valid @RequestBody RatingDto ratingDto, @PathVariable long orderId,@PathVariable long userId) {
+	public ResponseEntity<RatingDto> createRating(@Valid @RequestBody RatingDto ratingDto, @PathVariable long orderId,
+			@PathVariable long userId) {
 
-		RatingDto rating = ratingService.createRating(ratingDto,orderId,userId);
+		RatingDto rating = ratingService.createRating(ratingDto, orderId, userId);
 
-		return new ResponseEntity<>(rating ,HttpStatus.CREATED);
+		return new ResponseEntity<>(rating, HttpStatus.CREATED);
 	}
 
 	/**
-	 * Update Rating by id
-	 * service url: /rating/id
-	 * method : PUT
+	 * Update Rating by id service url: /rating/id method : PUT
+	 * 
 	 * @param id
 	 * @param RatingDto
 	 * @return Updated RatingDto {@link com.restaurant.dto.RatingDto}
@@ -56,22 +56,20 @@ public class RatingController {
 //	}
 
 	/**
-	 * Delete Rating by id
-	 * Method : DELETE
-	 * Service url: /rating/id
+	 * Delete Rating by id Method : DELETE Service url: /rating/id
+	 * 
 	 * @param id
 	 * 
 	 */
 	@DeleteMapping("/{ratingId}")
-	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long ratingId){
+	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long ratingId) {
 		this.ratingService.deleteRating(ratingId);
-		return new ResponseEntity<>(new ApiResponse("Rating delete successfully",true),HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse("Rating delete successfully", true), HttpStatus.OK);
 	}
 
 	/**
-	 * get list of Rating
-	 * Service url: /rating
-	 * method :  GET
+	 * get list of Rating Service url: /rating method : GET
+	 * 
 	 * @return list of RatingDto {@link com.restaurant.dto.RatingDto}
 	 */
 	@GetMapping
@@ -81,10 +79,9 @@ public class RatingController {
 	}
 
 	/**
-	 * get detail of Rating by id
-	 * Service url: /rating/id
-	 * method: GET
-	 *@param id
+	 * get detail of Rating by id Service url: /rating/id method: GET
+	 * 
+	 * @param id
 	 * @return RatingDto of particular id
 	 * @see com.restaurant.dto.RatingDto
 	 */
@@ -92,6 +89,19 @@ public class RatingController {
 	public ResponseEntity<RatingDto> getRatingById(@PathVariable long ratingId) {
 
 		return ResponseEntity.ok(ratingService.getRatingById(ratingId));
+	}
+
+	/**
+	 * get details of user isDelted or notDeleted service url :/user/
+	 * 
+	 * @param isDeleted=true or false
+	 * @return list of users
+	 */
+	@GetMapping("/")
+	public ResponseEntity<List<RatingDto>> findAll(
+			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
+		List<RatingDto> ratingDtos = ratingService.findAllFilter(isDeleted);
+		return new ResponseEntity<>(ratingDtos, HttpStatus.OK);
 	}
 
 }
