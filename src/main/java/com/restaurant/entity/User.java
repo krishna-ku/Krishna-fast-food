@@ -6,7 +6,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
@@ -20,6 +22,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Table(indexes = @Index(name = "idx_user_firstName",columnList = "firstName"))
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE User SET deleted=true WHERE id=?")
 //@Where(clause = "deleted=false")

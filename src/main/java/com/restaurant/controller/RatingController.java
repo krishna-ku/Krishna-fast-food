@@ -21,7 +21,7 @@ import com.restaurant.dto.RatingDto;
 import com.restaurant.service.RatingService;
 
 @RestController
-@RequestMapping("/rating")
+@RequestMapping("/ratings")
 public class RatingController {
 
 	@Autowired

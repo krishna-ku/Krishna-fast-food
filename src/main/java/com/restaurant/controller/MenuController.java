@@ -22,7 +22,7 @@ import com.restaurant.dto.MenuDto;
 import com.restaurant.service.MenuService;
 
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/menus")
 public class MenuController {
 
 	@Autowired

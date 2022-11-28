@@ -22,7 +22,7 @@ import com.restaurant.dto.UserDto;
 import com.restaurant.service.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
 	@Autowired
@@ -72,8 +72,8 @@ public class UserController {
 	 * @return list of User {@link com.restaurant.entity.User}
 	 */
 	@GetMapping
-	public ResponseEntity<List<UserDto>> getAllUsers() {
-		List<UserDto> users = userService.getAllUsers();
+	public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(defaultValue = "")String email,String firstName) {
+		List<UserDto> users = userService.getAllUsers(email,firstName);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
@@ -99,13 +99,13 @@ public class UserController {
 	 */
 	@GetMapping("/")
 	public ResponseEntity<List<UserDto>> findAll(
-			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
+			@RequestParam(defaultValue = "false") boolean isDeleted) {
 		List<UserDto> users = userService.findAllFilter(isDeleted);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	
-	@PutMapping("/{userId}/")
-	public ResponseEntity<String> activateUserEntity(@PathVariable long userId){
+	@PutMapping
+	public ResponseEntity<String> activateUserEntity(@RequestBody long userId){
 	 	return ResponseEntity.ok(userService.activateUser(userId));
 	}
 	

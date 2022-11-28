@@ -109,8 +109,8 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public List<UserDto> getAllUsers() {
-		List<User> users = this.userRepo.findAll();
+	public List<UserDto> getAllUsers(String email,String firstName) {
+		List<User> users = this.userRepo.findUsersByEmail(email,firstName);
 
 		return users.stream().map(user -> new UserDto(user)).collect(Collectors.toList());
 	}
@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
 
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-		if (user != null)
+//		if (user != null)
 			user.setDeleted(false);
 		userRepo.save(user);
 		return "User is active";
