@@ -74,6 +74,17 @@ public class MenuController {
 		List<MenuDto> menu = menuService.getAllMenus();
 		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
+	
+	/**
+	 * get list of menus whose satisfied filter condition Service url: /menu method : GET
+	 * 
+	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDto}
+	 */
+	@GetMapping("/filter")
+	public ResponseEntity<List<MenuDto>> menuByFilter(@RequestParam(defaultValue = "20")float price) {
+		List<MenuDto> menu = menuService.menusByFilter(price);
+		return new ResponseEntity<>(menu, HttpStatus.OK);
+	}
 
 	/**
 	 * get detail of Menu by id Service url: /menu/id method: GET
@@ -92,7 +103,7 @@ public class MenuController {
 	 * @param isDeleted=true or false
 	 * @return list of menus
 	 */
-	@GetMapping("/")
+	@GetMapping("/filtermenus")
 	public ResponseEntity<List<MenuDto>> findAll(
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
 		List<MenuDto> menuDtos = menuService.findAllFilter(isDeleted);

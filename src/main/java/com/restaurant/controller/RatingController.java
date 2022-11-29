@@ -77,6 +77,17 @@ public class RatingController {
 		List<RatingDto> ratingDto = ratingService.getAllRatings();
 		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
 	}
+	
+	/**
+	 * get list of Rating Service url: /rating method : GET
+	 * 
+	 * @return list of RatingDto {@link com.restaurant.dto.RatingDto}
+	 */
+	@GetMapping("filter")
+	public ResponseEntity<List<RatingDto>> getAllRatings(@RequestParam(defaultValue = "3") int ratingValue) {
+		List<RatingDto> ratingDto = ratingService.ratingsByFilter(ratingValue);
+		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
+	}
 
 	/**
 	 * get detail of Rating by id Service url: /rating/id method: GET
@@ -97,7 +108,7 @@ public class RatingController {
 	 * @param isDeleted=true or false
 	 * @return list of users
 	 */
-	@GetMapping("/")
+	@GetMapping("/filterratings")
 	public ResponseEntity<List<RatingDto>> findAll(
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
 		List<RatingDto> ratingDtos = ratingService.findAllFilter(isDeleted);

@@ -80,7 +80,7 @@ public class RestaurantController {
 	 * @param isDeleted=true or false
 	 * @return list of restaurants
 	 */
-	@GetMapping("/")
+	@GetMapping("/filterrestaurants")
 	public ResponseEntity<List<RestaurantDto>> findAll(
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
 		List<RestaurantDto> restaurantDtos = restaurantService.findAllFilter(isDeleted);

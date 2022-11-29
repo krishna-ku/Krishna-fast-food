@@ -93,6 +93,20 @@ public class RatingServiceImpl implements RatingService {
 
 		return ratings.stream().map(rating -> new RatingDto(rating)).collect(Collectors.toList());
 	}
+	
+	/**
+	 * return all Ratings
+	 * 
+	 * @return list of RatingDtos
+	 * 
+	 * @see com.restaurant.dto.RatingDto
+	 */
+	public List<RatingDto> ratingsByFilter(int ratingValue) {
+
+		List<Rating> ratings = this.ratingRepo.ratingsByFilter(ratingValue);
+
+		return ratings.stream().map(rating -> new RatingDto(rating)).collect(Collectors.toList());
+	}
 
 	/**
 	 * return Rating by id

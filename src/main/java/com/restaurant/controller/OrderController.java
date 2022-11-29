@@ -83,7 +83,7 @@ public class OrderController {
 	 * @param isDeleted=true or false
 	 * @return list of users
 	 */
-	@GetMapping("/")
+	@GetMapping("/filterorders")
 	public ResponseEntity<List<OrderDto>> findAll(
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
 		List<OrderDto> orderDtos = orderService.findAllFilter(isDeleted);

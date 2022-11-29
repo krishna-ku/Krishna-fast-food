@@ -110,6 +110,20 @@ public class MenuServiceImpl implements MenuService {
 
 		return menus.stream().map(MenuDto::new).collect(Collectors.toList());
 	}
+	
+	/**
+	 * return menus by filter
+	 * 
+	 * @return list of menuDtos
+	 * @see com.restaurant.dto.MenuDto
+	 */
+	@Override
+	public List<MenuDto> menusByFilter(float price) {
+
+		List<Menu> menus = menuRepo.menuItemsByFilter(price);
+		
+		return menus.stream().map(MenuDto::new).collect(Collectors.toList());
+	}
 
 	/**
 	 * return menu by id

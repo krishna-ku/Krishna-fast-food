@@ -23,5 +23,8 @@ public interface RatingService {
 
 	//get all deleted and undeleted ratings by header
 	List<RatingDto> findAllFilter(boolean isDeleted);
+	
+	//get ratings by filter
+	List<RatingDto> ratingsByFilter(int ratingValue);
 
 }

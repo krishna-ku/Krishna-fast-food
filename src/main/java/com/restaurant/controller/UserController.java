@@ -97,7 +97,7 @@ public class UserController {
 	 * @param isDeleted=true or false
 	 * @return list of users
 	 */
-	@GetMapping("/")
+	@GetMapping("/filterusers")
 	public ResponseEntity<List<UserDto>> findAll(
 			@RequestParam(defaultValue = "false") boolean isDeleted) {
 		List<UserDto> users = userService.findAllFilter(isDeleted);

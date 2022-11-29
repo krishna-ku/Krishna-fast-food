@@ -23,5 +23,8 @@ public interface MenuService {
 	
 	//get menus deleted or undeleted by header
 	List<MenuDto> findAllFilter(boolean isDeleted);
+	
+	//get menus by filter
+	List<MenuDto> menusByFilter(float price);
 
 }
