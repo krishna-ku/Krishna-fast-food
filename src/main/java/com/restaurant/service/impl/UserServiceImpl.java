@@ -1,5 +1,6 @@
 package com.restaurant.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
@@ -26,6 +30,12 @@ public class UserServiceImpl implements UserService {
 	private UserRepo userRepo;
 
 	@Autowired
+	private JavaMailSender javaMailSender;
+
+	@Value("${spring.mail.username}")
+	private String sender;
+
+	@Autowired
 	private EntityManager entityManager;
 
 	/**
@@ -41,11 +51,27 @@ public class UserServiceImpl implements UserService {
 		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches())
 			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");
 
+		SimpleMailMessage message = new SimpleMailMessage();
+
 		User user = userRepo.findByEmail(userDto.getEmail());
 
 		if (user == null) {
 			User newUser = new User(userDto);
-			return new UserDto(userRepo.save(newUser));
+			User save = userRepo.save(newUser);
+
+			message.setFrom(sender);
+
+			message.setTo(userDto.getEmail());
+			
+			message.setSubject("Account created");
+			
+			message.setSentDate(new Date());
+			
+			message.setText("your account is created successfully");
+
+			javaMailSender.send(message);
+
+			return new UserDto(save);
 
 		} else {
 			throw new BadRequestException("Email already exist !!");
@@ -109,8 +135,8 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public List<UserDto> getAllUsers(String email,String firstName) {
-		List<User> users = this.userRepo.findUsersByEmail(email,firstName);
+	public List<UserDto> getAllUsers(String email, String firstName) {
+		List<User> users = this.userRepo.findUsersByEmail(email, firstName);
 
 		return users.stream().map(user -> new UserDto(user)).collect(Collectors.toList());
 	}
@@ -153,7 +179,7 @@ public class UserServiceImpl implements UserService {
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 //		if (user != null)
-			user.setDeleted(false);
+		user.setDeleted(false);
 		userRepo.save(user);
 		return "User is active";
 	}

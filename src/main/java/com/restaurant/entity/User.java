@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Filter;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(indexes = @Index(name = "idx_user_firstName",columnList = "firstName"))
+@Table(indexes = @Index(name = "idx_user_firstName", columnList = "firstName"))
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE User SET deleted=true WHERE id=?")
 //@Where(clause = "deleted=false")
@@ -49,5 +50,8 @@ public class User extends BaseClass {
 		this.email = userDto.getEmail();
 		this.password = userDto.getPassword();
 	}
+//
+//	@OneToOne
+//	private EmailDetails emailDetails;
 
 }

@@ -37,7 +37,7 @@ public class OrderDto {
 
 	private long orderId;
 
-	private String orderStatus;// use regex for validation this field
+	private String orderStatus;
 
 	private float totalPriceWithGst;
 
