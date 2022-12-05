@@ -45,10 +45,7 @@ public class OrderServiceImpl implements OrderService {
 	private OrderRepo orderRepo;
 
 	@Autowired
-	private JavaMailSender javaMailSender;
-
-	@Value("${spring.mail.username}")
-	private String sender;
+	EmailService emailService;
 
 	@Autowired
 	private EntityManager entityManager;
@@ -111,13 +108,8 @@ public class OrderServiceImpl implements OrderService {
 		order.setRestaurant(restaurant);
 		order.setCustomer(customer);
 		orderRepo.save(order);
-
-		message.setFrom(sender);
-		message.setTo(user.getEmail());
-		message.setText("your order is placed successfully");
-		message.setSentDate(new Date());
-		message.setSubject("Order Placed");
-		javaMailSender.send(message);
+		
+		emailService.SendEmail("Order Placed", "your order is placed successfully",user.getEmail());
 
 		return new OrderDto(order);
 	}

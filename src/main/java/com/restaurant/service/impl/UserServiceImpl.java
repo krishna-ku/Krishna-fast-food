@@ -1,6 +1,5 @@
 package com.restaurant.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,10 +8,10 @@ import javax.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Filter;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
@@ -28,12 +27,11 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepo userRepo;
-
+	
 	@Autowired
-	private JavaMailSender javaMailSender;
-
-	@Value("${spring.mail.username}")
-	private String sender;
+	EmailService emailService;
+	
+	private static final Logger LOG=LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private EntityManager entityManager;
@@ -47,6 +45,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public UserDto createUser(UserDto userDto) {
+		
+		LOG.info("Creating User for {} ",userDto);
 
 		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches())
 			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");
@@ -58,19 +58,11 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			User newUser = new User(userDto);
 			User save = userRepo.save(newUser);
-
-			message.setFrom(sender);
-
-			message.setTo(userDto.getEmail());
 			
-			message.setSubject("Account created");
+			emailService.SendEmail("Account Created", "your account is successfully created",userDto.getEmail());
 			
-			message.setSentDate(new Date());
-			
-			message.setText("your account is created successfully");
-
-			javaMailSender.send(message);
-
+			LOG.info("User created successfully");
+						
 			return new UserDto(save);
 
 		} else {
@@ -129,7 +121,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * return all Users present in User
+	 * return all Users
 	 * 
 	 * @return list of Users
 	 * @see com.restaurant.entity.User
@@ -178,7 +170,6 @@ public class UserServiceImpl implements UserService {
 
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-//		if (user != null)
 		user.setDeleted(false);
 		userRepo.save(user);
 		return "User is active";
