@@ -11,7 +11,6 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
@@ -51,15 +50,13 @@ public class UserServiceImpl implements UserService {
 		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches())
 			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");
 
-		SimpleMailMessage message = new SimpleMailMessage();
-
 		User user = userRepo.findByEmail(userDto.getEmail());
 
 		if (user == null) {
 			User newUser = new User(userDto);
 			User save = userRepo.save(newUser);
 			
-			emailService.SendEmail("Account Created", "your account is successfully created",userDto.getEmail());
+			emailService.sendMailToUser("Account Created",userDto.getEmail(),userDto.getFirstName());
 			
 			LOG.info("User created successfully");
 						

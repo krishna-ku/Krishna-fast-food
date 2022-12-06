@@ -1,7 +1,6 @@
 package com.restaurant.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +14,6 @@ import javax.persistence.EntityManager;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
@@ -71,8 +67,6 @@ public class OrderServiceImpl implements OrderService {
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
-		SimpleMailMessage message = new SimpleMailMessage();
-
 		Restaurant restaurant = restaurantRepo.findById((long) 1)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RESTAURANT, Keywords.RESTAURANT_ID, 1));
 
@@ -108,8 +102,8 @@ public class OrderServiceImpl implements OrderService {
 		order.setRestaurant(restaurant);
 		order.setCustomer(customer);
 		orderRepo.save(order);
-		
-		emailService.SendEmail("Order Placed", "your order is placed successfully",user.getEmail());
+
+		emailService.sendMailOrders("Order Placed", user.getEmail(),user.getFirstName());
 
 		return new OrderDto(order);
 	}
