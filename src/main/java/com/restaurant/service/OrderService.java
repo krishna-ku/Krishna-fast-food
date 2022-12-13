@@ -25,5 +25,8 @@ public interface OrderService {
 
 	// get orders by header
 	List<OrderDto> findAllFilter(boolean isDeleted);
+	
+//	//get orders by date
+//	List<E>
 
 }

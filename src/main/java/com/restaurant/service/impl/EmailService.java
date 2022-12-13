@@ -41,7 +41,7 @@ public class EmailService {
 			map.put("email",email);
 			map.put("password","123456789");
 			context.setVariables(map);
-			String text=templateEngine.process("team-user-created", context);
+			String text=templateEngine.process("user", context);
 			helper.addTo(email);
 			helper.setSubject(subject);
 			helper.setText(text, true);
@@ -62,9 +62,9 @@ public class EmailService {
 			Map<String, Object> map=new HashMap<>();
 			map.put("name",name);
 			map.put("email",email);
-			map.put("password","123456789");
+//			map.put("password","123456789");
 			context.setVariables(map);
-			String text=templateEngine.process("team-order-created", context);
+			String text=templateEngine.process("order-template", context);
 			helper.addTo(email);
 			helper.setSubject(subject);
 			helper.setText(text, true);
