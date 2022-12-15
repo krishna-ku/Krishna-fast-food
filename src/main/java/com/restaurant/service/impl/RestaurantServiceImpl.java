@@ -19,7 +19,10 @@ import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.RestaurantRepo;
 import com.restaurant.service.RestaurantService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class RestaurantServiceImpl implements RestaurantService {
 
 	@Autowired
@@ -37,21 +40,23 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 */
 	@Override
 	public RestaurantDto createRestaurant(RestaurantDto restaurantDto) {
-		
-		Restaurant restaurant=restaurantRepo.findByContactNo(restaurantDto.getContactNo());
-		
-		if(restaurant==null)
-		{
-		if (restaurantDto.getContactNo().length() != 10) {
-			throw new BadRequestException("Please enter valid phone number");
-		}
-		
-		Restaurant newRestaurant = new Restaurant(restaurantDto);
 
-		return new RestaurantDto(restaurantRepo.save(newRestaurant));
-		}
-		else {
-		throw new BadRequestException("Restaurant is already registered");
+		log.info("Creating Restaurant for {} ", restaurantDto);
+
+		Restaurant restaurant = restaurantRepo.findByContactNo(restaurantDto.getContactNo());
+
+		if (restaurant == null) {
+			if (restaurantDto.getContactNo().length() != 10) {
+				throw new BadRequestException("Please enter valid phone number");
+			}
+
+			Restaurant newRestaurant = new Restaurant(restaurantDto);
+
+			log.info("Restaurant created successfully");
+
+			return new RestaurantDto(restaurantRepo.save(newRestaurant));
+		} else {
+			throw new BadRequestException("Restaurant is already registered");
 		}
 	}
 
@@ -65,6 +70,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 */
 	@Override
 	public RestaurantDto updateRestaurant(RestaurantDto restaurantDto) {
+		
+		log.info("Update restaurant for {} ",restaurantDto);
 
 		Restaurant restaurant = restaurantRepo.findById(restaurantDto.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RESTAURANT, Keywords.RESTAURANT_ID,
@@ -84,9 +91,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 				throw new BadRequestException("Please enter valid phone number");
 			restaurant.setContactNo(restaurantDto.getContactNo());
 		}
-		
-		if(!StringUtils.isEmpty(restaurantDto.getStatus()))
+
+		if (!StringUtils.isEmpty(restaurantDto.getStatus()))
 			restaurant.setStatus(restaurantDto.getStatus());
+		
+		log.info("Restaurant updated successfully");
 
 		return new RestaurantDto(restaurantRepo.save(restaurant));
 	}
@@ -99,8 +108,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 */
 	@Override
 	public void deleteRestaurant(long restaurantId) {
+		log.info("Deleting Restaurant from {}",restaurantId);
 
 		restaurantRepo.deleteById(restaurantId);
+		log.info("Restaurant deleted successfuly");
 
 	}
 

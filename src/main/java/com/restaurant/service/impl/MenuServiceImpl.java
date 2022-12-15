@@ -21,7 +21,10 @@ import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.MenuRepo;
 import com.restaurant.service.MenuService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class MenuServiceImpl implements MenuService {
 
 	@Autowired
@@ -39,11 +42,16 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public MenuDto createMenu(MenuDto menuDto) {
+		
+		log.info("Creating menu for {} ",menuDto);
 
 		Menu menuExist = this.menuRepo.findByName(menuDto.getName());
 
 		if (menuExist == null) {
 			Menu newMenu = new Menu(menuDto);
+			
+			log.info("Menu created successfully");
+			
 			return new MenuDto(menuRepo.save(newMenu));
 		} else {
 			throw new BadRequestException("Menu is already exists");
@@ -60,6 +68,8 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public MenuDto updateMenu(MenuDto menuDto, Long menuId) {
+		
+		log.info("Updating menu for {} ",menuId);
 
 		Menu updatedMenu = menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
@@ -76,6 +86,8 @@ public class MenuServiceImpl implements MenuService {
 			updatedMenu.setDescription(menuDto.getDescription());
 		}
 
+		log.info("Menu updated successfully");
+		
 		return new MenuDto(menuRepo.save(updatedMenu));
 	}
 
@@ -88,11 +100,14 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public void deleteMenu(long menuId) {
+		
+		log.info("Deleting menu for {} ",menuId);
 
 		Menu menu = this.menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
 
 		menuRepo.delete(menu);
+		log.info("Menu deleted successfully");
 	}
 
 	/**

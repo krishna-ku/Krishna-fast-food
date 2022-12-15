@@ -21,7 +21,10 @@ import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.UserRepo;
 import com.restaurant.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
 	@Autowired
@@ -30,7 +33,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	EmailService emailService;
 	
-	private static final Logger LOG=LoggerFactory.getLogger(UserServiceImpl.class);
+//	private static final Logger LOG=LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private EntityManager entityManager;
@@ -45,7 +48,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto createUser(UserDto userDto) {
 		
-		LOG.info("Creating User for {} ",userDto);
+		log.info("Creating User for {} ",userDto);
 
 		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches())
 			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");
@@ -58,7 +61,7 @@ public class UserServiceImpl implements UserService {
 			
 			emailService.sendMailToUser("Account Created",userDto.getEmail(),userDto.getFirstName());
 			
-			LOG.info("User created successfully");
+			log.info("User created successfully");
 						
 			return new UserDto(save);
 
@@ -76,6 +79,8 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.dto.UserDto
 	 */
 	public UserDto updateUser(UserDto userDto, Long userId) {
+		
+		log.info("Updating user for {}",userDto);
 
 		User user2 = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
@@ -98,6 +103,8 @@ public class UserServiceImpl implements UserService {
 		if (!StringUtils.isEmpty(userDto.getPassword())) {
 			user2.setPassword(userDto.getPassword());
 		}
+		
+		log.info("User updated successfully");
 
 		return new UserDto(userRepo.save(user2));
 	}
@@ -110,11 +117,14 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void deleteUser(long userId) {
+		
+		log.info("Deleting user for {}",userId);
 
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
 		this.userRepo.delete(user);
+		log.info("User Deleted Successfully");
 	}
 
 	/**
@@ -126,7 +136,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<UserDto> getAllUsers(String email, String firstName) {
 		List<User> users = this.userRepo.findUsersByEmail(email, firstName);
-
 		return users.stream().map(user -> new UserDto(user)).collect(Collectors.toList());
 	}
 
@@ -162,6 +171,14 @@ public class UserServiceImpl implements UserService {
 
 		return users.stream().map(u -> new UserDto(u)).collect(Collectors.toList());
 	}
+	
+	/**
+	 * activate the deleted user
+	 * 
+	 * @param userId
+	 * @return String
+	 * @see com.restaurant.entity.User
+	 */
 
 	public String activateUser(long userId) {
 

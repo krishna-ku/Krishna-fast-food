@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/tests")
 public class TestController {
-	
+
 	@GetMapping
 	public String getString() {
-		return "Restaurant app";
+		return "api is working fine";
 	}
+
 }

@@ -21,7 +21,10 @@ import com.restaurant.repository.RatingRepo;
 import com.restaurant.repository.UserRepo;
 import com.restaurant.service.RatingService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class RatingServiceImpl implements RatingService {
 
 	@Autowired
@@ -47,6 +50,8 @@ public class RatingServiceImpl implements RatingService {
 	 */
 	@Override
 	public RatingDto createRating(RatingDto ratingDto, long orderId, long userId) {
+		
+		log.info("Creating rating for {} ",ratingDto);
 
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
@@ -61,6 +66,8 @@ public class RatingServiceImpl implements RatingService {
 		rating.setUser(user);
 
 		this.ratingRepo.save(rating);
+		
+		log.info("Rating created successfully");
 
 		return new RatingDto(rating);
 	}

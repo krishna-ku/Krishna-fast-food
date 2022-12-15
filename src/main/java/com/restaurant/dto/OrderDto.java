@@ -19,7 +19,7 @@ public class OrderDto {
 
 	// convert order into orderDto
 	public OrderDto(Order order) {
-		this.customer = order.getCustomer();
+//		this.customer = order.getCustomer();
 		this.orderId = order.getId();
 		this.orderStatus = order.getStatus().toString();
 		this.restaurantName = order.getRestaurant().getName();
@@ -47,7 +47,7 @@ public class OrderDto {
 
 	private float totalPrice;
 
-	private String customer;
+//	private String customer;
 
 	@Valid
 	@NotEmpty

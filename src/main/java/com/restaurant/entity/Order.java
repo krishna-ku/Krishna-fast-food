@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
@@ -22,7 +23,9 @@ import com.restaurant.enums.OrderStatus;
 import lombok.Data;
 
 @Data
-@Entity(name = "Orders")
+@Entity
+//@Entity(name = "Orders")
+@Table(name = "orders")
 @SQLDelete(sql = "UPDATE Order SET deleted=true WHERE id=?")
 //@Where(clause = "deleted=false")
 @FilterDef(name = "deletedOrderFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
@@ -38,7 +41,7 @@ public class Order extends BaseClass {
 	@JoinColumn(name = "userId")
 	private User user;
 
-	private String customer;
+//	private String customer;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	List<OrderItem> orderItems = new ArrayList<>();

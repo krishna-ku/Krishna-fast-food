@@ -104,8 +104,8 @@ public class UserController {
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	
-	@PutMapping
-	public ResponseEntity<String> activateUserEntity(@RequestBody long userId){
+	@PutMapping("/activate/{userId}")
+	public ResponseEntity<String> activateUserEntity(@PathVariable long userId){
 	 	return ResponseEntity.ok(userService.activateUser(userId));
 	}
 	
