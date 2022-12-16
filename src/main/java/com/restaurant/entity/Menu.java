@@ -7,7 +7,7 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
-import com.restaurant.dto.MenuDto;
+import com.restaurant.dto.MenuDTO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,7 +34,7 @@ public class Menu extends BaseClass {
 //	@OneToMany(mappedBy = "menu",cascade = CascadeType.ALL)
 //	List<OrderItem> orderItems;
 
-	public Menu(MenuDto menuDto) {
+	public Menu(MenuDTO menuDto) {
 		this.name = menuDto.getName();
 		this.price = menuDto.getPrice();
 		this.description = menuDto.getDescription();

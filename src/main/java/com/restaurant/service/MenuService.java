@@ -2,29 +2,29 @@ package com.restaurant.service;
 
 import java.util.List;
 
-import com.restaurant.dto.MenuDto;
+import com.restaurant.dto.MenuDTO;
 
 public interface MenuService {
 
 	// create user
-	MenuDto createMenu(MenuDto menu);
+	MenuDTO createMenu(MenuDTO menu);
 
 	// update user
-	MenuDto updateMenu(MenuDto menuDto, Long menuId);
+	MenuDTO updateMenu(MenuDTO menuDto, Long menuId);
 
 	// delete user
 	void deleteMenu(long menuId);
 
 	// get users
-	List<MenuDto> getAllMenus();
+	List<MenuDTO> getAllMenus();
 
 	// get user
-	MenuDto getMenuById(Long menuId);
+	MenuDTO getMenuById(Long menuId);
 	
 	//get menus deleted or undeleted by header
-	List<MenuDto> findAllFilter(boolean isDeleted);
+	List<MenuDTO> findAllFilter(boolean isDeleted);
 	
 	//get menus by filter
-	List<MenuDto> menusByFilter(float price);
+	List<MenuDTO> menusByFilter(float price);
 
 }

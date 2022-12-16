@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RestaurantDto {
+public class RestaurantDTO {
 
 	private long id;
 
@@ -37,7 +37,7 @@ public class RestaurantDto {
 
 //	private Date closingTime;
 
-	public RestaurantDto(Restaurant restaurant) {
+	public RestaurantDTO(Restaurant restaurant) {
 		this.id = restaurant.getId();
 		this.name = restaurant.getName();
 		this.address = restaurant.getAddress();

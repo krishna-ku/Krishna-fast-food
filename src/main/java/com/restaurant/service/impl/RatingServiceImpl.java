@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
-import com.restaurant.dto.RatingDto;
+import com.restaurant.dto.RatingDTO;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.Rating;
 import com.restaurant.entity.User;
@@ -42,14 +42,14 @@ public class RatingServiceImpl implements RatingService {
 	/**
 	 * add Rating.
 	 * 
-	 * @param RatingDto
+	 * @param RatingDTO
 	 * @param orderId
 	 * @param userId
 	 * @return RatingDto
-	 * @see com.restaurant.dto.RatingDto
+	 * @see com.restaurant.dto.RatingDTO
 	 */
 	@Override
-	public RatingDto createRating(RatingDto ratingDto, long orderId, long userId) {
+	public RatingDTO createRating(RatingDTO ratingDto, long orderId, long userId) {
 		
 		log.info("Creating rating for {} ",ratingDto);
 
@@ -69,7 +69,7 @@ public class RatingServiceImpl implements RatingService {
 		
 		log.info("Rating created successfully");
 
-		return new RatingDto(rating);
+		return new RatingDTO(rating);
 	}
 
 	/**
@@ -91,14 +91,14 @@ public class RatingServiceImpl implements RatingService {
 	 * 
 	 * @return list of RatingDtos
 	 * 
-	 * @see com.restaurant.dto.RatingDto
+	 * @see com.restaurant.dto.RatingDTO
 	 */
 	@Override
-	public List<RatingDto> getAllRatings() {
+	public List<RatingDTO> getAllRatings() {
 
 		List<Rating> ratings = this.ratingRepo.findAll();
 
-		return ratings.stream().map(rating -> new RatingDto(rating)).collect(Collectors.toList());
+		return ratings.stream().map(rating -> new RatingDTO(rating)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -106,13 +106,13 @@ public class RatingServiceImpl implements RatingService {
 	 * 
 	 * @return list of RatingDtos
 	 * 
-	 * @see com.restaurant.dto.RatingDto
+	 * @see com.restaurant.dto.RatingDTO
 	 */
-	public List<RatingDto> ratingsByFilter(int ratingValue) {
+	public List<RatingDTO> ratingsByFilter(int ratingValue) {
 
 		List<Rating> ratings = this.ratingRepo.ratingsByFilter(ratingValue);
 
-		return ratings.stream().map(rating -> new RatingDto(rating)).collect(Collectors.toList());
+		return ratings.stream().map(rating -> new RatingDTO(rating)).collect(Collectors.toList());
 	}
 
 	/**
@@ -120,15 +120,15 @@ public class RatingServiceImpl implements RatingService {
 	 * 
 	 * @param id
 	 * @return RatingDto by id
-	 * @see com.restaurant.dto.RatingDto
+	 * @see com.restaurant.dto.RatingDTO
 	 */
 	@Override
-	public RatingDto getRatingById(long ratingId) {
+	public RatingDTO getRatingById(long ratingId) {
 
 		Rating rating = this.ratingRepo.findById(ratingId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, ratingId));
 
-		return new RatingDto(rating);
+		return new RatingDTO(rating);
 	}
 
 	/**
@@ -138,14 +138,14 @@ public class RatingServiceImpl implements RatingService {
 	 * @return list of deleted or undeleted ratings
 	 * @see com.restaurant.entity.Rating
 	 */
-	public List<RatingDto> findAllFilter(boolean isDeleted) {
+	public List<RatingDTO> findAllFilter(boolean isDeleted) {
 		Session session = entityManager.unwrap(Session.class);
 		Filter filter = session.enableFilter("deletedRatingFilter");
 		filter.setParameter("isDeleted", isDeleted);
 		List<Rating> rating = ratingRepo.findAll();
 		session.disableFilter("deletedRatingFilter");
 
-		return rating.stream().map(u -> new RatingDto(u)).collect(Collectors.toList());
+		return rating.stream().map(u -> new RatingDTO(u)).collect(Collectors.toList());
 	}
 
 }

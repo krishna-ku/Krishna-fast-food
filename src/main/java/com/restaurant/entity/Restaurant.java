@@ -8,7 +8,7 @@ import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.restaurant.dto.RestaurantDto;
+import com.restaurant.dto.RestaurantDTO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,7 +42,7 @@ public class Restaurant extends BaseClass {
 
 //	private Date closingTime;
 
-	public Restaurant(RestaurantDto restaurantDto) {
+	public Restaurant(RestaurantDTO restaurantDto) {
 		this.name = restaurantDto.getName();
 		this.address = restaurantDto.getAddress();
 		this.description = restaurantDto.getDescription();

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
-import com.restaurant.dto.RestaurantDto;
+import com.restaurant.dto.RestaurantDTO;
 import com.restaurant.entity.Restaurant;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
@@ -34,12 +34,12 @@ public class RestaurantServiceImpl implements RestaurantService {
 	/**
 	 * add Restaurant.
 	 * 
-	 * @param RestaurantDto objects
+	 * @param RestaurantDTO objects
 	 * 
-	 * @see com.restaurant.dto.RestaurantDto
+	 * @see com.restaurant.dto.RestaurantDTO
 	 */
 	@Override
-	public RestaurantDto createRestaurant(RestaurantDto restaurantDto) {
+	public RestaurantDTO createRestaurant(RestaurantDTO restaurantDto) {
 
 		log.info("Creating Restaurant for {} ", restaurantDto);
 
@@ -54,7 +54,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 			log.info("Restaurant created successfully");
 
-			return new RestaurantDto(restaurantRepo.save(newRestaurant));
+			return new RestaurantDTO(restaurantRepo.save(newRestaurant));
 		} else {
 			throw new BadRequestException("Restaurant is already registered");
 		}
@@ -63,13 +63,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 	/**
 	 * update Restaurant.
 	 * 
-	 * @param RestaurantDto
+	 * @param RestaurantDTO
 	 * @param restaurantId
 	 * @return updated RestaurantDto
-	 * @see com.restaurant.dto.RestaurantDto
+	 * @see com.restaurant.dto.RestaurantDTO
 	 */
 	@Override
-	public RestaurantDto updateRestaurant(RestaurantDto restaurantDto) {
+	public RestaurantDTO updateRestaurant(RestaurantDTO restaurantDto) {
 		
 		log.info("Update restaurant for {} ",restaurantDto);
 
@@ -97,7 +97,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		
 		log.info("Restaurant updated successfully");
 
-		return new RestaurantDto(restaurantRepo.save(restaurant));
+		return new RestaurantDTO(restaurantRepo.save(restaurant));
 	}
 
 	/**
@@ -122,14 +122,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 * @return list of deleted or undeleted restaurants
 	 * @see com.restaurant.entity.Restaurant
 	 */
-	public List<RestaurantDto> findAllFilter(boolean isDeleted) {
+	public List<RestaurantDTO> findAllFilter(boolean isDeleted) {
 		Session session = entityManager.unwrap(Session.class);
 		Filter filter = session.enableFilter("deletedRestaurantFilter");
 		filter.setParameter("isDeleted", isDeleted);
 		List<Restaurant> restaurants = restaurantRepo.findAll();
 		session.disableFilter("deletedRestaurantFilter");
 
-		return restaurants.stream().map(u -> new RestaurantDto(u)).collect(Collectors.toList());
+		return restaurants.stream().map(u -> new RestaurantDTO(u)).collect(Collectors.toList());
 	}
 
 	/**
@@ -138,19 +138,19 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 * @return RestaurantDto
 	 */
 	@Override
-	public RestaurantDto getRestaurantDetails() {
+	public RestaurantDTO getRestaurantDetails() {
 
-		return new RestaurantDto(restaurantRepo.getById((long) 1));
+		return new RestaurantDTO(restaurantRepo.getById((long) 1));
 	}
 
 	@Override
-	public List<RestaurantDto> getAllRestaurat() {
+	public List<RestaurantDTO> getAllRestaurat() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public RestaurantDto getRestauratById(Long restaurantId) {
+	public RestaurantDTO getRestauratById(Long restaurantId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

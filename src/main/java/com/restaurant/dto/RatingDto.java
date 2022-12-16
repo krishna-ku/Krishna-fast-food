@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RatingDto {
+public class RatingDTO {
 
 	private long id;
 
@@ -26,7 +26,7 @@ public class RatingDto {
 
 	private User user;
 
-	public RatingDto(Rating rating) {
+	public RatingDTO(Rating rating) {
 		this.id = rating.getId();
 		this.rating = rating.getRating();
 		this.review = rating.getReview();

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
-import com.restaurant.dto.MenuDto;
+import com.restaurant.dto.MenuDTO;
 import com.restaurant.service.MenuService;
 
 @RestController
@@ -32,11 +32,11 @@ public class MenuController {
 	 * Add Menu service url : /menu method : Post
 	 * 
 	 * @param menuDto
-	 * @return MenuDto {@link com.restaurant.dto.MenuDto}
+	 * @return MenuDto {@link com.restaurant.dto.MenuDTO}
 	 */
 	@PostMapping
-	public ResponseEntity<MenuDto> createMenu(@Valid @RequestBody MenuDto menuDto) {
-		MenuDto menu2 = menuService.createMenu(menuDto);
+	public ResponseEntity<MenuDTO> createMenu(@Valid @RequestBody MenuDTO menuDto) {
+		MenuDTO menu2 = menuService.createMenu(menuDto);
 		return new ResponseEntity<>(menu2, HttpStatus.CREATED);
 	}
 
@@ -45,10 +45,10 @@ public class MenuController {
 	 * 
 	 * @param id
 	 * @param menuDto
-	 * @return Updated MenuDto {@link com.restaurant.dto.MenuDto}
+	 * @return Updated MenuDto {@link com.restaurant.dto.MenuDTO}
 	 */
 	@PutMapping("/{menuId}")
-	public ResponseEntity<MenuDto> updateMenu(@RequestBody MenuDto menuDto, @PathVariable long menuId) {
+	public ResponseEntity<MenuDTO> updateMenu(@RequestBody MenuDTO menuDto, @PathVariable long menuId) {
 		return ResponseEntity.ok(menuService.updateMenu(menuDto, menuId));
 	}
 
@@ -67,22 +67,22 @@ public class MenuController {
 	/**
 	 * get list of menus Service url: /menu method : GET
 	 * 
-	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDto}
+	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDTO}
 	 */
 	@GetMapping
-	public ResponseEntity<List<MenuDto>> getAllMenu() {
-		List<MenuDto> menu = menuService.getAllMenus();
+	public ResponseEntity<List<MenuDTO>> getAllMenu() {
+		List<MenuDTO> menu = menuService.getAllMenus();
 		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
 	
 	/**
 	 * get list of menus whose satisfied filter condition Service url: /menu method : GET
 	 * 
-	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDto}
+	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDTO}
 	 */
 	@GetMapping("/filter")
-	public ResponseEntity<List<MenuDto>> menuByFilter(@RequestParam(defaultValue = "20")float price) {
-		List<MenuDto> menu = menuService.menusByFilter(price);
+	public ResponseEntity<List<MenuDTO>> menuByFilter(@RequestParam(defaultValue = "20")float price) {
+		List<MenuDTO> menu = menuService.menusByFilter(price);
 		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
 
@@ -90,10 +90,10 @@ public class MenuController {
 	 * get detail of Menu by id Service url: /menu/id method: GET
 	 * 
 	 * @param id
-	 * @return MenuDto of particular id {@link com.restaurant.dto.MenuDto}
+	 * @return MenuDto of particular id {@link com.restaurant.dto.MenuDTO}
 	 */
 	@GetMapping("/{menuId}")
-	public ResponseEntity<MenuDto> getMenuById(@PathVariable long menuId) {
+	public ResponseEntity<MenuDTO> getMenuById(@PathVariable long menuId) {
 		return ResponseEntity.ok(menuService.getMenuById(menuId));
 	}
 
@@ -104,9 +104,9 @@ public class MenuController {
 	 * @return list of menus
 	 */
 	@GetMapping("/filtermenus")
-	public ResponseEntity<List<MenuDto>> findAll(
+	public ResponseEntity<List<MenuDTO>> findAll(
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
-		List<MenuDto> menuDtos = menuService.findAllFilter(isDeleted);
+		List<MenuDTO> menuDtos = menuService.findAllFilter(isDeleted);
 		return new ResponseEntity<>(menuDtos, HttpStatus.OK);
 	}
 

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL) // padhna hai
 @NoArgsConstructor
-public class UserDto {
+public class UserDTO {
 
 	private long id;
 
@@ -28,7 +28,7 @@ public class UserDto {
 	@Size(min = 8, max = 16, message = "password must be between 8 to 16 characters")
 	private String password;
 
-	public UserDto(User user) {
+	public UserDTO(User user) {
 		this.id = user.getId();
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();

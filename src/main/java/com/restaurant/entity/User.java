@@ -16,7 +16,7 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
-import com.restaurant.dto.UserDto;
+import com.restaurant.dto.UserDTO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,7 +44,7 @@ public class User extends BaseClass {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	List<Rating> rating = new ArrayList<>();
 
-	public User(UserDto userDto) {
+	public User(UserDTO userDto) {
 		this.firstName = userDto.getFirstName();
 		this.lastName = userDto.getLastName();
 		this.email = userDto.getEmail();

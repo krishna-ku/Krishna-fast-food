@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
-import com.restaurant.dto.MenuDto;
-import com.restaurant.dto.UserDto;
+import com.restaurant.dto.MenuDTO;
+import com.restaurant.dto.UserDTO;
 import com.restaurant.entity.Menu;
 import com.restaurant.entity.User;
 import com.restaurant.exception.BadRequestException;
@@ -38,10 +38,10 @@ public class MenuServiceImpl implements MenuService {
 	 * 
 	 * @param menuDto
 	 * @return MenuDto
-	 * @see com.restaurant.dto.MenuDto
+	 * @see com.restaurant.dto.MenuDTO
 	 */
 	@Override
-	public MenuDto createMenu(MenuDto menuDto) {
+	public MenuDTO createMenu(MenuDTO menuDto) {
 		
 		log.info("Creating menu for {} ",menuDto);
 
@@ -52,7 +52,7 @@ public class MenuServiceImpl implements MenuService {
 			
 			log.info("Menu created successfully");
 			
-			return new MenuDto(menuRepo.save(newMenu));
+			return new MenuDTO(menuRepo.save(newMenu));
 		} else {
 			throw new BadRequestException("Menu is already exists");
 		}
@@ -64,10 +64,10 @@ public class MenuServiceImpl implements MenuService {
 	 * @param menuDto
 	 * @param id
 	 * @return updated menuDto
-	 * @see com.restaurant.dto.MenuDto
+	 * @see com.restaurant.dto.MenuDTO
 	 */
 	@Override
-	public MenuDto updateMenu(MenuDto menuDto, Long menuId) {
+	public MenuDTO updateMenu(MenuDTO menuDto, Long menuId) {
 		
 		log.info("Updating menu for {} ",menuId);
 
@@ -88,7 +88,7 @@ public class MenuServiceImpl implements MenuService {
 
 		log.info("Menu updated successfully");
 		
-		return new MenuDto(menuRepo.save(updatedMenu));
+		return new MenuDTO(menuRepo.save(updatedMenu));
 	}
 
 	/**
@@ -114,30 +114,30 @@ public class MenuServiceImpl implements MenuService {
 	 * return all menus
 	 * 
 	 * @return list of menuDtos
-	 * @see com.restaurant.dto.MenuDto
+	 * @see com.restaurant.dto.MenuDTO
 	 */
 	@Override
-	public List<MenuDto> getAllMenus() {
+	public List<MenuDTO> getAllMenus() {
 
 		List<Menu> menus = menuRepo.findAll();
 
 //		List<MenuDto> menuDtos = menus.stream().map(menu -> menuToDto(menu)).collect(Collectors.toList());
 
-		return menus.stream().map(MenuDto::new).collect(Collectors.toList());
+		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
 	}
 	
 	/**
 	 * return menus by filter
 	 * 
 	 * @return list of menuDtos
-	 * @see com.restaurant.dto.MenuDto
+	 * @see com.restaurant.dto.MenuDTO
 	 */
 	@Override
-	public List<MenuDto> menusByFilter(float price) {
+	public List<MenuDTO> menusByFilter(float price) {
 
 		List<Menu> menus = menuRepo.menuItemsByFilter(price);
 		
-		return menus.stream().map(MenuDto::new).collect(Collectors.toList());
+		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
 	}
 
 	/**
@@ -145,15 +145,15 @@ public class MenuServiceImpl implements MenuService {
 	 * 
 	 * @param id
 	 * @return menuDto by id
-	 * @see com.restaurant.dto.MenuDto
+	 * @see com.restaurant.dto.MenuDTO
 	 */
 	@Override
-	public MenuDto getMenuById(Long menuId) {
+	public MenuDTO getMenuById(Long menuId) {
 
 		Menu menu = menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
 
-		return new MenuDto(menu);
+		return new MenuDTO(menu);
 	}
 	
 	/**
@@ -163,14 +163,16 @@ public class MenuServiceImpl implements MenuService {
 	 * @return list of deleted or undeleted menus
 	 * @see com.restaurant.entity.MenuDtos
 	 */
-	public List<MenuDto> findAllFilter(boolean isDeleted) {
+	public List<MenuDTO> findAllFilter(boolean isDeleted) {
 		Session session = entityManager.unwrap(Session.class);
 		Filter filter = session.enableFilter("deletedMenuFilter");
 		filter.setParameter("isDeleted", isDeleted);
 		List<Menu> menus = menuRepo.findAll();
 		session.disableFilter("deletedMenuFilter");
 
-		return menus.stream().map(u -> new MenuDto(u)).collect(Collectors.toList());
+		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
 	}
+	
+	
 
 }

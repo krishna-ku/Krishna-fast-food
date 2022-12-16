@@ -4,13 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
-import com.restaurant.dto.RatingDto;
+import com.restaurant.dto.RatingDTO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,7 @@ public class Rating extends BaseClass {
 	@JoinColumn(name = "order_Id")
 	private Order orders;
 
-	public Rating(RatingDto ratingDto) {
+	public Rating(RatingDTO ratingDto) {
 		this.rating = ratingDto.getRating();
 		this.review = ratingDto.getReview();
 	}

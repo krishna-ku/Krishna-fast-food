@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class MenuDto {
+public class MenuDTO {
 
 	private long id;
 	@NotEmpty
@@ -25,7 +25,7 @@ public class MenuDto {
 	@Size(min = 10, max = 100, message = "size must be between 10 to 100 alphabets")
 	private String description;// size validation
 
-	public MenuDto(Menu menu) {
+	public MenuDTO(Menu menu) {
 		this.id = menu.getId();
 		this.name = menu.getName();
 		this.price = menu.getPrice();

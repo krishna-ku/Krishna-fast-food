@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
-import com.restaurant.dto.UserDto;
+import com.restaurant.dto.UserDTO;
 import com.restaurant.service.UserService;
 
 @RestController
@@ -31,13 +31,13 @@ public class UserController {
 	/**
 	 * Add User service url : /user method : Post
 	 * 
-	 * @param UserDto
+	 * @param UserDTO
 	 * @return UserDto
-	 * @see com.restaurant.dto.UserDto
+	 * @see com.restaurant.dto.UserDTO
 	 */
 	@PostMapping
-	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
-		UserDto newUser = this.userService.createUser(userDto);
+	public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDto) {
+		UserDTO newUser = this.userService.createUser(userDto);
 		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 	}
 
@@ -45,12 +45,12 @@ public class UserController {
 	 * Update User by id service url: /user/id method : PUT
 	 * 
 	 * @param id
-	 * @param UserDto
-	 * @return Updated UserDto {@link com.restaurant.dto.UserDto}
+	 * @param UserDTO
+	 * @return Updated UserDto {@link com.restaurant.dto.UserDTO}
 	 */
 	@PutMapping("/{userId}")
-	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable long userId) {
-		UserDto updatedUser = this.userService.updateUser(userDto, userId);
+	public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDto, @PathVariable long userId) {
+		UserDTO updatedUser = this.userService.updateUser(userDto, userId);
 		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 	}
 
@@ -72,8 +72,8 @@ public class UserController {
 	 * @return list of User {@link com.restaurant.entity.User}
 	 */
 	@GetMapping
-	public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(defaultValue = "")String email,String firstName) {
-		List<UserDto> users = userService.getAllUsers(email,firstName);
+	public ResponseEntity<List<UserDTO>> getAllUsers(@RequestParam(defaultValue = "")String email,String firstName) {
+		List<UserDTO> users = userService.getAllUsers(email,firstName);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
@@ -82,10 +82,10 @@ public class UserController {
 	 * 
 	 * @param id
 	 * @return UserDto
-	 * @see com.restaurant.dto.UserDto
+	 * @see com.restaurant.dto.UserDTO
 	 */
 	@GetMapping("/{userId}")
-	public ResponseEntity<UserDto> getUserById(@PathVariable long userId) {
+	public ResponseEntity<UserDTO> getUserById(@PathVariable long userId) {
 
 		return ResponseEntity.ok(userService.getUserById(userId));
 
@@ -98,9 +98,9 @@ public class UserController {
 	 * @return list of users
 	 */
 	@GetMapping("/filterusers")
-	public ResponseEntity<List<UserDto>> findAll(
+	public ResponseEntity<List<UserDTO>> findAll(
 			@RequestParam(defaultValue = "false") boolean isDeleted) {
-		List<UserDto> users = userService.findAllFilter(isDeleted);
+		List<UserDTO> users = userService.findAllFilter(isDeleted);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	

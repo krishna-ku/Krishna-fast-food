@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
-import com.restaurant.dto.OrderDto;
-import com.restaurant.dto.OrderItemDto;
+import com.restaurant.dto.OrderDTO;
+import com.restaurant.dto.OrderItemDTO;
 import com.restaurant.entity.Menu;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.OrderItem;
@@ -63,9 +63,9 @@ public class OrderServiceImpl implements OrderService {
 	 * 
 	 * @param List<OrderItemDto>
 	 * @return OrderDto
-	 * @see com.restaurant.dto.OrderDto
+	 * @see com.restaurant.dto.OrderDTO
 	 */
-	public OrderDto placedOrder(OrderDto orderDto, long userId) {
+	public OrderDTO placedOrder(OrderDTO orderDto, long userId) {
 		
 		log.info("Placing order for {} ",orderDto);
 
@@ -112,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
 		
 		log.info("Order placed successfully");
 
-		return new OrderDto(order);
+		return new OrderDTO(order);
 	}
 
 	/**
@@ -121,10 +121,10 @@ public class OrderServiceImpl implements OrderService {
 	 * @param List<OrderItemDto>
 	 * @param Orderid
 	 * @return updated null if order is not updated else return updated order
-	 * @see com.restaurant.dto.OrderDto
+	 * @see com.restaurant.dto.OrderDTO
 	 */
 	@Override
-	public OrderDto updateOrder(List<OrderItemDto> orderItemList, Long orderId) {
+	public OrderDTO updateOrder(List<OrderItemDTO> orderItemList, Long orderId) {
 		
 		log.info("Updating order for {}",orderItemList);
 
@@ -139,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
 					.collect(Collectors.toMap(o -> o.getMenu().getId(), Function.identity()));
 			List<OrderItem> updatedOrderItemList = new ArrayList<>();
 //			List<OrderItem> deleteOrderItemList=new ArrayList<>();
-			for (OrderItemDto orderItemDto : orderItemList) {
+			for (OrderItemDTO orderItemDto : orderItemList) {
 
 				if (orderItemDto.getItemQuantity() > 10 || orderItemDto.getItemQuantity() < 1)
 					throw new BadRequestException("Item quantity should not be less than 1 or more than 10");
@@ -167,7 +167,7 @@ public class OrderServiceImpl implements OrderService {
 			
 			log.info("Order updated successfully");
 
-			return new OrderDto(order);
+			return new OrderDTO(order);
 
 		}
 
@@ -194,13 +194,13 @@ public class OrderServiceImpl implements OrderService {
 	 * return all Orders
 	 * 
 	 * @return list of Orders
-	 * @see com.restaurant.dto.OrderDto
+	 * @see com.restaurant.dto.OrderDTO
 	 */
 	@Override
-	public List<OrderDto> getAllOrders() {
+	public List<OrderDTO> getAllOrders() {
 
 		List<Order> orders = orderRepo.findAll();
-		return orders.stream().map(OrderDto::new).collect(Collectors.toList());
+		return orders.stream().map(OrderDTO::new).collect(Collectors.toList());
 	}
 
 	/**
@@ -210,11 +210,11 @@ public class OrderServiceImpl implements OrderService {
 	 * @return Order by id
 	 */
 	@Override
-	public OrderDto getOrderById(Long orderId) {
+	public OrderDTO getOrderById(Long orderId) {
 
 		Order order = orderRepo.findById(orderId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
-		return new OrderDto(order);
+		return new OrderDTO(order);
 	}
 
 	/**
@@ -224,14 +224,14 @@ public class OrderServiceImpl implements OrderService {
 	 * @return list of deleted or undeleted orders
 	 * @see com.restaurant.entity.orders
 	 */
-	public List<OrderDto> findAllFilter(boolean isDeleted) {
+	public List<OrderDTO> findAllFilter(boolean isDeleted) {
 		Session session = entityManager.unwrap(Session.class);
 		Filter filter = session.enableFilter("deletedOrderFilter");
 		filter.setParameter("isDeleted", isDeleted);
 		List<Order> orders = orderRepo.findAll();
 		session.disableFilter("deletedOrderFilter");
 
-		return orders.stream().map(u -> new OrderDto(u)).collect(Collectors.toList());
+		return orders.stream().map(u -> new OrderDTO(u)).collect(Collectors.toList());
 	}
 	
 //	public List<OrderDto> findOrdersByDate(String createdOn, String updatedOn){

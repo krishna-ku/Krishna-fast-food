@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
-import com.restaurant.dto.RatingDto;
+import com.restaurant.dto.RatingDTO;
 import com.restaurant.service.RatingService;
 
 @RestController
@@ -30,14 +30,14 @@ public class RatingController {
 	/**
 	 * Add Rating service url : /rating method : Post
 	 * 
-	 * @param RatingDto
-	 * @return RatingDto {@link com.restaurant.dto.RatingDto}
+	 * @param RatingDTO
+	 * @return RatingDto {@link com.restaurant.dto.RatingDTO}
 	 */
 	@PostMapping("/{orderId}/user/{userId}")
-	public ResponseEntity<RatingDto> createRating(@Valid @RequestBody RatingDto ratingDto, @PathVariable long orderId,
+	public ResponseEntity<RatingDTO> createRating(@Valid @RequestBody RatingDTO ratingDto, @PathVariable long orderId,
 			@PathVariable long userId) {
 
-		RatingDto rating = ratingService.createRating(ratingDto, orderId, userId);
+		RatingDTO rating = ratingService.createRating(ratingDto, orderId, userId);
 
 		return new ResponseEntity<>(rating, HttpStatus.CREATED);
 	}
@@ -70,22 +70,22 @@ public class RatingController {
 	/**
 	 * get list of Rating Service url: /rating method : GET
 	 * 
-	 * @return list of RatingDto {@link com.restaurant.dto.RatingDto}
+	 * @return list of RatingDto {@link com.restaurant.dto.RatingDTO}
 	 */
 	@GetMapping
-	public ResponseEntity<List<RatingDto>> getAllRatings() {
-		List<RatingDto> ratingDto = ratingService.getAllRatings();
+	public ResponseEntity<List<RatingDTO>> getAllRatings() {
+		List<RatingDTO> ratingDto = ratingService.getAllRatings();
 		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
 	}
 	
 	/**
 	 * get list of Rating Service url: /rating method : GET
 	 * 
-	 * @return list of RatingDto {@link com.restaurant.dto.RatingDto}
+	 * @return list of RatingDto {@link com.restaurant.dto.RatingDTO}
 	 */
 	@GetMapping("filter")
-	public ResponseEntity<List<RatingDto>> getAllRatings(@RequestParam(defaultValue = "3") int ratingValue) {
-		List<RatingDto> ratingDto = ratingService.ratingsByFilter(ratingValue);
+	public ResponseEntity<List<RatingDTO>> getAllRatings(@RequestParam(defaultValue = "3") int ratingValue) {
+		List<RatingDTO> ratingDto = ratingService.ratingsByFilter(ratingValue);
 		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
 	}
 
@@ -94,10 +94,10 @@ public class RatingController {
 	 * 
 	 * @param id
 	 * @return RatingDto of particular id
-	 * @see com.restaurant.dto.RatingDto
+	 * @see com.restaurant.dto.RatingDTO
 	 */
 	@GetMapping("/{ratingId}")
-	public ResponseEntity<RatingDto> getRatingById(@PathVariable long ratingId) {
+	public ResponseEntity<RatingDTO> getRatingById(@PathVariable long ratingId) {
 
 		return ResponseEntity.ok(ratingService.getRatingById(ratingId));
 	}
@@ -109,9 +109,9 @@ public class RatingController {
 	 * @return list of users
 	 */
 	@GetMapping("/filterratings")
-	public ResponseEntity<List<RatingDto>> findAll(
+	public ResponseEntity<List<RatingDTO>> findAll(
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
-		List<RatingDto> ratingDtos = ratingService.findAllFilter(isDeleted);
+		List<RatingDTO> ratingDtos = ratingService.findAllFilter(isDeleted);
 		return new ResponseEntity<>(ratingDtos, HttpStatus.OK);
 	}
 

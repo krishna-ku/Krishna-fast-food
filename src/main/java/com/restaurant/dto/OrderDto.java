@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OrderDto {
+public class OrderDTO {
 
 	// convert order into orderDto
-	public OrderDto(Order order) {
+	public OrderDTO(Order order) {
 //		this.customer = order.getCustomer();
 		this.orderId = order.getId();
 		this.orderStatus = order.getStatus().toString();
@@ -28,7 +28,7 @@ public class OrderDto {
 
 			this.totalPrice += o.getMenu().getPrice() * o.getItemQuantity();
 
-			return new OrderItemDto(o);
+			return new OrderItemDTO(o);
 
 		}).collect(Collectors.toList());
 		totalPriceWithGst = totalPrice + (totalPrice * Keywords.GST_PERCENTAGE);
@@ -51,7 +51,7 @@ public class OrderDto {
 
 	@Valid
 	@NotEmpty
-	private List<OrderItemDto> orderItems;
+	private List<OrderItemDTO> orderItems;
 
 	// private Menu menu;
 }

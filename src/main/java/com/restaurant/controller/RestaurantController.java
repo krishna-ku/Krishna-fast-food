@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
-import com.restaurant.dto.RestaurantDto;
+import com.restaurant.dto.RestaurantDTO;
 import com.restaurant.service.RestaurantService;
 
 @RestController
@@ -31,12 +31,12 @@ public class RestaurantController {
 	/**
 	 * Add Restaurant service url : /restaurant method : Post
 	 * 
-	 * @param RestaurantDto
+	 * @param RestaurantDTO
 	 * @return RestaurantDto
 	 */
 	@PostMapping
-	public ResponseEntity<RestaurantDto> createRestaurant(@Valid @RequestBody RestaurantDto restaurantDto) {
-		RestaurantDto restaurant = restaurantService.createRestaurant(restaurantDto);
+	public ResponseEntity<RestaurantDTO> createRestaurant(@Valid @RequestBody RestaurantDTO restaurantDto) {
+		RestaurantDTO restaurant = restaurantService.createRestaurant(restaurantDto);
 		return new ResponseEntity<>(restaurant, HttpStatus.CREATED);
 	}
 
@@ -48,7 +48,7 @@ public class RestaurantController {
 	 * @return Updated restaurantDto {@link com.restaurant.dto.restaurantDto}
 	 */
 	@PutMapping
-	public ResponseEntity<RestaurantDto> updateRestaurant(@RequestBody RestaurantDto restaurantDto) {
+	public ResponseEntity<RestaurantDTO> updateRestaurant(@RequestBody RestaurantDTO restaurantDto) {
 		return ResponseEntity.ok(restaurantService.updateRestaurant(restaurantDto));
 	}
 
@@ -70,7 +70,7 @@ public class RestaurantController {
 	 * @return list of Restaurants {@link com.restaurant.entity.Restaurant}
 	 */
 	@GetMapping
-	public ResponseEntity<RestaurantDto> getRestaurantDetails() {
+	public ResponseEntity<RestaurantDTO> getRestaurantDetails() {
 		return ResponseEntity.ok(restaurantService.getRestaurantDetails());
 	}
 
@@ -81,9 +81,9 @@ public class RestaurantController {
 	 * @return list of restaurants
 	 */
 	@GetMapping("/filterrestaurants")
-	public ResponseEntity<List<RestaurantDto>> findAll(
+	public ResponseEntity<List<RestaurantDTO>> findAll(
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
-		List<RestaurantDto> restaurantDtos = restaurantService.findAllFilter(isDeleted);
+		List<RestaurantDTO> restaurantDtos = restaurantService.findAllFilter(isDeleted);
 		return new ResponseEntity<>(restaurantDtos, HttpStatus.OK);
 	}
 

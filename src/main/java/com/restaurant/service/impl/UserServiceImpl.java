@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
-import com.restaurant.dto.UserDto;
+import com.restaurant.dto.UserDTO;
 import com.restaurant.entity.User;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
@@ -41,12 +41,12 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * add User.
 	 * 
-	 * @param UserDto objects
+	 * @param UserDTO objects
 	 * @return UserDto object
-	 * @see com.restaurant.dto.UserDto
+	 * @see com.restaurant.dto.UserDTO
 	 */
 	@Override
-	public UserDto createUser(UserDto userDto) {
+	public UserDTO createUser(UserDTO userDto) {
 		
 		log.info("Creating User for {} ",userDto);
 
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 			
 			log.info("User created successfully");
 						
-			return new UserDto(save);
+			return new UserDTO(save);
 
 		} else {
 			throw new BadRequestException("Email already exist !!");
@@ -76,9 +76,9 @@ public class UserServiceImpl implements UserService {
 	 * @param userDto
 	 * @param userId
 	 * @return updated UserDto
-	 * @see com.restaurant.dto.UserDto
+	 * @see com.restaurant.dto.UserDTO
 	 */
-	public UserDto updateUser(UserDto userDto, Long userId) {
+	public UserDTO updateUser(UserDTO userDto, Long userId) {
 		
 		log.info("Updating user for {}",userDto);
 
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 		
 		log.info("User updated successfully");
 
-		return new UserDto(userRepo.save(user2));
+		return new UserDTO(userRepo.save(user2));
 	}
 
 	/**
@@ -134,9 +134,9 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public List<UserDto> getAllUsers(String email, String firstName) {
+	public List<UserDTO> getAllUsers(String email, String firstName) {
 		List<User> users = this.userRepo.findUsersByEmail(email, firstName);
-		return users.stream().map(user -> new UserDto(user)).collect(Collectors.toList());
+		return users.stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
 	}
 
 	/**
@@ -147,12 +147,12 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public UserDto getUserById(Long userId) {
+	public UserDTO getUserById(Long userId) {
 
 		User user = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
-		return new UserDto(user);
+		return new UserDTO(user);
 	}
 
 	/**
@@ -162,14 +162,14 @@ public class UserServiceImpl implements UserService {
 	 * @return list of deleted or undeleted User
 	 * @see com.restaurant.entity.User
 	 */
-	public List<UserDto> findAllFilter(boolean isDeleted) {
+	public List<UserDTO> findAllFilter(boolean isDeleted) {
 		Session session = entityManager.unwrap(Session.class);
 		Filter filter = session.enableFilter("deletedUserFilter");
 		filter.setParameter("isDeleted", isDeleted);
 		List<User> users = userRepo.findAll();
 		session.disableFilter("deletedUserFilter");
 
-		return users.stream().map(u -> new UserDto(u)).collect(Collectors.toList());
+		return users.stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
 	}
 	
 	/**

@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
-import com.restaurant.dto.OrderDto;
-import com.restaurant.dto.OrderItemDto;
+import com.restaurant.dto.OrderDTO;
+import com.restaurant.dto.OrderItemDTO;
 import com.restaurant.service.OrderService;
 
 //@Validated //todo
@@ -35,10 +35,10 @@ public class OrderController {
 	 * 
 	 * @param List<OrderItemDto>
 	 * @return OrderDto
-	 * @see com.restaurant.dto.OrderDto
+	 * @see com.restaurant.dto.OrderDTO
 	 */
 	@PostMapping("/{userId}")
-	public OrderDto placeOrder(@RequestBody @Valid OrderDto orderDto, @PathVariable long userId) {
+	public OrderDTO placeOrder(@RequestBody @Valid OrderDTO orderDto, @PathVariable long userId) {
 //		orderItemDto.forEach(System.out::println);
 		return orderService.placedOrder(orderDto, userId);
 
@@ -49,10 +49,10 @@ public class OrderController {
 	 * 
 	 * @param id
 	 * @param List<OderItemDto?
-	 * @return Updated OrderItemDto {@link com.restaurant.dto.OrderItemDto}
+	 * @return Updated OrderItemDto {@link com.restaurant.dto.OrderItemDTO}
 	 */
 	@PutMapping("/{orderId}")
-	public OrderDto updateOrder(@RequestBody List<OrderItemDto> orderItemDto, @PathVariable long orderId) {
+	public OrderDTO updateOrder(@RequestBody List<OrderItemDTO> orderItemDto, @PathVariable long orderId) {
 		orderItemDto.forEach(System.out::println);
 		// orderItemDto.forEach(o -> System.out.println(o));
 		return orderService.updateOrder(orderItemDto, orderId);
@@ -65,13 +65,13 @@ public class OrderController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<OrderDto>> getAllOrders() {
-		List<OrderDto> allOrders = orderService.getAllOrders();
+	public ResponseEntity<List<OrderDTO>> getAllOrders() {
+		List<OrderDTO> allOrders = orderService.getAllOrders();
 		return new ResponseEntity<>(allOrders, HttpStatus.OK);
 	}
 
 	@GetMapping("/{orderId}")
-	public ResponseEntity<OrderDto> getOrderById(@PathVariable long orderId) {
+	public ResponseEntity<OrderDTO> getOrderById(@PathVariable long orderId) {
 
 		return ResponseEntity.ok(orderService.getOrderById(orderId));
 
@@ -84,9 +84,9 @@ public class OrderController {
 	 * @return list of users
 	 */
 	@GetMapping("/filterorders")
-	public ResponseEntity<List<OrderDto>> findAll(
+	public ResponseEntity<List<OrderDTO>> findAll(
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
-		List<OrderDto> orderDtos = orderService.findAllFilter(isDeleted);
+		List<OrderDTO> orderDtos = orderService.findAllFilter(isDeleted);
 		return new ResponseEntity<>(orderDtos, HttpStatus.OK);
 	}
 

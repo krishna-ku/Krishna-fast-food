@@ -2,29 +2,29 @@ package com.restaurant.service;
 
 import java.util.List;
 
-import com.restaurant.dto.OrderDto;
-import com.restaurant.dto.OrderItemDto;
-import com.restaurant.dto.UserDto;
+import com.restaurant.dto.OrderDTO;
+import com.restaurant.dto.OrderItemDTO;
+import com.restaurant.dto.UserDTO;
 
 public interface OrderService {
 
 	// create user
-	OrderDto placedOrder(OrderDto orderDto, long userId);
+	OrderDTO placedOrder(OrderDTO orderDto, long userId);
 
 	// update user
-	OrderDto updateOrder(List<OrderItemDto> orderItemDto, Long orderId);
+	OrderDTO updateOrder(List<OrderItemDTO> orderItemDto, Long orderId);
 
 	// delete user
 	void deleteOrder(long orderId);
 
 	// get users
-	List<OrderDto> getAllOrders();
+	List<OrderDTO> getAllOrders();
 
 	// get user
-	OrderDto getOrderById(Long orderId);
+	OrderDTO getOrderById(Long orderId);
 
 	// get orders by header
-	List<OrderDto> findAllFilter(boolean isDeleted);
+	List<OrderDTO> findAllFilter(boolean isDeleted);
 	
 //	//get orders by date
 //	List<E>
