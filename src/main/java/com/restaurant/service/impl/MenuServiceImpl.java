@@ -1,21 +1,23 @@
 package com.restaurant.service.impl;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.restaurant.dto.ExcelHelper;
 import com.restaurant.dto.Keywords;
 import com.restaurant.dto.MenuDTO;
-import com.restaurant.dto.UserDTO;
 import com.restaurant.entity.Menu;
-import com.restaurant.entity.User;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.MenuRepo;
@@ -29,7 +31,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Autowired
 	private MenuRepo menuRepo;
-	
+
 	@Autowired
 	private EntityManager entityManager;
 
@@ -42,16 +44,16 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public MenuDTO createMenu(MenuDTO menuDto) {
-		
-		log.info("Creating menu for {} ",menuDto);
+
+		log.info("Creating menu for {} ", menuDto);
 
 		Menu menuExist = this.menuRepo.findByName(menuDto.getName());
 
 		if (menuExist == null) {
 			Menu newMenu = new Menu(menuDto);
-			
+
 			log.info("Menu created successfully");
-			
+
 			return new MenuDTO(menuRepo.save(newMenu));
 		} else {
 			throw new BadRequestException("Menu is already exists");
@@ -68,8 +70,8 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public MenuDTO updateMenu(MenuDTO menuDto, Long menuId) {
-		
-		log.info("Updating menu for {} ",menuId);
+
+		log.info("Updating menu for {} ", menuId);
 
 		Menu updatedMenu = menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
@@ -87,7 +89,7 @@ public class MenuServiceImpl implements MenuService {
 		}
 
 		log.info("Menu updated successfully");
-		
+
 		return new MenuDTO(menuRepo.save(updatedMenu));
 	}
 
@@ -100,8 +102,8 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public void deleteMenu(long menuId) {
-		
-		log.info("Deleting menu for {} ",menuId);
+
+		log.info("Deleting menu for {} ", menuId);
 
 		Menu menu = this.menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
@@ -125,7 +127,7 @@ public class MenuServiceImpl implements MenuService {
 
 		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * return menus by filter
 	 * 
@@ -136,7 +138,7 @@ public class MenuServiceImpl implements MenuService {
 	public List<MenuDTO> menusByFilter(float price) {
 
 		List<Menu> menus = menuRepo.menuItemsByFilter(price);
-		
+
 		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
 	}
 
@@ -155,7 +157,7 @@ public class MenuServiceImpl implements MenuService {
 
 		return new MenuDTO(menu);
 	}
-	
+
 	/**
 	 * return lists of deleted and undeleted menus
 	 * 
@@ -172,7 +174,21 @@ public class MenuServiceImpl implements MenuService {
 
 		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
 	}
-	
-	
 
+	/**
+	 * save all data which presents in excle file
+	 * 
+	 * @param file
+	 */
+	public void save(MultipartFile file) {
+		log.info("Converting excel file into list for{}",file);
+		try {
+			List<MenuDTO> menus = ExcelHelper.convertExcelFileToListOfMenus(file.getInputStream());
+			List<Menu> menuList=menus.stream().map(Menu::new).collect(Collectors.toList());
+			this.menuRepo.saveAll(menuList);
+			log.info("Successfully data saved in Database");
+		} catch (IOException e) {
+			log.error("Error while saving data from excel file to database",e.getMessage());
+		}
+	}
 }

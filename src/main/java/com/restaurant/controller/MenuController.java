@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.ApiResponse;
+import com.restaurant.dto.ExcelHelper;
 import com.restaurant.dto.MenuDTO;
 import com.restaurant.service.MenuService;
 
@@ -29,7 +31,7 @@ public class MenuController {
 	private MenuService menuService;
 
 	/**
-	 * Add Menu service url : /menu method : Post
+	 * Add Menu service url : /menus method : Post
 	 * 
 	 * @param menuDto
 	 * @return MenuDto {@link com.restaurant.dto.MenuDTO}
@@ -41,7 +43,7 @@ public class MenuController {
 	}
 
 	/**
-	 * Update menu by id service url: /menu/id method : PUT
+	 * Update menu by id service url: /menus/id method : PUT
 	 * 
 	 * @param id
 	 * @param menuDto
@@ -53,7 +55,7 @@ public class MenuController {
 	}
 
 	/**
-	 * Delete menu by id Method : DELETE Service url: /menu/id
+	 * Delete menu by id Method : DELETE Service url: /menus/id method : DELETE
 	 * 
 	 * @param id
 	 * 
@@ -65,7 +67,7 @@ public class MenuController {
 	}
 
 	/**
-	 * get list of menus Service url: /menu method : GET
+	 * get list of menus Service url: /menus method : GET
 	 * 
 	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDTO}
 	 */
@@ -74,20 +76,21 @@ public class MenuController {
 		List<MenuDTO> menu = menuService.getAllMenus();
 		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
-	
+
 	/**
-	 * get list of menus whose satisfied filter condition Service url: /menu method : GET
+	 * get list of menus whose satisfied filter condition Service url: /menus/filter
+	 * method : GET
 	 * 
 	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDTO}
 	 */
 	@GetMapping("/filter")
-	public ResponseEntity<List<MenuDTO>> menuByFilter(@RequestParam(defaultValue = "20")float price) {
+	public ResponseEntity<List<MenuDTO>> menuByFilter(@RequestParam(defaultValue = "20") float price) {
 		List<MenuDTO> menu = menuService.menusByFilter(price);
 		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
 
 	/**
-	 * get detail of Menu by id Service url: /menu/id method: GET
+	 * get detail of Menu by id Service url: /menus/id method: GET
 	 * 
 	 * @param id
 	 * @return MenuDto of particular id {@link com.restaurant.dto.MenuDTO}
@@ -98,7 +101,8 @@ public class MenuController {
 	}
 
 	/**
-	 * get details of menu isDelted or notDeleted service url :/menu/
+	 * get details of menu isDelted or notDeleted service url :/menus/filtermenus
+	 * method: GET
 	 * 
 	 * @param isDeleted=true or false
 	 * @return list of menus
@@ -108,6 +112,24 @@ public class MenuController {
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
 		List<MenuDTO> menuDtos = menuService.findAllFilter(isDeleted);
 		return new ResponseEntity<>(menuDtos, HttpStatus.OK);
+	}
+
+	/**
+	 * check file is excle or no then save that file in Database service url:
+	 * /menus/uploadfile method: POST
+	 * 
+	 * @param file
+	 * @return message and status
+	 */
+	@PostMapping("/uploadfile")
+	public ResponseEntity<ApiResponse> upload(@RequestParam("file") MultipartFile file) {
+		if (ExcelHelper.checkExcelFormat(file)) {
+			this.menuService.save(file);
+			return new ResponseEntity<>(new ApiResponse("file is uploaded and data is saved in database", true),
+					HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(new ApiResponse("Please upload excel file", false), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }

@@ -2,7 +2,7 @@ package com.restaurant.dto;
 
 public interface RatingDashBoardView {
 	
-	int getTotalUsersWhoseGivesRating();
-	int getTotalUsersInDB();
-	int getDistinctOrderId();
+	int getTotalUsersWhoGaveRating();//need to change name
+	int getTotalUsers();
+	int getRatedOrdersCount();
 }

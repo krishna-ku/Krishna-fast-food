@@ -2,6 +2,8 @@ package com.restaurant.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.restaurant.dto.MenuDTO;
 
 public interface MenuService {
@@ -26,5 +28,8 @@ public interface MenuService {
 	
 	//get menus by filter
 	List<MenuDTO> menusByFilter(float price);
+	
+	//save data from excel file
+	void save(MultipartFile file);
 
 }

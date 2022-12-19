@@ -13,7 +13,7 @@ public interface RatingRepo extends JpaRepository<Rating, Long> {
 	
 	User findByUser(User user);
 	
-	@Query(nativeQuery = true,value =  "select count(Rating.id) TotalUsersWhoseGivesRating ,count(user.id) TotalUsersInDB ,count(distinct order_id) DistinctOrderId"
+	@Query(nativeQuery = true,value =  "select count(Rating.id) TotalUsersWhoGaveRating ,count(user.id) TotalUsers ,count(distinct order_id) RatedOrdersCount"
 			+ " from restaurant.rating right join restaurant.user on rating.user_id=user.id")
 	RatingDashBoardView viewRatingDashBoard();
 	
