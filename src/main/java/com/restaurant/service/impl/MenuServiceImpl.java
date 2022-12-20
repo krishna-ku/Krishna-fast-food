@@ -2,12 +2,12 @@ package com.restaurant.service.impl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,15 +180,50 @@ public class MenuServiceImpl implements MenuService {
 	 * 
 	 * @param file
 	 */
-	public void save(MultipartFile file) {
-		log.info("Converting excel file into list for{}",file);
+	public void save(MultipartFile uploadMenusFromExcelfile) {
+		log.info("Converting excel file into list for{}", uploadMenusFromExcelfile);
 		try {
-			List<MenuDTO> menus = ExcelHelper.convertExcelFileToListOfMenus(file.getInputStream());
-			List<Menu> menuList=menus.stream().map(Menu::new).collect(Collectors.toList());
+			Set<MenuDTO> menus = ExcelHelper.convertExcelFileToListOfMenus(uploadMenusFromExcelfile.getInputStream());
+			List<Menu> menuList = menus.stream().map(o -> {
+				Menu menu = menuRepo.findByName(o.getName());
+				if (menu == null) {
+					menu = new Menu(o);
+				} else {
+					menu.setDescription(o.getDescription());
+					menu.setPrice(o.getPrice());
+				}
+				return menu;
+			}).collect(Collectors.toList());
 			this.menuRepo.saveAll(menuList);
 			log.info("Successfully data saved in Database");
 		} catch (IOException e) {
-			log.error("Error while saving data from excel file to database",e.getMessage());
+			log.error("Error while saving data from excel file to database", e.getMessage());
 		}
 	}
+
+	/**
+	 * save all data which presents in csv file
+	 * 
+	 * @param file
+	 */
+	public void saveCsv(MultipartFile uploadMenusFromCsvFile) {
+		try {
+
+			List<MenuDTO> menus = ExcelHelper.csvToMenus(uploadMenusFromCsvFile.getInputStream());
+			List<Menu> menuList = menus.stream().map(o -> {
+				Menu menu = menuRepo.findByName(o.getName());
+				if (menu == null) {
+					menu = new Menu(o);
+				} else {
+					menu.setDescription(o.getDescription());
+					menu.setPrice(o.getPrice());
+				}
+				return menu;
+			}).collect(Collectors.toList());
+			menuRepo.saveAll(menuList);
+		} catch (Exception e) {
+			log.error("Error while saving data from csv file to database", e.getMessage());
+		}
+	}
+
 }

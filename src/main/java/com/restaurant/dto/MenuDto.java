@@ -7,10 +7,12 @@ import org.hibernate.validator.constraints.Range;
 
 import com.restaurant.entity.Menu;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class MenuDTO {
 
@@ -30,5 +32,41 @@ public class MenuDTO {
 		this.name = menu.getName();
 		this.price = menu.getPrice();
 		this.description = menu.getDescription();
+	}
+
+	@Override
+	public int hashCode() {
+		int p=97;
+		int r=p+name.hashCode();
+		r=p*r+(int) id;
+		return r;
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+
+		if (obj == null)
+			return false;
+		else {
+			if (obj instanceof MenuDTO) {// instance of
+				MenuDTO menuDTO = (MenuDTO) obj;
+				if (this.id == menuDTO.getId() && this.name == menuDTO.getName()) {
+					return true;
+				}
+			}
+
+		}
+		return false;
+	}
+
+	public MenuDTO(String name, Float price, String description) {
+		this.name = name;
+		this.price = price;
+		this.description = description;
+	}
+
+	public String toString() {
+		return "Menu [name=" + name + ", price=" + price + ", desc=" + description + "]";
 	}
 }

@@ -9,9 +9,12 @@ import com.restaurant.entity.Menu;
 
 public interface MenuRepo extends JpaRepository<Menu, Long> {
 
-	Menu findByName(String name);
+//	Menu findByName(String name);
 
 	@Query("select m from Menu m where m.price<=:price")
 	List<Menu> menuItemsByFilter(float price);
+	
+	@Query("select m from Menu m where m.name=:name")
+	Menu findByName(String name);
 
 }

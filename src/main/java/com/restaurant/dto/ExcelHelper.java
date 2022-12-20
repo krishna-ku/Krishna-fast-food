@@ -1,17 +1,25 @@
 package com.restaurant.dto;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.restaurant.entity.Menu;
+import com.restaurant.exception.BadRequestException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,9 +49,9 @@ public class ExcelHelper {
 	 * @param file
 	 * @return true or false
 	 */
-	public static List<MenuDTO> convertExcelFileToListOfMenus(InputStream inputStream) {
+	public static Set<MenuDTO> convertExcelFileToListOfMenus(InputStream inputStream) {
 
-		List<MenuDTO> list = new ArrayList<>();
+		Set<MenuDTO> set = new HashSet<>();
 		try {
 			XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
 			XSSFSheet sheet = workbook.getSheet("data");
@@ -61,11 +69,7 @@ public class ExcelHelper {
 				MenuDTO m = new MenuDTO();
 				while (cells.hasNext()) {
 					Cell cell = cells.next();
-					
-//					Menu menu=new Menu();
-//					if(menu.getName()==cell.getStringCellValue())
-//						rowNumber++;
-					
+
 					switch (cId) {
 					case 0:
 						m.setName(cell.getStringCellValue());
@@ -81,13 +85,47 @@ public class ExcelHelper {
 					}
 					cId++;
 				}
-				list.add(m);
+				set.add(m);
 			}
 
 		} catch (Exception e) {
-			log.error("Error while converting excel file into list", e.getMessage());
+			log.error("Error while converting excel file into list", e);
+			throw new BadRequestException(e.getMessage());
 		}
-		return list;
+		return set;
+	}
+
+	public static String TYPE = "text/csv";
+	static String[] HEADERs = { "name", "price", "description" };
+
+	public static boolean hasCSVFormat(MultipartFile file) {
+		if (!TYPE.equals(file.getContentType())) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static List<MenuDTO> csvToMenus(InputStream is) {
+		try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+				CSVParser csvParser = new CSVParser(fileReader,
+						CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
+
+			List<MenuDTO> menus = new ArrayList<>();
+
+			Iterable<CSVRecord> csvRecords = csvParser.getRecords();
+
+			for (CSVRecord csvRecord : csvRecords) {
+				MenuDTO menu = new MenuDTO(csvRecord.get("name"), Float.parseFloat(csvRecord.get("price")),
+						csvRecord.get("description"));
+				menus.add(menu);
+			}
+
+			return menus;
+		} catch (IOException e) {
+			log.error("Error while converting excel file into list", e);
+			throw new BadRequestException(e.getMessage());
+		}
 	}
 
 }

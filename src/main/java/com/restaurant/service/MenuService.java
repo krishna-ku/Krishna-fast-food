@@ -31,5 +31,8 @@ public interface MenuService {
 	
 	//save data from excel file
 	void save(MultipartFile file);
+	
+	//save data from excel file
+	void saveCsv(MultipartFile uploadMenuFromCsvFile);
 
 }

@@ -66,8 +66,8 @@ public class OrderServiceImpl implements OrderService {
 	 * @see com.restaurant.dto.OrderDTO
 	 */
 	public OrderDTO placedOrder(OrderDTO orderDto, long userId) {
-		
-		log.info("Placing order for {} ",orderDto);
+
+		log.info("Placing order for {} ", orderDto);
 
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
@@ -105,11 +105,10 @@ public class OrderServiceImpl implements OrderService {
 		order.setOrderItems(orderItems);
 		order.setUser(user);
 		order.setRestaurant(restaurant);
-//		order.setCustomer(customer);
 		orderRepo.save(order);
 
-		emailService.sendMailOrders("Order Placed", user.getEmail(),user.getFirstName());
-		
+		emailService.sendMailOrders("Order Placed", user.getEmail(), user.getFirstName());
+
 		log.info("Order placed successfully");
 
 		return new OrderDTO(order);
@@ -125,8 +124,8 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	@Override
 	public OrderDTO updateOrder(List<OrderItemDTO> orderItemList, Long orderId) {
-		
-		log.info("Updating order for {}",orderItemList);
+
+		log.info("Updating order for {}", orderItemList);
 
 		Order order = orderRepo.findById(orderId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
@@ -164,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
 			}
 			order.setOrderItems(updatedOrderItemList);
 			orderRepo.save(order);
-			
+
 			log.info("Order updated successfully");
 
 			return new OrderDTO(order);
@@ -182,8 +181,8 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	@Override
 	public void deleteOrder(long orderId) {
-		
-		log.info("Deleting order for {} ",orderId);
+
+		log.info("Deleting order for {} ", orderId);
 
 		this.orderRepo.deleteById(orderId);
 		log.info("Order deleted successfully");
@@ -233,30 +232,11 @@ public class OrderServiceImpl implements OrderService {
 
 		return orders.stream().map(u -> new OrderDTO(u)).collect(Collectors.toList());
 	}
-	
+
 //	public List<OrderDto> findOrdersByDate(String createdOn, String updatedOn){
 //		
 //		
 //		
 //	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

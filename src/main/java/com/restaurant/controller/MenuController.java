@@ -121,14 +121,19 @@ public class MenuController {
 	 * @param file
 	 * @return message and status
 	 */
-	@PostMapping("/uploadfile")
-	public ResponseEntity<ApiResponse> upload(@RequestParam("file") MultipartFile file) {
-		if (ExcelHelper.checkExcelFormat(file)) {
-			this.menuService.save(file);
-			return new ResponseEntity<>(new ApiResponse("file is uploaded and data is saved in database", true),
-					HttpStatus.OK);
+	@PostMapping("/upload")
+	public ResponseEntity<ApiResponse> upload(@RequestParam("file") MultipartFile uploadMenuFromFile) {
+		if (ExcelHelper.checkExcelFormat(uploadMenuFromFile)) {
+			this.menuService.save(uploadMenuFromFile);
+			return new ResponseEntity<>(
+					new ApiResponse("your excel file is uploaded and data is saved in database", true), HttpStatus.OK);
+		} else if (ExcelHelper.hasCSVFormat(uploadMenuFromFile)) {
+			this.menuService.saveCsv(uploadMenuFromFile);
+			return new ResponseEntity<>(
+					new ApiResponse("your csv file is uploaded and data is saved in database", true), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(new ApiResponse("Please upload excel file", false), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new ApiResponse("Please upload excel or csv file", false),
+					HttpStatus.BAD_REQUEST);
 		}
 	}
 

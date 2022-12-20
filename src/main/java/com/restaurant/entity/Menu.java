@@ -39,4 +39,5 @@ public class Menu extends BaseClass {
 		this.price = menuDto.getPrice();
 		this.description = menuDto.getDescription();
 	}
+
 }
