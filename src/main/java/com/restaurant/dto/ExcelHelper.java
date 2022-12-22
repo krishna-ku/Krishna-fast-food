@@ -44,7 +44,7 @@ public class ExcelHelper {
 	}
 
 	/**
-	 * Convert file of excel into list
+	 * Convert excel file into list
 	 * 
 	 * @param file
 	 * @return true or false
@@ -105,7 +105,12 @@ public class ExcelHelper {
 
 		return true;
 	}
-
+	
+	/**
+	 * convert CSV file into list
+	 * @param is
+	 * @return list
+	 */
 	public static List<MenuDTO> csvToMenus(InputStream is) {
 		try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 				CSVParser csvParser = new CSVParser(fileReader,

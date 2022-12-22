@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 			User newUser = new User(userDto);
 			User save = userRepo.save(newUser);
 			
-			emailService.sendMailToUser("Account Created",userDto.getEmail(),userDto.getFirstName());
+			emailService.sendAccountCreatedMailToUser("Account Created",userDto.getEmail(),userDto.getFirstName());
 			
 			log.info("User created successfully");
 						

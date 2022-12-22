@@ -107,7 +107,9 @@ public class OrderServiceImpl implements OrderService {
 		order.setRestaurant(restaurant);
 		orderRepo.save(order);
 
-		emailService.sendMailOrders("Order Placed", user.getEmail(), user.getFirstName());
+//		PdfGenerator.generatePdf(user.getFirstName());
+
+		emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName());
 
 		log.info("Order placed successfully");
 
