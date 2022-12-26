@@ -135,11 +135,27 @@ public class MenuServiceImpl implements MenuService {
 	 * @see com.restaurant.dto.MenuDTO
 	 */
 	@Override
-	public List<MenuDTO> menusByFilter(float price) {
+	public List<MenuDTO> filterMenusByPrice(float byPrice) {
 
-		List<Menu> menus = menuRepo.menuItemsByFilter(price);
+		List<Menu> menus = menuRepo.menuItemsByFilter(byPrice);
 
 		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
+	}
+
+	/**
+	 * activate the deleted menu
+	 * 
+	 * @param menuId
+	 * @return String
+	 * @see com.restaurant.entity.Menu
+	 */
+	@Override
+	public String activateMenu(long menuId) {
+		Menu menu = menuRepo.findById(menuId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
+		menu.setDeleted(false);
+		menuRepo.save(menu);
+		return "Menu is Activated";
 	}
 
 	/**
@@ -209,7 +225,7 @@ public class MenuServiceImpl implements MenuService {
 	public void saveCsv(MultipartFile uploadMenusFromCsvFile) {
 		try {
 
-			List<MenuDTO> menus = ExcelHelper.csvToMenus(uploadMenusFromCsvFile.getInputStream());
+			Set<MenuDTO> menus = ExcelHelper.csvToMenus(uploadMenusFromCsvFile.getInputStream());
 			List<Menu> menuList = menus.stream().map(o -> {
 				Menu menu = menuRepo.findByName(o.getName());
 				if (menu == null) {

@@ -70,8 +70,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 */
 	@Override
 	public RestaurantDTO updateRestaurant(RestaurantDTO restaurantDto) {
-		
-		log.info("Update restaurant for {} ",restaurantDto);
+
+		log.info("Update restaurant for {} ", restaurantDto);
 
 		Restaurant restaurant = restaurantRepo.findById(restaurantDto.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RESTAURANT, Keywords.RESTAURANT_ID,
@@ -94,7 +94,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 		if (!StringUtils.isEmpty(restaurantDto.getStatus()))
 			restaurant.setStatus(restaurantDto.getStatus());
-		
+
 		log.info("Restaurant updated successfully");
 
 		return new RestaurantDTO(restaurantRepo.save(restaurant));
@@ -108,7 +108,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 */
 	@Override
 	public void deleteRestaurant(long restaurantId) {
-		log.info("Deleting Restaurant from {}",restaurantId);
+		log.info("Deleting Restaurant from {}", restaurantId);
 
 		restaurantRepo.deleteById(restaurantId);
 		log.info("Restaurant deleted successfuly");

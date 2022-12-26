@@ -21,10 +21,13 @@ public interface RatingService {
 	// get rating by id
 	RatingDTO getRatingById(long ratingId);
 
-	//get all deleted and undeleted ratings by header
+	// get all deleted and undeleted ratings by header
 	List<RatingDTO> findAllFilter(boolean isDeleted);
-	
-	//get ratings by filter
+
+	// get ratings by filter
 	List<RatingDTO> ratingsByFilter(int ratingValue);
+
+	// make user active
+	String activateRating(long ratingId);
 
 }

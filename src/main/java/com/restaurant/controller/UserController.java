@@ -67,7 +67,7 @@ public class UserController {
 	}
 
 	/**
-	 * get list of User Service url: /user method : GET
+	 * get list of all User and filter user by the help of email Service url: /user or /user?email=email method : GET
 	 * 
 	 * @return list of User {@link com.restaurant.entity.User}
 	 */
@@ -104,9 +104,14 @@ public class UserController {
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	
+	/**
+	 * Activate User
+	 * @param userId
+	 * @return
+	 */
 	@PutMapping("/activate/{userId}")
 	public ResponseEntity<String> activateUserEntity(@PathVariable long userId){
 	 	return ResponseEntity.ok(userService.activateUser(userId));
 	}
-	
+
 }

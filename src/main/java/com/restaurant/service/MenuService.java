@@ -27,12 +27,15 @@ public interface MenuService {
 	List<MenuDTO> findAllFilter(boolean isDeleted);
 	
 	//get menus by filter
-	List<MenuDTO> menusByFilter(float price);
+	List<MenuDTO> filterMenusByPrice(float byPrice);
 	
 	//save data from excel file
 	void save(MultipartFile file);
 	
 	//save data from excel file
 	void saveCsv(MultipartFile uploadMenuFromCsvFile);
+	
+	//activate menu
+	String activateMenu(long menuId);
 
 }

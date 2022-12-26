@@ -17,6 +17,7 @@ public interface RatingRepo extends JpaRepository<Rating, Long> {
 			+ " from restaurant.rating right join restaurant.user on rating.user_id=user.id")
 	RatingDashBoardView viewRatingDashBoard();
 	
-	@Query("select r from Rating r where r.rating<=:ratingValue")
+	@Query("select r from Rating r where r.rating<=:ratingValue")//defalut value 5
+//	@Query("select r from Rating r where r.rating like concat ('%',:ratingValue,'%')")
 	List<Rating> ratingsByFilter(int ratingValue);
 }

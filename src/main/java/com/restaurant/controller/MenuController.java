@@ -78,14 +78,14 @@ public class MenuController {
 	}
 
 	/**
-	 * get list of menus whose satisfied filter condition Service url: /menus/filter
-	 * method : GET
+	 * get lists of menus by maxPrice Service url: /menus/filter/byPrice=20 it will
+	 * give all menus smaller then 20 or equal then 20 method : GET
 	 * 
 	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDTO}
 	 */
 	@GetMapping("/filter")
-	public ResponseEntity<List<MenuDTO>> menuByFilter(@RequestParam(defaultValue = "20") float price) {
-		List<MenuDTO> menu = menuService.menusByFilter(price);
+	public ResponseEntity<List<MenuDTO>> menuByFilter(@RequestParam(defaultValue = "20") float byPrice) {
+		List<MenuDTO> menu = menuService.filterMenusByPrice(byPrice);
 		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
 
@@ -98,6 +98,17 @@ public class MenuController {
 	@GetMapping("/{menuId}")
 	public ResponseEntity<MenuDTO> getMenuById(@PathVariable long menuId) {
 		return ResponseEntity.ok(menuService.getMenuById(menuId));
+	}
+
+	/**
+	 * Activate Menu
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@PutMapping("/activate/{menuId}")
+	public ResponseEntity<String> activateUserEntity(@PathVariable long menuId) {
+		return ResponseEntity.ok(menuService.activateMenu(menuId));
 	}
 
 	/**

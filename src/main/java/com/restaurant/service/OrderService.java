@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.restaurant.dto.OrderDTO;
 import com.restaurant.dto.OrderItemDTO;
-import com.restaurant.dto.UserDTO;
 
 public interface OrderService {
 
@@ -25,7 +24,10 @@ public interface OrderService {
 
 	// get orders by header
 	List<OrderDTO> findAllFilter(boolean isDeleted);
-	
+
+	// activate orders
+	String activateOrder(long orderId);
+
 //	//get orders by date
 //	List<E>
 

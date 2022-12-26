@@ -24,7 +24,7 @@ import com.restaurant.service.OrderService;
 
 //@Validated //todo
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orders")
 public class OrderController {
 
 	@Autowired
@@ -64,12 +64,35 @@ public class OrderController {
 		return new ResponseEntity<>(new ApiResponse("Order is deleted successfully", true), HttpStatus.OK);
 	}
 
+	/**
+	 * get list of all orders Service url: /orders method : GET
+	 * 
+	 * @return list of User {@link com.restaurant.entity.User}
+	 */
 	@GetMapping
 	public ResponseEntity<List<OrderDTO>> getAllOrders() {
 		List<OrderDTO> allOrders = orderService.getAllOrders();
 		return new ResponseEntity<>(allOrders, HttpStatus.OK);
 	}
 
+	/**
+	 * Activate order
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@PutMapping("/activate/{orderId}")
+	public ResponseEntity<String> activateUserEntity(@PathVariable long orderId) {
+		return ResponseEntity.ok(orderService.activateOrder(orderId));
+	}
+
+	/**
+	 * get detail of order by id Service url: /orders/id method: GET
+	 * 
+	 * @param id
+	 * @return orderDTO
+	 * @see com.restaurant.dto.OrderDTO
+	 */
 	@GetMapping("/{orderId}")
 	public ResponseEntity<OrderDTO> getOrderById(@PathVariable long orderId) {
 

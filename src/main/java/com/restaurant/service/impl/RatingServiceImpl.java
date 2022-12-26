@@ -102,7 +102,7 @@ public class RatingServiceImpl implements RatingService {
 	}
 	
 	/**
-	 * return all Ratings
+	 * return all Ratings whose ratingValue<=given rating value like 3,4 etc
 	 * 
 	 * @return list of RatingDtos
 	 * 
@@ -146,6 +146,23 @@ public class RatingServiceImpl implements RatingService {
 		session.disableFilter("deletedRatingFilter");
 
 		return rating.stream().map(u -> new RatingDTO(u)).collect(Collectors.toList());
+	}
+	
+	/**
+	 * activate the deleted rating
+	 * 
+	 * @param ratingId
+	 * @return String
+	 * @see com.restaurant.entity.Rating
+	 */
+	@Override
+	public String activateRating(long ratingId) {
+
+		Rating rating = ratingRepo.findById(ratingId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, ratingId));
+		rating.setDeleted(false);
+		ratingRepo.save(rating);
+		return "Rating is active";
 	}
 
 }

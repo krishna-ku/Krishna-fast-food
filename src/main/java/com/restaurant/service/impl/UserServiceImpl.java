@@ -8,8 +8,6 @@ import javax.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Filter;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -171,7 +169,7 @@ public class UserServiceImpl implements UserService {
 
 		return users.stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * activate the deleted user
 	 * 
@@ -179,7 +177,7 @@ public class UserServiceImpl implements UserService {
 	 * @return String
 	 * @see com.restaurant.entity.User
 	 */
-
+	@Override
 	public String activateUser(long userId) {
 
 		User user = userRepo.findById(userId)

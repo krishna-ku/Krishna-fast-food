@@ -1,6 +1,5 @@
 package com.restaurant.service.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -108,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
 		order.setUser(user);
 		order.setRestaurant(restaurant);
 		orderRepo.save(order);
-		
+
 		PdfGenerator.createPdf(order);
 
 		emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName());
@@ -237,10 +236,21 @@ public class OrderServiceImpl implements OrderService {
 		return orders.stream().map(u -> new OrderDTO(u)).collect(Collectors.toList());
 	}
 
-//	public List<OrderDto> findOrdersByDate(String createdOn, String updatedOn){
-//		
-//		
-//		
-//	}
+	/**
+	 * activate the deleted order
+	 * 
+	 * @param userId
+	 * @return String
+	 * @see com.restaurant.entity.User
+	 */
+	@Override
+	public String activateOrder(long orderId) {
+
+		Order order = orderRepo.findById(orderId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
+		order.setDeleted(false);
+		orderRepo.save(order);
+		return "Order is activate";
+	}
 
 }
