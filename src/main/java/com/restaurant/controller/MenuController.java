@@ -127,7 +127,7 @@ public class MenuController {
 			this.menuService.save(uploadMenuFromFile);
 			return new ResponseEntity<>(
 					new ApiResponse("your excel file is uploaded and data is saved in database", true), HttpStatus.OK);
-		} else if (ExcelHelper.hasCSVFormat(uploadMenuFromFile)) {
+		} else if (ExcelHelper.checkCSVFormat(uploadMenuFromFile)) {
 			this.menuService.saveCsv(uploadMenuFromFile);
 			return new ResponseEntity<>(
 					new ApiResponse("your csv file is uploaded and data is saved in database", true), HttpStatus.OK);

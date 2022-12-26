@@ -98,7 +98,7 @@ public class ExcelHelper {
 	public static String TYPE = "text/csv";
 	static String[] HEADERs = { "name", "price", "description" };
 
-	public static boolean hasCSVFormat(MultipartFile file) {
+	public static boolean checkCSVFormat(MultipartFile file) {
 		if (!TYPE.equals(file.getContentType())) {
 			return false;
 		}
@@ -111,12 +111,12 @@ public class ExcelHelper {
 	 * @param is
 	 * @return list
 	 */
-	public static List<MenuDTO> csvToMenus(InputStream is) {
+	public static Set<MenuDTO> csvToMenus(InputStream is) {
 		try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 				CSVParser csvParser = new CSVParser(fileReader,
 						CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
 
-			List<MenuDTO> menus = new ArrayList<>();
+			Set<MenuDTO> menus = new HashSet<>();
 
 			Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 

@@ -93,10 +93,10 @@ public class EmailService {
 			helper.setText(text, true);
 			helper.setFrom(sender, "Delhi-fast-food");
 			
-			String path="C:\\Users\\user\\Desktop\\photo1.jpg";
+			String path="C:\\Users\\user\\Desktop\\restro.pdf";
 			
 			FileSystemResource file=new FileSystemResource(new File(path));
-			helper.addAttachment("bill.jpg", file);
+			helper.addAttachment("bill.pdf", file);
 			
 			emailSender.send(mailMessage);
 		} catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.restaurant.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ import com.restaurant.enums.OrderStatus;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.NullRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
+import com.restaurant.pdfgenerator.PdfGenerator;
 import com.restaurant.repository.MenuRepo;
 import com.restaurant.repository.OrderRepo;
 import com.restaurant.repository.RestaurantRepo;
@@ -106,8 +108,8 @@ public class OrderServiceImpl implements OrderService {
 		order.setUser(user);
 		order.setRestaurant(restaurant);
 		orderRepo.save(order);
-
-//		PdfGenerator.generatePdf(user.getFirstName());
+		
+		PdfGenerator.createPdf(order);
 
 		emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName());
 
