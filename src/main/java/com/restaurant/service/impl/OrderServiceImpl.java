@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -107,10 +108,13 @@ public class OrderServiceImpl implements OrderService {
 		order.setUser(user);
 		order.setRestaurant(restaurant);
 		orderRepo.save(order);
+		
+		CompletableFuture.runAsync(()->{
+			
+			byte[] createPdf = PdfGenerator.createPdf(order);
 
-		PdfGenerator.createPdf(order);
-
-		emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName());
+			emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName(),createPdf);
+		});
 
 		log.info("Order placed successfully");
 

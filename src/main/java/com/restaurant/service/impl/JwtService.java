@@ -51,7 +51,7 @@ public class JwtService implements UserDetailsService {
 		User user = this.userRepo.findByEmail(username);
 
 		if (user != null) {
-			return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), Arrays.asList(new SimpleGrantedAuthority("USER")));
+			return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), Arrays.asList(new SimpleGrantedAuthority(user.getRole())));
 		} else {
 			throw new UsernameNotFoundException("User not found with this username" + username);
 		}

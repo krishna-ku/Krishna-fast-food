@@ -1,11 +1,14 @@
 package com.restaurant.pdfgenerator;
 
 import java.awt.Color;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -27,9 +30,10 @@ public class PdfGenerator {
 	 * Generate PDF of Order Detils and that pdf we send to user on their email
 	 * 
 	 * @param order
+	 * @return 
 	 * @throws IOException
 	 */
-	public static void createPdf(Order order) {
+	public static byte[] createPdf(Order order) {
 
 		try {
 			PDDocument document = new PDDocument();
@@ -67,7 +71,11 @@ public class PdfGenerator {
 					16, Color.black);
 			pdfText.addSingleLineText("Status: " + order.getStatus(), 25, pageHeight - 274, font, 16, Color.black);
 
-			String orderID = "OrderId: " + order.getId();
+//			for generating random number
+			int min=1000,max=5000;
+			Random random=new Random();
+			
+			String orderID = "OrderId: " +random.nextInt(max-min) ;
 			float textWidth = pdfText.getTextWidth(orderID, font, 16);
 			pdfText.addSingleLineText(orderID, (int) (pageWidth - 25 - textWidth), pageHeight - 250, font, 16,
 					Color.black);
@@ -121,7 +129,8 @@ public class PdfGenerator {
 			table.addCell("", null);
 			table.addCell("GST", null);
 			table.addCell("18%", null);
-			table.addCell(String.valueOf(totalPrice * 0.18), null);
+			DecimalFormat decimalFormat=new DecimalFormat("#.##");
+			table.addCell(String.valueOf(decimalFormat.format(totalPrice*0.18)), null);
 
 			table.addCell("", null);
 			table.addCell("", null);
@@ -192,13 +201,17 @@ public class PdfGenerator {
 			contentStream.fill();
 
 			contentStream.close();
-			document.save("C:\\Users\\user\\Desktop\\restro.pdf");
+			ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+//			document.save("C:\\Users\\user\\Desktop\\restro.pdf");
+			document.save(byteArrayOutputStream);
 			document.close();
-			System.out.println("PDF Created");
+			System.out.println("PDF Created");//apply log here
+			return byteArrayOutputStream.toByteArray();
 
 		} catch (Exception e) {
 			e.getMessage();
 		}
+		return null;
 
 	}
 

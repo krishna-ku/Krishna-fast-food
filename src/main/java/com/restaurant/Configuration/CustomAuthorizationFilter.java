@@ -6,12 +6,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.restaurant.util.JwtUtil;
 
+import io.jsonwebtoken.lang.Collections;
 import lombok.SneakyThrows;
 
 
@@ -54,16 +57,18 @@ public class CustomAuthorizationFilter extends BasicAuthenticationFilter {
             // parse the token.
             Map<String, Object> verify = JwtUtil.getAllClaimsFromToken(token.substring(7));
             String username = verify.get("sub").toString();
+            List<Map<String, String>> object = (List<Map<String, String>>)verify.get("authorities");
             if (username != null) {
-                return new UsernamePasswordAuthenticationToken(username, null, getAuthorities("user"));
+            	Collection<? extends GrantedAuthority> authorities = getAuthorities(object);
+                return new UsernamePasswordAuthenticationToken(username, null, getAuthorities(object));
             }
             return null;
         }
         return null;
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(String role) {
-        return Arrays.asList(new SimpleGrantedAuthority(role));
+    private Collection<? extends GrantedAuthority> getAuthorities(List<Map<String, String>> authorities) {
+    	return authorities.stream().map(m->new SimpleGrantedAuthority(m.get("authority"))).collect(Collectors.toList());
     }
 
 }

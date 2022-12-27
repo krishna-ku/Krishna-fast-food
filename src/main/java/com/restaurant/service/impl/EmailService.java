@@ -15,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -75,7 +76,7 @@ public class EmailService {
 	 * @param email
 	 * @param name
 	 */
-	public void sendOrderMailToUser(String subject, @NotEmpty String email, String name) {
+	public void sendOrderMailToUser(String subject, @NotEmpty String email, String name,byte[] byteArray) {
 		try {
 
 			log.info("sending mail on user placing order :: {} ", email);
@@ -93,10 +94,11 @@ public class EmailService {
 			helper.setText(text, true);
 			helper.setFrom(sender, "Delhi-fast-food");
 			
-			String path="C:\\Users\\user\\Desktop\\restro.pdf";
+//			String path="C:\\Users\\user\\Desktop\\restro.pdf";
 			
-			FileSystemResource file=new FileSystemResource(new File(path));
-			helper.addAttachment("bill.pdf", file);
+//			FileSystemResource file=new FileSystemResource(new File(path));
+			ByteArrayResource byteArrayResource=new ByteArrayResource(byteArray);
+			helper.addAttachment("bill.pdf", byteArrayResource);
 			
 			emailSender.send(mailMessage);
 		} catch (Exception e) {

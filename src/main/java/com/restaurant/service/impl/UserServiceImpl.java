@@ -55,6 +55,8 @@ public class UserServiceImpl implements UserService {
 
 		if (user == null) {
 			User newUser = new User(userDto);
+			if(newUser.getRole()==null)
+				newUser.setRole("USER");
 			User save = userRepo.save(newUser);
 			
 			emailService.sendAccountCreatedMailToUser("Account Created",userDto.getEmail(),userDto.getFirstName());

@@ -21,6 +21,9 @@ public class UserDTO {
 
 	@Pattern(regexp = "[A-Za-z]{0,10}", message = "LastName should be alphabets and minimum 10 !!")
 	private String lastName;
+	
+	@Pattern(regexp = "(ADMIN | USER)",message = "please enter role ADMIN or USER in capital letters")
+	private String role;
 
 	private String email;
 

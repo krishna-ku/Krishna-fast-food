@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Filter;
@@ -35,6 +34,8 @@ public class User extends BaseClass {
 	private String lastName;
 
 	private String email;
+	
+	private String role;
 
 	private String password;
 
@@ -47,6 +48,7 @@ public class User extends BaseClass {
 	public User(UserDTO userDto) {
 		this.firstName = userDto.getFirstName();
 		this.lastName = userDto.getLastName();
+		this.role=userDto.getRole();
 		this.email = userDto.getEmail();
 		this.password = userDto.getPassword();
 	}
