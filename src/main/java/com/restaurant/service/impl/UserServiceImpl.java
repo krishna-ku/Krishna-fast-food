@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
@@ -27,10 +29,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepo userRepo;
-	
+
 	@Autowired
 	EmailService emailService;
-	
+
 //	private static final Logger LOG=LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
@@ -45,8 +47,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public UserDTO createUser(UserDTO userDto) {
-		
-		log.info("Creating User for {} ",userDto);
+
+		log.info("Creating User for {} ", userDto);
 
 		if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches())
 			throw new BadRequestException("Invalid email format please follow this format user@gmail.com");
@@ -55,14 +57,17 @@ public class UserServiceImpl implements UserService {
 
 		if (user == null) {
 			User newUser = new User(userDto);
-			if(newUser.getRole()==null)
+			if (newUser.getRole() == null)
 				newUser.setRole("USER");
+
+			newUser.setPassword(passwordEncoder().encode(newUser.getPassword()));
+
 			User save = userRepo.save(newUser);
-			
-			emailService.sendAccountCreatedMailToUser("Account Created",userDto.getEmail(),userDto.getFirstName());
-			
+
+			emailService.sendAccountCreatedMailToUser("Account Created", userDto.getEmail(), userDto.getFirstName());
+
 			log.info("User created successfully");
-						
+
 			return new UserDTO(save);
 
 		} else {
@@ -79,8 +84,8 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.dto.UserDTO
 	 */
 	public UserDTO updateUser(UserDTO userDto, Long userId) {
-		
-		log.info("Updating user for {}",userDto);
+
+		log.info("Updating user for {}", userDto);
 
 		User user2 = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
@@ -103,7 +108,7 @@ public class UserServiceImpl implements UserService {
 		if (!StringUtils.isEmpty(userDto.getPassword())) {
 			user2.setPassword(userDto.getPassword());
 		}
-		
+
 		log.info("User updated successfully");
 
 		return new UserDTO(userRepo.save(user2));
@@ -117,8 +122,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void deleteUser(long userId) {
-		
-		log.info("Deleting user for {}",userId);
+
+		log.info("Deleting user for {}", userId);
 
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
@@ -187,6 +192,15 @@ public class UserServiceImpl implements UserService {
 		user.setDeleted(false);
 		userRepo.save(user);
 		return "User is active";
+	}
+
+	/**
+	 * generating encrypted password and used this while generating new user
+	 * 
+	 * @return
+	 */
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 }

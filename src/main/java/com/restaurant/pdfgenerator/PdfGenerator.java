@@ -8,7 +8,6 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -18,19 +17,22 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
+import com.restaurant.dto.Keywords;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.OrderItem;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
+@Slf4j
 public class PdfGenerator {
 
 	/**
 	 * Generate PDF of Order Detils and that pdf we send to user on their email
 	 * 
 	 * @param order
-	 * @return 
+	 * @return
 	 * @throws IOException
 	 */
 	public static byte[] createPdf(Order order) {
@@ -40,7 +42,6 @@ public class PdfGenerator {
 			PDPage firstPage = new PDPage(PDRectangle.A4);
 
 			document.addPage(firstPage);
-
 
 			Format dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			Format timeFormat = new SimpleDateFormat("HH:mm");
@@ -71,11 +72,7 @@ public class PdfGenerator {
 					16, Color.black);
 			pdfText.addSingleLineText("Status: " + order.getStatus(), 25, pageHeight - 274, font, 16, Color.black);
 
-//			for generating random number
-			int min=1000,max=5000;
-			Random random=new Random();
-			
-			String orderID = "OrderId: " +random.nextInt(max-min) ;
+			String orderID = "OrderId: " + order.getOrderNo();
 			float textWidth = pdfText.getTextWidth(orderID, font, 16);
 			pdfText.addSingleLineText(orderID, (int) (pageWidth - 25 - textWidth), pageHeight - 250, font, 16,
 					Color.black);
@@ -129,50 +126,14 @@ public class PdfGenerator {
 			table.addCell("", null);
 			table.addCell("GST", null);
 			table.addCell("18%", null);
-			DecimalFormat decimalFormat=new DecimalFormat("#.##");
-			table.addCell(String.valueOf(decimalFormat.format(totalPrice*0.18)), null);
+			DecimalFormat decimalFormat = new DecimalFormat("#.##");
+			table.addCell(String.valueOf(decimalFormat.format(totalPrice * Keywords.GST_PERCENTAGE)), null);
 
 			table.addCell("", null);
 			table.addCell("", null);
 			table.addCell("Grand Total", tableHeadColor);
 			table.addCell("", tableHeadColor);
-			table.addCell(String.valueOf(totalPrice += totalPrice * 0.18), tableHeadColor);
-
-//		table.addCell("1.", tableBodyColor);
-//		table.addCell("Samosa", tableBodyColor);
-//		table.addCell("15", tableBodyColor);
-//		table.addCell("2", tableBodyColor);
-//		table.addCell("30", tableBodyColor);
-//
-//		table.addCell("2.", tableBodyColor);
-//		table.addCell("pastry", tableBodyColor);
-//		table.addCell("30", tableBodyColor);
-//		table.addCell("1", tableBodyColor);
-//		table.addCell("30", tableBodyColor);
-//
-//		table.addCell("3.", tableBodyColor);
-//		table.addCell("gulab jamun", tableBodyColor);
-//		table.addCell("15", tableBodyColor);
-//		table.addCell("2", tableBodyColor);
-//		table.addCell("30", tableBodyColor);
-//
-//		table.addCell("", null);
-//		table.addCell("", null);
-//		table.addCell("Sub Total", null);
-//		table.addCell("", null);
-//		table.addCell("90", null);
-//
-//		table.addCell("", null);
-//		table.addCell("", null);
-//		table.addCell("GST", null);
-//		table.addCell("5%", null);
-//		table.addCell("4.5", null);
-//
-//		table.addCell("", null);
-//		table.addCell("", null);
-//		table.addCell("Grand Total", tableHeadColor);
-//		table.addCell("", tableHeadColor);
-//		table.addCell("94.5", tableHeadColor);
+			table.addCell(String.valueOf(totalPrice += totalPrice * Keywords.GST_PERCENTAGE), tableHeadColor);
 
 			// method of payments
 			String[] paymentMethods = { "Methods of payments we accept: ", "Cash, Phonepe, GPay, RuPay, Visa" };
@@ -190,7 +151,7 @@ public class PdfGenerator {
 			int xpos = pageWidth - 250 + pageWidth - 25;
 			pdfText.addSingleLineText(autoSign, (int) (xpos - autoSignWidth) / 2, 125, italicFont, 16, Color.black);
 
-			String bottomLine = "Rain or shine, it's time to dine";
+			String bottomLine = Keywords.bottomLine;
 			float bottomLineWidth = pdfText.getTextWidth(bottomLine, font, 20);
 			pdfText.addSingleLineText(bottomLine, (int) ((pageWidth - bottomLineWidth) / 2), 50, italicFont, 20,
 					Color.DARK_GRAY);
@@ -201,11 +162,11 @@ public class PdfGenerator {
 			contentStream.fill();
 
 			contentStream.close();
-			ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 //			document.save("C:\\Users\\user\\Desktop\\restro.pdf");
 			document.save(byteArrayOutputStream);
 			document.close();
-			System.out.println("PDF Created");//apply log here
+			log.info("PDF created successfully");
 			return byteArrayOutputStream.toByteArray();
 
 		} catch (Exception e) {

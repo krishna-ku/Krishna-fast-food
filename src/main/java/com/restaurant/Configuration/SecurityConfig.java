@@ -1,4 +1,4 @@
-package com.restaurant.Configuration;
+package com.restaurant.configuration;
 
 import javax.servlet.http.HttpServletRequest;
 

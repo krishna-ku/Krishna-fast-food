@@ -1,4 +1,4 @@
-package com.restaurant.Configuration;
+package com.restaurant.configuration;
 
 import java.io.IOException;
 import java.text.ParseException;

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Keywords {
+	
+	public static long number=1000;
 
 	public static final String USER = "User";
 	public static final String USER_ID = "userId";
@@ -28,4 +30,6 @@ public class Keywords {
 	public static final float GST_PERCENTAGE = 0.18f;
 
 	public static final float SERVICE_TAX = 0.5f;
+	
+	public static String bottomLine="Rain or shine, it's time to dine";
 }

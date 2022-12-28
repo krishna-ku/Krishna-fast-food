@@ -40,6 +40,8 @@ public class Order extends BaseClass {
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private User user;
+	
+	private long orderNo;
 
 //	private String customer;
 

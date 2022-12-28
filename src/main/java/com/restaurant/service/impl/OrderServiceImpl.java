@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -108,6 +109,9 @@ public class OrderServiceImpl implements OrderService {
 		order.setUser(user);
 		order.setRestaurant(restaurant);
 		orderRepo.save(order);
+		
+		Keywords.number++;
+		order.setOrderNo(Keywords.number);
 		
 		CompletableFuture.runAsync(()->{
 			
