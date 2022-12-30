@@ -66,24 +66,24 @@ public class PdfGenerator {
 					(int) (pageWidth - font.getStringWidth("1234567890") / 1000 * 15 - 10), pageHeight - 25, font, 15,
 					Color.black);
 
-			pdfText.addSingleLineText("Delhi fast food", 25, pageHeight - 150, font, 50, Color.red);
+			pdfText.addSingleLineText(Keywords.RESTAURANT_NAME, 25, pageHeight - 150, font, 50, Color.red);
 
-			pdfText.addSingleLineText("Customer Name: " + order.getUser().getFirstName(), 25, pageHeight - 250, font,
+			pdfText.addSingleLineText(Keywords.CUSTOMER_NAME + order.getUser().getFirstName(), 25, pageHeight - 250, font,
 					16, Color.black);
-			pdfText.addSingleLineText("Status: " + order.getStatus(), 25, pageHeight - 274, font, 16, Color.black);
+			pdfText.addSingleLineText(Keywords.STATUS + order.getStatus(), 25, pageHeight - 274, font, 16, Color.black);
 
-			String orderID = "OrderId: " + order.getOrderNo();
+			String orderID = Keywords.ORDERID + order.getOrderNo();
 			float textWidth = pdfText.getTextWidth(orderID, font, 16);
 			pdfText.addSingleLineText(orderID, (int) (pageWidth - 25 - textWidth), pageHeight - 250, font, 16,
 					Color.black);
 
-			float dateTextWidth = pdfText.getTextWidth("Date: " + dateFormat.format(new Date()), font, 16);
-			pdfText.addSingleLineText("Date: " + dateFormat.format(new Date()), (int) (pageWidth - 25 - dateTextWidth),
+			float dateTextWidth = pdfText.getTextWidth(Keywords.DATE + dateFormat.format(new Date()), font, 16);
+			pdfText.addSingleLineText(Keywords.DATE + dateFormat.format(new Date()), (int) (pageWidth - 25 - dateTextWidth),
 					pageHeight - 274, font, 16, Color.black);
 
-			String time = timeFormat.format(new Date());
-			float timeTextWidth = pdfText.getTextWidth("Time: " + timeFormat.format(new Date()), font, 16);
-			pdfText.addSingleLineText("Time: " + timeFormat.format(new Date()), (int) (pageWidth - 25 - timeTextWidth),
+//			String time = timeFormat.format(new Date());
+			float timeTextWidth = pdfText.getTextWidth(Keywords.TIME + timeFormat.format(new Date()), font, 16);
+			pdfText.addSingleLineText(Keywords.TIME + timeFormat.format(new Date()), (int) (pageWidth - 25 - timeTextWidth),
 					pageHeight - 298, font, 16, Color.black);
 
 			addTableInPdf table = new addTableInPdf(document, contentStream);
@@ -95,11 +95,11 @@ public class PdfGenerator {
 			Color tableHeadColor = new Color(240, 93, 11);
 			Color tableBodyColor = new Color(219, 218, 198);
 
-			table.addCell("Si.No.", tableHeadColor);
-			table.addCell("Items", tableHeadColor);
-			table.addCell("Price", tableHeadColor);
-			table.addCell("Qty", tableHeadColor);
-			table.addCell("Total", tableHeadColor);
+			table.addCell(Keywords.SI_NO, tableHeadColor);
+			table.addCell(Keywords.ITEMS, tableHeadColor);
+			table.addCell(Keywords.PRICE, tableHeadColor);
+			table.addCell(Keywords.QUANTITY, tableHeadColor);
+			table.addCell(Keywords.TOTAL, tableHeadColor);
 
 			int i = 1;
 			float totalPrice = 0;
@@ -118,25 +118,25 @@ public class PdfGenerator {
 
 			table.addCell("", null);
 			table.addCell("", null);
-			table.addCell("Sub Total", null);
+			table.addCell(Keywords.SUB_TOTAL, null);
 			table.addCell("", null);
 			table.addCell(String.valueOf(totalPrice), null);
 
 			table.addCell("", null);
 			table.addCell("", null);
-			table.addCell("GST", null);
-			table.addCell("18%", null);
+			table.addCell(Keywords.GST, null);
+			table.addCell(Keywords.GST_VALUE, null);
 			DecimalFormat decimalFormat = new DecimalFormat("#.##");
 			table.addCell(String.valueOf(decimalFormat.format(totalPrice * Keywords.GST_PERCENTAGE)), null);
 
 			table.addCell("", null);
 			table.addCell("", null);
-			table.addCell("Grand Total", tableHeadColor);
+			table.addCell(Keywords.GRAND_TOTAL, tableHeadColor);
 			table.addCell("", tableHeadColor);
 			table.addCell(String.valueOf(totalPrice += totalPrice * Keywords.GST_PERCENTAGE), tableHeadColor);
 
 			// method of payments
-			String[] paymentMethods = { "Methods of payments we accept: ", "Cash, Phonepe, GPay, RuPay, Visa" };
+			String[] paymentMethods = { "Methods of payments we accept: ", Keywords.PAYMENT_METHODS };
 			pdfText.addMultiLineText(paymentMethods, 15, 12, 180, italicFont, 20, new Color(122, 122, 122));
 
 			// authorised signatory
@@ -146,12 +146,12 @@ public class PdfGenerator {
 			contentStream.lineTo(pageWidth - 25, 150);
 			contentStream.stroke();
 
-			String autoSign = "Authorized Signatory";
+			String autoSign =Keywords.AUTHORIZED_SIGNATORY;
 			float autoSignWidth = pdfText.getTextWidth(autoSign, italicFont, 16);
 			int xpos = pageWidth - 250 + pageWidth - 25;
 			pdfText.addSingleLineText(autoSign, (int) (xpos - autoSignWidth) / 2, 125, italicFont, 16, Color.black);
 
-			String bottomLine = Keywords.bottomLine;
+			String bottomLine = Keywords.BOTTOM_LINE;
 			float bottomLineWidth = pdfText.getTextWidth(bottomLine, font, 20);
 			pdfText.addSingleLineText(bottomLine, (int) ((pageWidth - bottomLineWidth) / 2), 50, italicFont, 20,
 					Color.DARK_GRAY);

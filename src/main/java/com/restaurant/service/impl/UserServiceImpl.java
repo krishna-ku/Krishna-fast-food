@@ -32,6 +32,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	EmailService emailService;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 //	private static final Logger LOG=LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -60,7 +63,7 @@ public class UserServiceImpl implements UserService {
 			if (newUser.getRole() == null)
 				newUser.setRole("USER");
 
-			newUser.setPassword(passwordEncoder().encode(newUser.getPassword()));
+			newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
 			User save = userRepo.save(newUser);
 
@@ -194,13 +197,13 @@ public class UserServiceImpl implements UserService {
 		return "User is active";
 	}
 
-	/**
-	 * generating encrypted password and used this while generating new user
-	 * 
-	 * @return
-	 */
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+//	/**
+//	 * generating encrypted password and used this while generating new user
+//	 * 
+//	 * @return
+//	 */
+//	public PasswordEncoder passwordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
 
 }

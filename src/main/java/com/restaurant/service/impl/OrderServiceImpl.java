@@ -110,8 +110,8 @@ public class OrderServiceImpl implements OrderService {
 		order.setRestaurant(restaurant);
 		orderRepo.save(order);
 		
-		Keywords.number++;
-		order.setOrderNo(Keywords.number);
+//		Keywords.number++;
+//		order.setOrderNo(Keywords.number);
 		
 		CompletableFuture.runAsync(()->{
 			
