@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -21,7 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
 import com.restaurant.dto.UserDTO;
+import com.restaurant.entity.User;
+import com.restaurant.repository.UserRepo;
 import com.restaurant.service.UserService;
+import com.restaurant.specification.MenuSpecification;
 
 @RestController
 @RequestMapping("/users")
@@ -29,6 +33,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserRepo userRepo;
 
 	/**
 	 * Add User service url : /user method : Post
@@ -75,8 +82,8 @@ public class UserController {
 	 */
 	@Secured("hasRole('ADMIN')")
 	@GetMapping
-	public ResponseEntity<List<UserDTO>> getAllUsers(@RequestParam(defaultValue = "")String email,String firstName) {
-		List<UserDTO> users = userService.getAllUsers(email,firstName);
+	public ResponseEntity<List<UserDTO>> getAllUsers(UserDTO userDTO) {
+		List<UserDTO> users = userService.getAllUsers(userDTO.getEmail(),userDTO.getFirstName());
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
@@ -116,5 +123,11 @@ public class UserController {
 	public ResponseEntity<String> activateUserEntity(@PathVariable long userId){
 	 	return ResponseEntity.ok(userService.activateUser(userId));
 	}
+	
+//	@GetMapping("/deleted/{deleted}")
+//	public List<User> findUsersIsDeletedOrNot(@PathVariable boolean deleted){
+//		Specification<User> specification=Specification.where(MenuSpecification.userIsDeletedOrNot(deleted));
+//		return userRepo.findAll(specification);
+//	}
 
 }

@@ -18,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -46,10 +47,8 @@ public class Order extends BaseClass {
 	@JoinColumn(name = "userId")
 	private User user;
 	
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	@SequenceGenerator(initialValue = 1000, name = "orderNo")
-//	@Column(updatable = true,columnDefinition = "long default 100")
-	private long orderNo;
+	
+	private long orderNumber;
 
 //	private String customer;
 

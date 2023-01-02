@@ -72,7 +72,7 @@ public class PdfGenerator {
 					16, Color.black);
 			pdfText.addSingleLineText(Keywords.STATUS + order.getStatus(), 25, pageHeight - 274, font, 16, Color.black);
 
-			String orderID = Keywords.ORDERID + order.getOrderNo();
+			String orderID = Keywords.ORDERID + order.getOrderNumber();
 			float textWidth = pdfText.getTextWidth(orderID, font, 16);
 			pdfText.addSingleLineText(orderID, (int) (pageWidth - 25 - textWidth), pageHeight - 250, font, 16,
 					Color.black);

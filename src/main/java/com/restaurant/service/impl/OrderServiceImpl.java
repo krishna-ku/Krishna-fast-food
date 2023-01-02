@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -104,25 +103,37 @@ public class OrderServiceImpl implements OrderService {
 
 		}).filter(Objects::nonNull).collect(Collectors.toList());
 
+		
+
 		order.setStatus(OrderStatus.WAITING);
 		order.setOrderItems(orderItems);
 		order.setUser(user);
 		order.setRestaurant(restaurant);
-		orderRepo.save(order);
-		
-//		Keywords.number++;
-//		order.setOrderNo(Keywords.number);
-		
-		CompletableFuture.runAsync(()->{
-			
+//		orderRepo.save(order);
+		saveOrderNumber(order);
+
+		CompletableFuture.runAsync(() -> {
+
 			byte[] createPdf = PdfGenerator.createPdf(order);
 
-			emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName(),createPdf);
+			emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName(), createPdf);
 		});
 
 		log.info("Order placed successfully");
 
 		return new OrderDTO(order);
+	}
+
+	/**
+	 * set order number and increment by 1 every time
+	 * @param order
+	 */
+	public void saveOrderNumber(Order order) {
+		synchronized(this) {
+		Long lastOrderNumber = orderRepo.findLastOrderNumber();
+		order.setOrderNumber(lastOrderNumber + 1);
+		orderRepo.save(order);
+		}
 	}
 
 	/**

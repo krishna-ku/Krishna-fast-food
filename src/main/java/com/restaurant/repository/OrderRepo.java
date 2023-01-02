@@ -17,5 +17,8 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
 
 //	@Query("select o from Order o where o.deleted=:deleted")
 //	List<Order> findOrdersByDeleted(@Param("deleted") boolean d);
+	
+	@Query(nativeQuery = true,value = "select coalesce(max(order_number),1000) as max_value from restaurant.orders")
+	Long findLastOrderNumber();
 
 }

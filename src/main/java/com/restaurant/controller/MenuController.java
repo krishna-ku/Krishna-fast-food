@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,13 +16,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.ApiResponse;
 import com.restaurant.dto.ExcelHelper;
 import com.restaurant.dto.MenuDTO;
+import com.restaurant.entity.Menu;
+import com.restaurant.repository.MenuRepo;
 import com.restaurant.service.MenuService;
+import com.restaurant.specification.MenuSpecification;
 
 @RestController
 @RequestMapping("/menus")
@@ -29,6 +34,9 @@ public class MenuController {
 
 	@Autowired
 	private MenuService menuService;
+	
+	@Autowired
+	private MenuRepo menuRepo;
 
 	/**
 	 * Add Menu service url : /menus method : Post
@@ -146,6 +154,12 @@ public class MenuController {
 			return new ResponseEntity<>(new ApiResponse("Please upload excel or csv file", false),
 					HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	@GetMapping("/deleted")
+	public List<Menu> findMenusIsDeletedOrNot(@RequestBody Menu menu ){
+		Specification<Menu> specification=Specification.where(MenuSpecification.menuIsDeletedOrNot(menu));
+		return menuRepo.findAll(specification);
 	}
 
 }
