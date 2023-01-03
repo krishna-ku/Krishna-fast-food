@@ -11,7 +11,7 @@ import com.restaurant.dto.RatingDashBoardView;
 import com.restaurant.entity.Rating;
 import com.restaurant.entity.User;
 
-public interface RatingRepo extends JpaRepository<Rating, Long>,JpaSpecificationExecutor<RatingDTO> {
+public interface RatingRepo extends JpaRepository<Rating, Long>,JpaSpecificationExecutor<Rating> {
 	
 	User findByUser(User user);
 	

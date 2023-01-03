@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.restaurant.dto.UserDTO;
+import com.restaurant.entity.User;
 
 @Component
 public class UserSpecification {
@@ -18,7 +19,7 @@ public class UserSpecification {
 	 * @param userDTO
 	 * @return
 	 */
-	public static Specification<UserDTO> filterUsers(UserDTO userDTO) {
+	public static Specification<User> filterUsers(UserDTO userDTO) {
 
 		return ((root, criteriaQuery, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();

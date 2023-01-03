@@ -233,8 +233,8 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	@Override
 	public List<OrderDTO> filterOrders(OrderDTO orderDTO) {
-		Specification<OrderDTO> specification = Specification.where(OrderSpecification.filterOrders(orderDTO));
-		return orderRepo.findAll(specification);
+		Specification<Order> specification = Specification.where(OrderSpecification.filterOrders(orderDTO));
+		return orderRepo.findAll(specification).stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
 	}
 
 	/**

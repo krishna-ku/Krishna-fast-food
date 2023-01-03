@@ -8,7 +8,7 @@ import com.restaurant.dto.DashboardView;
 import com.restaurant.dto.OrderDTO;
 import com.restaurant.entity.Order;
 
-public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationExecutor<OrderDTO> {
+public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
 	@Query(nativeQuery = true, value = "select count(orders.id) totalOrders ,sum(if(status='COMPLETED',1,0)) as completedOrders,"
 			+ "sum(if(status='WAITING',1,0)) as waitingOrders,sum(if(status='CANCELLED',1,0)) as cancelledOrders,"

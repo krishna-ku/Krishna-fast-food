@@ -131,8 +131,8 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public List<MenuDTO> filterMenus(MenuDTO menuDTO) {
-		Specification<MenuDTO> specification = Specification.where(MenuSpecification.menuFilters(menuDTO));
-		return menuRepo.findAll(specification);
+		Specification<Menu> specification = Specification.where(MenuSpecification.menuFilters(menuDTO));
+		return menuRepo.findAll(specification).stream().map(m -> new MenuDTO(m)).collect(Collectors.toList());
 	}
 
 	/**
@@ -209,9 +209,13 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	public void checkUploadFileIsCsvOrExcel(MultipartFile uploadMenuFromFile) {
 		try {
+
+			if (uploadMenuFromFile.getContentType() == null)
+				throw new BadRequestException("please provide a valid CSV or Excel file");
+
 			if (!ExcelHelper.checkExcelFormat(uploadMenuFromFile) && !ExcelHelper.checkCSVFormat(uploadMenuFromFile)) {
 				log.info("file is not csv or not excel");
-				throw new BadRequestException("file is not csv or not excel");
+				throw new BadRequestException("please provide a valid CSV or Excel file");
 			}
 
 			if (ExcelHelper.checkExcelFormat(uploadMenuFromFile)) {
@@ -224,7 +228,7 @@ public class MenuServiceImpl implements MenuService {
 				log.info("CSV file is saved successfully");
 			}
 		} catch (Exception e) {
-			throw new BadRequestException("please upload csv or excel file");
+			throw new BadRequestException(e.getMessage());
 		}
 	}
 

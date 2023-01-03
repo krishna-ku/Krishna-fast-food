@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.restaurant.dto.UserDTO;
 import com.restaurant.entity.User;
 
-public interface UserRepo extends JpaRepository<User, Long>,JpaSpecificationExecutor<UserDTO> {
+public interface UserRepo extends JpaRepository<User, Long>,JpaSpecificationExecutor<User> {
 	
 	
 	User findByEmail(String email);

@@ -9,16 +9,18 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.restaurant.dto.OrderDTO;
+import com.restaurant.entity.Order;
 
 @Component
 public class OrderSpecification {
 
 	/**
 	 * filter orders on certain conditions
+	 * 
 	 * @param orderDTO
 	 * @return
 	 */
-	public static Specification<OrderDTO> filterOrders(OrderDTO orderDTO) {
+	public static Specification<Order> filterOrders(OrderDTO orderDTO) {
 
 		return ((root, criteriaQuery, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();

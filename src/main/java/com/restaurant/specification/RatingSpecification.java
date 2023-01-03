@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.restaurant.dto.RatingDTO;
+import com.restaurant.entity.Rating;
 
 @Component
 public class RatingSpecification {
@@ -19,7 +20,7 @@ public class RatingSpecification {
 	 * @param ratingDTO
 	 * @return
 	 */
-	public static Specification<RatingDTO> filterRatings(RatingDTO ratingDTO) {
+	public static Specification<Rating> filterRatings(RatingDTO ratingDTO) {
 
 		return ((root, criteriaQuery, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();

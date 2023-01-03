@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.restaurant.dto.MenuDTO;
+import com.restaurant.entity.Menu;
 
 @Component
 public class MenuSpecification {
@@ -19,7 +20,7 @@ public class MenuSpecification {
 	 * @param menuDTO
 	 * @return
 	 */
-	public static Specification<MenuDTO> menuFilters(MenuDTO menuDTO) {
+	public static Specification<Menu> menuFilters(MenuDTO menuDTO) {
 
 		return ((root, criteriaQuery, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();

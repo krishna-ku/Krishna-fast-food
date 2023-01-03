@@ -12,7 +12,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
-import com.restaurant.dto.MenuDTO;
 import com.restaurant.dto.RatingDTO;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.Rating;
@@ -22,7 +21,6 @@ import com.restaurant.repository.OrderRepo;
 import com.restaurant.repository.RatingRepo;
 import com.restaurant.repository.UserRepo;
 import com.restaurant.service.RatingService;
-import com.restaurant.specification.MenuSpecification;
 import com.restaurant.specification.RatingSpecification;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,8 +52,8 @@ public class RatingServiceImpl implements RatingService {
 	 */
 	@Override
 	public RatingDTO createRating(RatingDTO ratingDto, long orderId, long userId) {
-		
-		log.info("Creating rating for {} ",ratingDto);
+
+		log.info("Creating rating for {} ", ratingDto);
 
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
@@ -70,7 +68,7 @@ public class RatingServiceImpl implements RatingService {
 		rating.setUser(user);
 
 		this.ratingRepo.save(rating);
-		
+
 		log.info("Rating created successfully");
 
 		return new RatingDTO(rating);
@@ -104,7 +102,7 @@ public class RatingServiceImpl implements RatingService {
 
 		return ratings.stream().map(rating -> new RatingDTO(rating)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * filter rating on the basis of id,rating and deleted
 	 * 
@@ -113,10 +111,10 @@ public class RatingServiceImpl implements RatingService {
 	 */
 	@Override
 	public List<RatingDTO> filterRatings(RatingDTO ratingDTO) {
-		Specification<RatingDTO> specification = Specification.where(RatingSpecification.filterRatings(ratingDTO));
-		return ratingRepo.findAll(specification);
+		Specification<Rating> specification = Specification.where(RatingSpecification.filterRatings(ratingDTO));
+		return ratingRepo.findAll(specification).stream().map(r -> new RatingDTO(r)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * return all Ratings whose ratingValue<=given rating value like 3,4 etc
 	 * 
@@ -163,7 +161,7 @@ public class RatingServiceImpl implements RatingService {
 
 		return rating.stream().map(u -> new RatingDTO(u)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * activate the deleted rating
 	 * 

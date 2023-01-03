@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.restaurant.dto.MenuDTO;
 import com.restaurant.entity.Menu;
 
-public interface MenuRepo extends JpaRepository<Menu, Long>,JpaSpecificationExecutor<MenuDTO> {
+public interface MenuRepo extends JpaRepository<Menu, Long>,JpaSpecificationExecutor<Menu> {
 
 //	Menu findByName(String name);
 

@@ -155,8 +155,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public List<UserDTO> filterUsers(UserDTO userDTO){
-		Specification<UserDTO> specification=Specification.where(UserSpecification.filterUsers(userDTO));
-		return userRepo.findAll(specification);
+		Specification<User> specification=Specification.where(UserSpecification.filterUsers(userDTO));
+		return userRepo.findAll(specification).stream().map(user->new UserDTO(user)).collect(Collectors.toList());
 	}
 
 	/**
