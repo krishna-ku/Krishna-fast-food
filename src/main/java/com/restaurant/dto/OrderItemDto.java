@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OrderItemDto {
+public class OrderItemDTO {
 
-	public OrderItemDto(OrderItem o) {
+	public OrderItemDTO(OrderItem o) {
 		this.menuId = o.getMenu().getId();
 		this.itemQuantity = o.getItemQuantity();
 		this.name = o.getMenu().getName();

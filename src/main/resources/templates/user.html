@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<title>Our Funky HTML Page</title>
+<meta name="description" content="Our first page">
+<meta name="keywords" content="html tutorial template">
+</head>
+<body class="" style="background-color: brown">
+	<table align="center" border="0" cellpadding="0" cellspacing="0"
+		class="body" width="550" bgcolor="white"
+		style="border: 2px solid black">
+		<tr>
+			<td>&nbsp;</td>
+			<td class="container">
+				<div class="content">
+
+					<!-- START CENTERED WHITE CONTAINER -->
+					<table class="main">
+
+						<!-- START MAIN CONTENT AREA -->
+						<tr>
+							<td class="wrapper">
+								<table border="0" cellpadding="0" cellspacing="0">
+									<tr>
+										<td>
+											<p>
+												Welcome <span th:text="${name}"></span>,
+											</p>
+											<p></p>
+											<p>
+												Below is username and password to login<br> Username :
+												<span th:text="${email}"></span><br> password : <span
+													th:text="${password}"></span>
+											</p>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<!-- END MAIN CONTENT AREA -->
+					</table>
+				</div>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+	</table>
+</body>
+</html>

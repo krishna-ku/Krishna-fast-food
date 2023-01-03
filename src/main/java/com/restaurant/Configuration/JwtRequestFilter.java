@@ -1,3 +1,4 @@
+package com.restaurant.configuration;
 //package com.restaurant.Configuration;
 //
 //import java.io.IOException;

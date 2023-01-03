@@ -1,3 +1,4 @@
+package com.restaurant.configuration;
 //package com.restaurant.Configuration;
 //
 //import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.restaurant.service;
 
 import java.util.List;
 
-import com.restaurant.dto.OrderItemDto;
+import com.restaurant.dto.OrderItemDTO;
 
 public interface OrderItemService {
 	
@@ -16,9 +16,9 @@ public interface OrderItemService {
 	void deleteOrder(long id);
 	
 	//get all orders
-	List<OrderItemDto> getAllOrders();
+	List<OrderItemDTO> getAllOrders();
 	
 	//get order by id
-	OrderItemDto getOrderById(long id);
+	OrderItemDTO getOrderById(long id);
 	
 }
