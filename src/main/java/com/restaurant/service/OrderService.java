@@ -28,7 +28,7 @@ public interface OrderService {
 	// activate orders
 	String activateOrder(long orderId);
 
-//	//get orders by date
-//	List<E>
+	//get filter orders
+	List<OrderDTO> filterOrders(OrderDTO orderDTO);
 
 }

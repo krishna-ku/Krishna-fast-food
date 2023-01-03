@@ -3,13 +3,15 @@ package com.restaurant.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
+import com.restaurant.dto.RatingDTO;
 import com.restaurant.dto.RatingDashBoardView;
 import com.restaurant.entity.Rating;
 import com.restaurant.entity.User;
 
-public interface RatingRepo extends JpaRepository<Rating, Long> {
+public interface RatingRepo extends JpaRepository<Rating, Long>,JpaSpecificationExecutor<RatingDTO> {
 	
 	User findByUser(User user);
 	

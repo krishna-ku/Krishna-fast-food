@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,17 +15,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.ApiResponse;
-import com.restaurant.dto.ExcelHelper;
 import com.restaurant.dto.MenuDTO;
-import com.restaurant.entity.Menu;
-import com.restaurant.repository.MenuRepo;
 import com.restaurant.service.MenuService;
-import com.restaurant.specification.MenuSpecification;
 
 @RestController
 @RequestMapping("/menus")
@@ -34,9 +28,6 @@ public class MenuController {
 
 	@Autowired
 	private MenuService menuService;
-	
-	@Autowired
-	private MenuRepo menuRepo;
 
 	/**
 	 * Add Menu service url : /menus method : Post
@@ -46,8 +37,8 @@ public class MenuController {
 	 */
 	@PostMapping
 	public ResponseEntity<MenuDTO> createMenu(@Valid @RequestBody MenuDTO menuDto) {
-		MenuDTO menu2 = menuService.createMenu(menuDto);
-		return new ResponseEntity<>(menu2, HttpStatus.CREATED);
+		MenuDTO newmenu = menuService.createMenu(menuDto);
+		return new ResponseEntity<>(newmenu, HttpStatus.CREATED);
 	}
 
 	/**
@@ -86,26 +77,15 @@ public class MenuController {
 	}
 
 	/**
-	 * get lists of menus by maxPrice Service url: /menus/filter/byPrice=20 it will
-	 * give all menus smaller then 20 or equal then 20 method : GET
+	 * filter menus on basis of name,price,id and deleted
 	 * 
-	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDTO}
+	 * @param menuDTO
+	 * @return
 	 */
 	@GetMapping("/filter")
-	public ResponseEntity<List<MenuDTO>> menuByFilter(@RequestParam(defaultValue = "20") float byPrice) {
-		List<MenuDTO> menu = menuService.filterMenusByPrice(byPrice);
-		return new ResponseEntity<>(menu, HttpStatus.OK);
-	}
-
-	/**
-	 * get detail of Menu by id Service url: /menus/id method: GET
-	 * 
-	 * @param id
-	 * @return MenuDto of particular id {@link com.restaurant.dto.MenuDTO}
-	 */
-	@GetMapping("/{menuId}")
-	public ResponseEntity<MenuDTO> getMenuById(@PathVariable long menuId) {
-		return ResponseEntity.ok(menuService.getMenuById(menuId));
+	public ResponseEntity<List<MenuDTO>> filterMenus(@RequestBody MenuDTO menuDTO) {
+		List<MenuDTO> filterMenus = menuService.filterMenus(menuDTO);
+		return new ResponseEntity<>(filterMenus, HttpStatus.OK);
 	}
 
 	/**
@@ -120,20 +100,6 @@ public class MenuController {
 	}
 
 	/**
-	 * get details of menu isDelted or notDeleted service url :/menus/filtermenus
-	 * method: GET
-	 * 
-	 * @param isDeleted=true or false
-	 * @return list of menus
-	 */
-	@GetMapping("/filtermenus")
-	public ResponseEntity<List<MenuDTO>> findAll(
-			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
-		List<MenuDTO> menuDtos = menuService.findAllFilter(isDeleted);
-		return new ResponseEntity<>(menuDtos, HttpStatus.OK);
-	}
-
-	/**
 	 * check file is excle or no then save that file in Database service url:
 	 * /menus/uploadfile method: POST
 	 * 
@@ -142,24 +108,9 @@ public class MenuController {
 	 */
 	@PostMapping("/upload")
 	public ResponseEntity<ApiResponse> upload(@RequestParam("file") MultipartFile uploadMenuFromFile) {
-		if (ExcelHelper.checkExcelFormat(uploadMenuFromFile)) {
-			this.menuService.save(uploadMenuFromFile);
-			return new ResponseEntity<>(
-					new ApiResponse("your excel file is uploaded and data is saved in database", true), HttpStatus.OK);
-		} else if (ExcelHelper.checkCSVFormat(uploadMenuFromFile)) {
-			this.menuService.saveCsv(uploadMenuFromFile);
-			return new ResponseEntity<>(
-					new ApiResponse("your csv file is uploaded and data is saved in database", true), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(new ApiResponse("Please upload excel or csv file", false),
-					HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	@GetMapping("/deleted")
-	public List<Menu> findMenusIsDeletedOrNot(@RequestBody Menu menu ){
-		Specification<Menu> specification=Specification.where(MenuSpecification.menuIsDeletedOrNot(menu));
-		return menuRepo.findAll(specification);
+		menuService.checkUploadFileIsCsvOrExcel(uploadMenuFromFile);
+		return new ResponseEntity<>(new ApiResponse("file is upload successfully and data is saved", true),
+				HttpStatus.OK);
 	}
 
 }

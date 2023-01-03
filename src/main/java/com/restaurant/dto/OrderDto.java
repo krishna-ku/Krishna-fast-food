@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
 import com.restaurant.entity.Order;
-import com.restaurant.entity.Restaurant;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

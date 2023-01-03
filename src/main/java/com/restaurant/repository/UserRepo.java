@@ -6,9 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
+import com.restaurant.dto.UserDTO;
 import com.restaurant.entity.User;
 
-public interface UserRepo extends JpaRepository<User, Long>,JpaSpecificationExecutor<User> {
+public interface UserRepo extends JpaRepository<User, Long>,JpaSpecificationExecutor<UserDTO> {
 	
 	
 	User findByEmail(String email);

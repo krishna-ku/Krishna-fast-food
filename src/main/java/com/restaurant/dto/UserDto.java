@@ -21,11 +21,13 @@ public class UserDTO {
 
 	@Pattern(regexp = "[A-Za-z]{0,10}", message = "LastName should be alphabets and minimum 10 !!")
 	private String lastName;
-	
-	@Pattern(regexp = "(ADMIN|USER)",message = "please enter role ADMIN or USER in capital letters")
+
+	@Pattern(regexp = "(ADMIN|USER)", message = "please enter role ADMIN or USER in capital letters")
 	private String role;
 
 	private String email;
+
+	private Boolean deleted;
 
 	@Pattern(regexp = "[A-Za-z]+[!@#$%^&*]+[0-9]*$", message = "Password should be like this user@123")
 	@Size(min = 8, max = 16, message = "password must be between 8 to 16 characters")
@@ -37,5 +39,6 @@ public class UserDTO {
 		this.lastName = user.getLastName();
 		this.email = user.getEmail();
 		this.password = user.getPassword();
+		this.deleted = user.isDeleted();
 	}
 }

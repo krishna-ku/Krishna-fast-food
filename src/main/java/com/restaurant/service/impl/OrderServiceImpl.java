@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
@@ -35,6 +36,7 @@ import com.restaurant.repository.OrderRepo;
 import com.restaurant.repository.RestaurantRepo;
 import com.restaurant.repository.UserRepo;
 import com.restaurant.service.OrderService;
+import com.restaurant.specification.OrderSpecification;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -103,8 +105,6 @@ public class OrderServiceImpl implements OrderService {
 
 		}).filter(Objects::nonNull).collect(Collectors.toList());
 
-		
-
 		order.setStatus(OrderStatus.WAITING);
 		order.setOrderItems(orderItems);
 		order.setUser(user);
@@ -126,13 +126,14 @@ public class OrderServiceImpl implements OrderService {
 
 	/**
 	 * set order number and increment by 1 every time
+	 * 
 	 * @param order
 	 */
 	public void saveOrderNumber(Order order) {
-		synchronized(this) {
-		Long lastOrderNumber = orderRepo.findLastOrderNumber();
-		order.setOrderNumber(lastOrderNumber + 1);
-		orderRepo.save(order);
+		synchronized (this) {
+			Long lastOrderNumber = orderRepo.findLastOrderNumber();
+			order.setOrderNumber(lastOrderNumber + 1);
+			orderRepo.save(order);
 		}
 	}
 
@@ -222,6 +223,18 @@ public class OrderServiceImpl implements OrderService {
 
 		List<Order> orders = orderRepo.findAll();
 		return orders.stream().map(OrderDTO::new).collect(Collectors.toList());
+	}
+
+	/**
+	 * filter orders on the basis of id,status
+	 * 
+	 * @param menuDTO
+	 * @return
+	 */
+	@Override
+	public List<OrderDTO> filterOrders(OrderDTO orderDTO) {
+		Specification<OrderDTO> specification = Specification.where(OrderSpecification.filterOrders(orderDTO));
+		return orderRepo.findAll(specification);
 	}
 
 	/**

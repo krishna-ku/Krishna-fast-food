@@ -8,9 +8,11 @@ import javax.persistence.EntityManager;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
+import com.restaurant.dto.MenuDTO;
 import com.restaurant.dto.RatingDTO;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.Rating;
@@ -20,6 +22,8 @@ import com.restaurant.repository.OrderRepo;
 import com.restaurant.repository.RatingRepo;
 import com.restaurant.repository.UserRepo;
 import com.restaurant.service.RatingService;
+import com.restaurant.specification.MenuSpecification;
+import com.restaurant.specification.RatingSpecification;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -99,6 +103,18 @@ public class RatingServiceImpl implements RatingService {
 		List<Rating> ratings = this.ratingRepo.findAll();
 
 		return ratings.stream().map(rating -> new RatingDTO(rating)).collect(Collectors.toList());
+	}
+	
+	/**
+	 * filter rating on the basis of id,rating and deleted
+	 * 
+	 * @param menuDTO
+	 * @return
+	 */
+	@Override
+	public List<RatingDTO> filterRatings(RatingDTO ratingDTO) {
+		Specification<RatingDTO> specification = Specification.where(RatingSpecification.filterRatings(ratingDTO));
+		return ratingRepo.findAll(specification);
 	}
 	
 	/**

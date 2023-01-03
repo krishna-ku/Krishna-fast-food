@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Filter;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +19,7 @@ import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.MenuRepo;
 import com.restaurant.service.MenuService;
+import com.restaurant.specification.MenuSpecification;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,9 +29,6 @@ public class MenuServiceImpl implements MenuService {
 
 	@Autowired
 	private MenuRepo menuRepo;
-
-	@Autowired
-	private EntityManager entityManager;
 
 	/**
 	 * add Menu.
@@ -129,17 +124,15 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	/**
-	 * return menus by filter
+	 * filter menus on the basis of id,price,deleted,name
 	 * 
-	 * @return list of menuDtos
-	 * @see com.restaurant.dto.MenuDTO
+	 * @param menuDTO
+	 * @return
 	 */
 	@Override
-	public List<MenuDTO> filterMenusByPrice(float byPrice) {
-
-		List<Menu> menus = menuRepo.menuItemsByFilter(byPrice);
-
-		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
+	public List<MenuDTO> filterMenus(MenuDTO menuDTO) {
+		Specification<MenuDTO> specification = Specification.where(MenuSpecification.menuFilters(menuDTO));
+		return menuRepo.findAll(specification);
 	}
 
 	/**
@@ -159,44 +152,11 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	/**
-	 * return menu by id
-	 * 
-	 * @param id
-	 * @return menuDto by id
-	 * @see com.restaurant.dto.MenuDTO
-	 */
-	@Override
-	public MenuDTO getMenuById(Long menuId) {
-
-		Menu menu = menuRepo.findById(menuId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
-
-		return new MenuDTO(menu);
-	}
-
-	/**
-	 * return lists of deleted and undeleted menus
-	 * 
-	 * @param isDeleted=true or false
-	 * @return list of deleted or undeleted menus
-	 * @see com.restaurant.entity.MenuDtos
-	 */
-	public List<MenuDTO> findAllFilter(boolean isDeleted) {
-		Session session = entityManager.unwrap(Session.class);
-		Filter filter = session.enableFilter("deletedMenuFilter");
-		filter.setParameter("isDeleted", isDeleted);
-		List<Menu> menus = menuRepo.findAll();
-		session.disableFilter("deletedMenuFilter");
-
-		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
-	}
-
-	/**
 	 * save all data which presents in excle file
 	 * 
 	 * @param file
 	 */
-	public void save(MultipartFile uploadMenusFromExcelfile) {
+	public void saveExcelFile(MultipartFile uploadMenusFromExcelfile) {
 		log.info("Converting excel file into list for{}", uploadMenusFromExcelfile);
 		try {
 			Set<MenuDTO> menus = ExcelHelper.convertExcelFileToListOfMenus(uploadMenusFromExcelfile.getInputStream());
@@ -222,7 +182,7 @@ public class MenuServiceImpl implements MenuService {
 	 * 
 	 * @param file
 	 */
-	public void saveCsv(MultipartFile uploadMenusFromCsvFile) {
+	public void saveCsvFile(MultipartFile uploadMenusFromCsvFile) {
 		try {
 
 			Set<MenuDTO> menus = ExcelHelper.csvToMenus(uploadMenusFromCsvFile.getInputStream());
@@ -239,6 +199,32 @@ public class MenuServiceImpl implements MenuService {
 			menuRepo.saveAll(menuList);
 		} catch (Exception e) {
 			log.error("Error while saving data from csv file to database", e.getMessage());
+		}
+	}
+
+	/**
+	 * check file is csv or excel then save into database
+	 * 
+	 * @param file
+	 */
+	public void checkUploadFileIsCsvOrExcel(MultipartFile uploadMenuFromFile) {
+		try {
+			if (!ExcelHelper.checkExcelFormat(uploadMenuFromFile) && !ExcelHelper.checkCSVFormat(uploadMenuFromFile)) {
+				log.info("file is not csv or not excel");
+				throw new BadRequestException("file is not csv or not excel");
+			}
+
+			if (ExcelHelper.checkExcelFormat(uploadMenuFromFile)) {
+				saveExcelFile(uploadMenuFromFile);
+				log.info("Excel file is saved successfully");
+			}
+
+			if (ExcelHelper.checkCSVFormat(uploadMenuFromFile)) {
+				saveCsvFile(uploadMenuFromFile);
+				log.info("CSV file is saved successfully");
+			}
+		} catch (Exception e) {
+			throw new BadRequestException("please upload csv or excel file");
 		}
 	}
 

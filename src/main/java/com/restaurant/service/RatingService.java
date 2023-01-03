@@ -29,5 +29,8 @@ public interface RatingService {
 
 	// make user active
 	String activateRating(long ratingId);
+	
+	//filter ratings
+	List<RatingDTO> filterRatings(RatingDTO ratingDTO);
 
 }

@@ -26,14 +26,20 @@ public class MenuDTO {
 //	@Pattern(regexp = "[A-Za-z]*$",message = "size must be between 10 to 100 alphabets")//if else check manually
 	@Size(min = 10, max = 100, message = "size must be between 10 to 100 alphabets")
 	private String description;// size validation
+	
+	private Boolean deleted;
 
 	public MenuDTO(Menu menu) {
 		this.id = menu.getId();
 		this.name = menu.getName();
 		this.price = menu.getPrice();
 		this.description = menu.getDescription();
+		this.deleted=menu.isDeleted();
 	}
 
+	/**
+	 * generating a hascode for an object
+	 */
 	@Override
 	public int hashCode() {
 		int p=97;

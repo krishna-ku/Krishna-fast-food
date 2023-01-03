@@ -76,6 +76,18 @@ public class OrderController {
 	}
 
 	/**
+	 * filter menus on basis of id,status
+	 * 
+	 * @param menuDTO
+	 * @return
+	 */
+	@GetMapping("/filter")
+	public ResponseEntity<List<OrderDTO>> filterOrders(@RequestBody OrderDTO orderDTO) {
+		List<OrderDTO> filterOrders = orderService.filterOrders(orderDTO);
+		return new ResponseEntity<>(filterOrders, HttpStatus.OK);
+	}
+
+	/**
 	 * Activate order
 	 * 
 	 * @param userId
@@ -86,31 +98,31 @@ public class OrderController {
 		return ResponseEntity.ok(orderService.activateOrder(orderId));
 	}
 
-	/**
-	 * get detail of order by id Service url: /orders/id method: GET
-	 * 
-	 * @param id
-	 * @return orderDTO
-	 * @see com.restaurant.dto.OrderDTO
-	 */
-	@GetMapping("/{orderId}")
-	public ResponseEntity<OrderDTO> getOrderById(@PathVariable long orderId) {
+//	/**
+//	 * get detail of order by id Service url: /orders/id method: GET
+//	 * 
+//	 * @param id
+//	 * @return orderDTO
+//	 * @see com.restaurant.dto.OrderDTO
+//	 */
+//	@GetMapping("/{orderId}")
+//	public ResponseEntity<OrderDTO> getOrderById(@PathVariable long orderId) {
+//
+//		return ResponseEntity.ok(orderService.getOrderById(orderId));
+//
+//	}
 
-		return ResponseEntity.ok(orderService.getOrderById(orderId));
-
-	}
-
-	/**
-	 * get details of user isDelted or notDeleted service url :/order/
-	 * 
-	 * @param isDeleted=true or false
-	 * @return list of users
-	 */
-	@GetMapping("/filterorders")
-	public ResponseEntity<List<OrderDTO>> findAll(
-			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
-		List<OrderDTO> orderDtos = orderService.findAllFilter(isDeleted);
-		return new ResponseEntity<>(orderDtos, HttpStatus.OK);
-	}
+//	/**
+//	 * get details of user isDelted or notDeleted service url :/order/
+//	 * 
+//	 * @param isDeleted=true or false
+//	 * @return list of users
+//	 */
+//	@GetMapping("/filterorders")
+//	public ResponseEntity<List<OrderDTO>> findAll(
+//			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
+//		List<OrderDTO> orderDtos = orderService.findAllFilter(isDeleted);
+//		return new ResponseEntity<>(orderDtos, HttpStatus.OK);
+//	}
 
 }

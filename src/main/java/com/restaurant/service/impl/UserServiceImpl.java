@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,7 @@ import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.UserRepo;
 import com.restaurant.service.UserService;
+import com.restaurant.specification.UserSpecification;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -142,9 +143,20 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public List<UserDTO> getAllUsers(String email, String firstName) {
-		List<User> users = this.userRepo.findUsersByEmail(email, firstName);
+	public List<UserDTO> getAllUsers() {
+		List<User> users = this.userRepo.findAll();
 		return users.stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
+	}
+	/**
+	 * filter users on the basis of id,firstName,email,deleted
+	 * 
+	 * @param menuDTO
+	 * @return
+	 */
+	@Override
+	public List<UserDTO> filterUsers(UserDTO userDTO){
+		Specification<UserDTO> specification=Specification.where(UserSpecification.filterUsers(userDTO));
+		return userRepo.findAll(specification);
 	}
 
 	/**
@@ -196,14 +208,5 @@ public class UserServiceImpl implements UserService {
 		userRepo.save(user);
 		return "User is active";
 	}
-
-//	/**
-//	 * generating encrypted password and used this while generating new user
-//	 * 
-//	 * @return
-//	 */
-//	public PasswordEncoder passwordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
 
 }

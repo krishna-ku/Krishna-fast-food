@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
@@ -80,41 +79,42 @@ public class RatingController {
 	}
 
 	/**
-	 * get list of Rating Service url: /rating method : GET
+	 * filter ratings on basis of id,rating and deleted
 	 * 
-	 * @return list of RatingDto {@link com.restaurant.dto.RatingDTO}
+	 * @param menuDTO
+	 * @return
 	 */
-	@GetMapping("filter")
-	public ResponseEntity<List<RatingDTO>> getAllRatings(@RequestParam(defaultValue = "5") int ratingValue) {
-		List<RatingDTO> ratingDto = ratingService.ratingsByFilter(ratingValue);
-		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
+	@GetMapping("/filter")
+	public ResponseEntity<List<RatingDTO>> filterRatings(@RequestBody RatingDTO ratingDTO) {
+		List<RatingDTO> filterRatings = ratingService.filterRatings(ratingDTO);
+		return new ResponseEntity<>(filterRatings, HttpStatus.OK);
 	}
 
-	/**
-	 * get detail of Rating by id Service url: /rating/id method: GET
-	 * 
-	 * @param id
-	 * @return RatingDto of particular id
-	 * @see com.restaurant.dto.RatingDTO
-	 */
-	@GetMapping("/{ratingId}")
-	public ResponseEntity<RatingDTO> getRatingById(@PathVariable long ratingId) {
+//	/**
+//	 * get list of Rating Service url: /rating method : GET
+//	 * 
+//	 * @return list of RatingDto {@link com.restaurant.dto.RatingDTO}
+//	 */
+//	@GetMapping("filter")
+//	public ResponseEntity<List<RatingDTO>> getAllRatings(@RequestParam(defaultValue = "5") int ratingValue) {
+//		List<RatingDTO> ratingDto = ratingService.ratingsByFilter(ratingValue);
+//		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
+//	}
 
-		return ResponseEntity.ok(ratingService.getRatingById(ratingId));
-	}
+//	/**
+//	 * get detail of Rating by id Service url: /rating/id method: GET
+//	 * 
+//	 * @param id
+//	 * @return RatingDto of particular id
+//	 * @see com.restaurant.dto.RatingDTO
+//	 */
+//	@GetMapping("/{ratingId}")
+//	public ResponseEntity<RatingDTO> getRatingById(@PathVariable long ratingId) {
+//
+//		return ResponseEntity.ok(ratingService.getRatingById(ratingId));
+//	}
 
-	/**
-	 * get details of user isDelted or notDeleted service url :/user/
-	 * 
-	 * @param isDeleted=true or false
-	 * @return list of users
-	 */
-	@GetMapping("/filterratings")
-	public ResponseEntity<List<RatingDTO>> findAll(
-			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
-		List<RatingDTO> ratingDtos = ratingService.findAllFilter(isDeleted);
-		return new ResponseEntity<>(ratingDtos, HttpStatus.OK);
-	}
+
 
 	/**
 	 * Activate Rating

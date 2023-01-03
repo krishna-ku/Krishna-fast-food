@@ -1,36 +1,43 @@
 package com.restaurant.specification;
 
-import javax.persistence.criteria.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.criteria.Predicate;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import com.restaurant.entity.Menu;
+import com.restaurant.dto.MenuDTO;
 
 @Component
 public class MenuSpecification {
 
-	public static Specification<Menu> menuIsDeletedOrNot(Menu menu) {
+	/**
+	 * filter menus on certain conditions
+	 * 
+	 * @param menuDTO
+	 * @return
+	 */
+	public static Specification<MenuDTO> menuFilters(MenuDTO menuDTO) {
 
 		return ((root, criteriaQuery, criteriaBuilder) -> {
-			if (menu.getName() != null) {
-				Path<String> namePath = root.get("name");
-				return criteriaBuilder.equal(namePath, menu.getName());
+			List<Predicate> predicates = new ArrayList<>();
+
+			if (menuDTO.getName() != null) {
+				predicates.add(criteriaBuilder.like(root.get("name"), "%" + menuDTO.getName() + "%"));
 			}
 
-			else if (Float.valueOf(menu.getPrice()) != null) {
-				Path<Float> price = root.get("price");
-				return criteriaBuilder.lessThanOrEqualTo(price, menu.getPrice());
+			if (menuDTO.getPrice() > 0) {
+				predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), menuDTO.getPrice()));
 			}
+			if (menuDTO.getId() > 0) {
+				predicates.add(criteriaBuilder.equal(root.get("id"), menuDTO.getId()));
+			}
+			predicates.add(criteriaBuilder.equal(root.get("deleted"),
+					menuDTO.getDeleted() != null ? menuDTO.getDeleted() : false));
 
-			return null;
+			return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 		});
 	}
-//	public static Specification<User> userIsDeletedOrNot(){
-//		return new Specification<User>() {
-//			public Predicate toPredicate(Root<T> root,CriteriaQuery query,CriteriaBuilder cb) {
-//				return cb.equal(root.get(USER_EXCEPTION.), root)
-//			}
-//		};
-//	}
 }
