@@ -12,14 +12,14 @@ import com.restaurant.dto.OrderStatistics;
 import com.restaurant.repository.OrderRepo;
 
 @RestController
-@RequestMapping("/lastweekorders")
+@RequestMapping("orderstatistics")
 public class OrderStatisticsController {
 
 	@Autowired
 	private OrderRepo orderRepo;
 
 	@GetMapping
-	public List<OrderStatistics> getLastOneWeekOrders(@RequestParam String fromDate, @RequestParam String toDate) {
+	public List<OrderStatistics> getLastOneWeekOrders(@RequestParam(required = false) String fromDate, @RequestParam(required = false) String toDate) {
 		return orderRepo.oneWeekOrders(fromDate, toDate);
 	}
 }

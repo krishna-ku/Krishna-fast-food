@@ -24,8 +24,9 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 	@Query(nativeQuery = true, value = "select coalesce(max(order_number),1000) as max_value from orders")
 	Long findLastOrderNumber();
 
-	@Query(nativeQuery = true, value = "SELECT (Date(orders.created_on)) date, COUNT(orders.id) count "
-			+ "FROM orders WHERE orders.created_on between if(:fromDate IS NOT NULL,:fromDate-7,CURRENT_DATE-7) and if(:toDate IS NOT NULL,:toDate,CURRENT_DATE()) group by date(orders.created_on) order by date, orders.deleted=false")
+	@Query(nativeQuery = true, value = "SELECT (DATE(orders.created_on)) date,COUNT(orders.id) count FROM orders WHERE orders.created_on BETWEEN "
+			+ "if(:fromDate is not null, :fromDate, :toDate-7) and if(:toDate is not null, :toDate, CURDATE()) "
+			+ "GROUP BY DATE(orders.created_on) ORDER BY date, orders.deleted=false")
 	List<OrderStatistics> oneWeekOrders(String fromDate, String toDate);
 
 }
