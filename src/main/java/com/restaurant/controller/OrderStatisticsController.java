@@ -1,30 +1,25 @@
 package com.restaurant.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restaurant.dto.DashboardView;
+import com.restaurant.dto.OrderStatistics;
 import com.restaurant.repository.OrderRepo;
 
 @RestController
-@RequestMapping("/dashboard")
-public class DashBoardController {
+@RequestMapping("/lastweekorders")
+public class OrderStatisticsController {
 
 	@Autowired
 	private OrderRepo orderRepo;
 
-	/**
-	 * get Dashboard view of orders Service url: /rating method : GET
-	 * 
-	 * @param fromDate,toDate
-	 * @return list of RatingDto {@link com.restaurant.dto.DashBoardDTO}
-	 */
 	@GetMapping
-	public DashboardView getDashboardView(@RequestParam String fromDate, @RequestParam String toDate) {
-		return orderRepo.viewDashBoardByDated(fromDate, toDate);
+	public List<OrderStatistics> getLastOneWeekOrders(@RequestParam String fromDate, @RequestParam String toDate) {
+		return orderRepo.oneWeekOrders(fromDate, toDate);
 	}
-
 }

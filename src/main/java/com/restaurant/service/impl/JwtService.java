@@ -5,18 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.restaurant.entity.JwtRequest;
-import com.restaurant.entity.JwtResponse;
 import com.restaurant.entity.User;
 import com.restaurant.repository.UserRepo;
 import com.restaurant.util.JwtUtil;
@@ -29,7 +23,7 @@ public class JwtService implements UserDetailsService {
 
 	@Autowired
 	private UserRepo userRepo;
-	
+
 //	@Autowired
 //	private AuthenticationManager authenticationManager;
 //	
@@ -51,18 +45,19 @@ public class JwtService implements UserDetailsService {
 		User user = this.userRepo.findByEmail(username);
 
 		if (user != null) {
-			return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), Arrays.asList(new SimpleGrantedAuthority(user.getRole())));
+			return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
+					getAuthority(user));
 		} else {
 			throw new UsernameNotFoundException("User not found with this username" + username);
 		}
 	}
-	
-//	private Set getAuthority(User user) {
-//		Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-//		user.getRole().forEach(role -> {
-//			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
-//		});
-//		return authorities;
+
+	private Set<SimpleGrantedAuthority> getAuthority(User user) {
+		Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+		Arrays.asList(user.getRole().split(",")).forEach(role -> {
+			authorities.add(new SimpleGrantedAuthority(role));
+		});
+		return authorities;}
 	
 //	private void authenticate(String userName,String userPassword) throws Exception{
 //		

@@ -59,7 +59,6 @@ public class CustomAuthorizationFilter extends BasicAuthenticationFilter {
             String username = verify.get("sub").toString();
             List<Map<String, String>> object = (List<Map<String, String>>)verify.get("authorities");
             if (username != null) {
-            	Collection<? extends GrantedAuthority> authorities = getAuthorities(object);
                 return new UsernamePasswordAuthenticationToken(username, null, getAuthorities(object));
             }
             return null;
@@ -68,7 +67,7 @@ public class CustomAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(List<Map<String, String>> authorities) {
-    	return authorities.stream().map(m->new SimpleGrantedAuthority(m.get("authority"))).collect(Collectors.toList());
+    	return authorities.stream().map(m->new SimpleGrantedAuthority("ROLE_"+m.get("authority"))).collect(Collectors.toList());
     }
 
 }
