@@ -1,6 +1,5 @@
 package com.restaurant.dto;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 
 import com.restaurant.entity.Restaurant;
@@ -30,12 +29,7 @@ public class RestaurantDTO {
 
 	private String closeTiming;
 
-//	@Column(columnDefinition = "boolean default false") // by default close
 	private String status;
-
-//	private Date openTiming;
-
-//	private Date closingTime;
 
 	public RestaurantDTO(Restaurant restaurant) {
 		this.id = restaurant.getId();
@@ -45,12 +39,7 @@ public class RestaurantDTO {
 		this.contactNo = restaurant.getContactNo();
 		this.openTiming = restaurant.getOpenTiming();
 		this.closeTiming = restaurant.getCloseTiming();
-		this.status=restaurant.getStatus();
-		
-//		this.openTiming=restaurant.getOpeningTime();
-//		this.closingTime=restaurant.getClosingTime();
-//		this.status=restaurant.isStatus()?status.OPEN:status.CLOSE;
-//		this.status=restaurant.isStatus()?true:false;
+		this.status = restaurant.getStatus();
 	}
 
 }

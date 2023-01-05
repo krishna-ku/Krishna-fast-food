@@ -23,8 +23,6 @@ public class BaseClass {
 	private Date updatedOn;
 	@Column(columnDefinition = "boolean default false")
 	private boolean deleted;
-	// private String createdBy;
-	// private String updatedBy;
 
 	@PrePersist
 	void beforePersist() {

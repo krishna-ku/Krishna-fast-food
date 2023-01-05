@@ -3,10 +3,6 @@ package com.restaurant.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-
-import org.hibernate.Filter;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -31,9 +27,6 @@ public class RatingServiceImpl implements RatingService {
 
 	@Autowired
 	private RatingRepo ratingRepo;
-
-	@Autowired
-	private EntityManager entityManager;
 
 	@Autowired
 	private UserRepo userRepo;
@@ -113,53 +106,6 @@ public class RatingServiceImpl implements RatingService {
 	public List<RatingDTO> filterRatings(RatingDTO ratingDTO) {
 		Specification<Rating> specification = Specification.where(RatingSpecification.filterRatings(ratingDTO));
 		return ratingRepo.findAll(specification).stream().map(r -> new RatingDTO(r)).collect(Collectors.toList());
-	}
-
-	/**
-	 * return all Ratings whose ratingValue<=given rating value like 3,4 etc
-	 * 
-	 * @return list of RatingDtos
-	 * 
-	 * @see com.restaurant.dto.RatingDTO
-	 */
-	public List<RatingDTO> ratingsByFilter(int ratingValue) {
-
-		List<Rating> ratings = this.ratingRepo.ratingsByFilter(ratingValue);
-
-		return ratings.stream().map(rating -> new RatingDTO(rating)).collect(Collectors.toList());
-	}
-
-	/**
-	 * return Rating by id
-	 * 
-	 * @param id
-	 * @return RatingDto by id
-	 * @see com.restaurant.dto.RatingDTO
-	 */
-	@Override
-	public RatingDTO getRatingById(long ratingId) {
-
-		Rating rating = this.ratingRepo.findById(ratingId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, ratingId));
-
-		return new RatingDTO(rating);
-	}
-
-	/**
-	 * return lists of deleted and undeleted ratings
-	 * 
-	 * @param isDeleted=true or false
-	 * @return list of deleted or undeleted ratings
-	 * @see com.restaurant.entity.Rating
-	 */
-	public List<RatingDTO> findAllFilter(boolean isDeleted) {
-		Session session = entityManager.unwrap(Session.class);
-		Filter filter = session.enableFilter("deletedRatingFilter");
-		filter.setParameter("isDeleted", isDeleted);
-		List<Rating> rating = ratingRepo.findAll();
-		session.disableFilter("deletedRatingFilter");
-
-		return rating.stream().map(u -> new RatingDTO(u)).collect(Collectors.toList());
 	}
 
 	/**

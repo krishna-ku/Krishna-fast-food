@@ -1,10 +1,8 @@
 package com.restaurant.dto;
 
-import java.sql.Date;
-
 public interface OrderStatistics {
 
-	Date getdate();
+	String getdate();
 
 	int getCount();
 }

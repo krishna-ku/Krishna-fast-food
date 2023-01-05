@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
 import com.restaurant.dto.UserDTO;
-import com.restaurant.repository.UserRepo;
 import com.restaurant.service.UserService;
 
 @RestController
@@ -28,9 +28,6 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private UserRepo userRepo;
 
 	/**
 	 * Add User service url : /user method : Post
@@ -52,6 +49,7 @@ public class UserController {
 	 * @param UserDTO
 	 * @return Updated UserDto {@link com.restaurant.dto.UserDTO}
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
 	@PutMapping("/{userId}")
 	public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDto, @PathVariable long userId) {
 		UserDTO updatedUser = this.userService.updateUser(userDto, userId);
@@ -64,6 +62,7 @@ public class UserController {
 	 * @param id
 	 * 
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
 		this.userService.deleteUser(userId);
@@ -76,7 +75,7 @@ public class UserController {
 	 * 
 	 * @return list of User {@link com.restaurant.entity.User}
 	 */
-	@Secured("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
 	public ResponseEntity<List<UserDTO>> getAllUsers() {
 		List<UserDTO> users = userService.getAllUsers();
@@ -89,37 +88,12 @@ public class UserController {
 	 * @param userDTO
 	 * @return
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping("/filter")
 	public ResponseEntity<List<UserDTO>> filterUsers(@RequestBody UserDTO userDTO) {
 		List<UserDTO> filterusers = userService.filterUsers(userDTO);
 		return new ResponseEntity<>(filterusers, HttpStatus.OK);
 	}
-
-//	/**
-//	 * get detail of User by id Service url: /user/id method: GET
-//	 * 
-//	 * @param id
-//	 * @return UserDto
-//	 * @see com.restaurant.dto.UserDTO
-//	 */
-//	@GetMapping("/{userId}")
-//	public ResponseEntity<UserDTO> getUserById(@PathVariable long userId) {
-//
-//		return ResponseEntity.ok(userService.getUserById(userId));
-//
-//	}
-
-//	/**
-//	 * get details of user isDelted or notDeleted service url :/user/
-//	 * 
-//	 * @param isDeleted=true or false
-//	 * @return list of users
-//	 */
-//	@GetMapping("/filterusers")
-//	public ResponseEntity<List<UserDTO>> findAll(@RequestParam(defaultValue = "false") boolean isDeleted) {
-//		List<UserDTO> users = userService.findAllFilter(isDeleted);
-//		return new ResponseEntity<>(users, HttpStatus.OK);
-//	}
 
 	/**
 	 * Activate User
@@ -127,15 +101,10 @@ public class UserController {
 	 * @param userId
 	 * @return
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PutMapping("/activate/{userId}")
 	public ResponseEntity<String> activateUserEntity(@PathVariable long userId) {
 		return ResponseEntity.ok(userService.activateUser(userId));
 	}
-
-//	@GetMapping("/deleted/{deleted}")
-//	public List<User> findUsersIsDeletedOrNot(@PathVariable boolean deleted){
-//		Specification<User> specification=Specification.where(MenuSpecification.userIsDeletedOrNot(deleted));
-//		return userRepo.findAll(specification);
-//	}
 
 }

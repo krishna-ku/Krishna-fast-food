@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class RestaurantController {
 	 * @param RestaurantDTO
 	 * @return RestaurantDto
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PostMapping
 	public ResponseEntity<RestaurantDTO> createRestaurant(@Valid @RequestBody RestaurantDTO restaurantDto) {
 		RestaurantDTO restaurant = restaurantService.createRestaurant(restaurantDto);
@@ -47,6 +49,7 @@ public class RestaurantController {
 	 * @param restaurantDto
 	 * @return Updated restaurantDto {@link com.restaurant.dto.restaurantDto}
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PutMapping
 	public ResponseEntity<RestaurantDTO> updateRestaurant(@RequestBody RestaurantDTO restaurantDto) {
 		return ResponseEntity.ok(restaurantService.updateRestaurant(restaurantDto));
@@ -58,6 +61,7 @@ public class RestaurantController {
 	 * @param restaurantId
 	 * 
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@DeleteMapping("/{restaurantId}")
 	public ResponseEntity<ApiResponse> deleteRestaurant(@PathVariable long restaurantId) {
 		restaurantService.deleteRestaurant(restaurantId);
@@ -69,6 +73,7 @@ public class RestaurantController {
 	 * 
 	 * @return list of Restaurants {@link com.restaurant.entity.Restaurant}
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
 	public ResponseEntity<RestaurantDTO> getRestaurantDetails() {
 		return ResponseEntity.ok(restaurantService.getRestaurantDetails());
@@ -80,6 +85,7 @@ public class RestaurantController {
 	 * @param isDeleted=true or false
 	 * @return list of restaurants
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping("/filterrestaurants")
 	public ResponseEntity<List<RestaurantDTO>> findAll(
 			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {

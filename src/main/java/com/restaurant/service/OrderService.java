@@ -19,12 +19,6 @@ public interface OrderService {
 	// get users
 	List<OrderDTO> getAllOrders();
 
-	// get user
-	OrderDTO getOrderById(Long orderId);
-
-	// get orders by header
-	List<OrderDTO> findAllFilter(boolean isDeleted);
-
 	// activate orders
 	String activateOrder(long orderId);
 

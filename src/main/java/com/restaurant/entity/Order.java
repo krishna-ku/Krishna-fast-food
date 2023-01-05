@@ -32,10 +32,6 @@ import lombok.Data;
 @Entity
 //@Entity(name = "Orders")
 @Table(name = "orders")
-@SQLDelete(sql = "UPDATE Order SET deleted=true WHERE id=?")
-//@Where(clause = "deleted=false")
-@FilterDef(name = "deletedOrderFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedOrderFilter", condition = "deleted = :isDeleted")
 public class Order extends BaseClass {
 
 	@Enumerated(EnumType.STRING)

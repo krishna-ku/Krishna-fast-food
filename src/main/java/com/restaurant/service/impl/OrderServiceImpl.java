@@ -10,10 +10,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-
-import org.hibernate.Filter;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -49,9 +45,6 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	EmailService emailService;
-
-	@Autowired
-	private EntityManager entityManager;
 
 	@Autowired
 	private RestaurantRepo restaurantRepo;
@@ -235,37 +228,6 @@ public class OrderServiceImpl implements OrderService {
 	public List<OrderDTO> filterOrders(OrderDTO orderDTO) {
 		Specification<Order> specification = Specification.where(OrderSpecification.filterOrders(orderDTO));
 		return orderRepo.findAll(specification).stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
-	}
-
-	/**
-	 * This function is return Order by id
-	 * 
-	 * @param id
-	 * @return Order by id
-	 */
-	@Override
-	public OrderDTO getOrderById(Long orderId) {
-
-		Order order = orderRepo.findById(orderId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
-		return new OrderDTO(order);
-	}
-
-	/**
-	 * return lists of deleted and undeleted orders
-	 * 
-	 * @param isDeleted=true or false
-	 * @return list of deleted or undeleted orders
-	 * @see com.restaurant.entity.orders
-	 */
-	public List<OrderDTO> findAllFilter(boolean isDeleted) {
-		Session session = entityManager.unwrap(Session.class);
-		Filter filter = session.enableFilter("deletedOrderFilter");
-		filter.setParameter("isDeleted", isDeleted);
-		List<Order> orders = orderRepo.findAll();
-		session.disableFilter("deletedOrderFilter");
-
-		return orders.stream().map(u -> new OrderDTO(u)).collect(Collectors.toList());
 	}
 
 	/**

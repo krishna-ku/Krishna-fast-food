@@ -19,12 +19,6 @@ public interface UserService {
 //	@Query("Select u from User u where u.email=:email")//here i am using jpql u is our UserDto alias u and e is variable and by the help of @param e is bind 
 	List<UserDTO> getAllUsers();
 
-	// get user
-	UserDTO getUserById(Long userId);
-
-	// get users by header
-	List<UserDTO> findAllFilter(boolean isDeleted);
-
 	// make user active
 	String activateUser(long userId);
 	

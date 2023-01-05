@@ -32,7 +32,7 @@ public class SecurityConfig {
 					response.setHeader("WWW-Authenticate", accessDeniedException.getMessage());
 				}).and()
 				.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry
-						.antMatchers("/login").permitAll().anyRequest().authenticated())
+						.antMatchers("/login","/users/**").permitAll().anyRequest().authenticated())
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilter(new CustomAuthenticationFilter(authenticationManager))
 				.addFilter(new CustomAuthorizationFilter(authenticationManager));

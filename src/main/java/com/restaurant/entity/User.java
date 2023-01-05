@@ -24,10 +24,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(indexes = @Index(name = "idx_user_firstName", columnList = "firstName"))
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE User SET deleted=true WHERE id=?")
-//@Where(clause = "deleted=false")
-@FilterDef(name = "deletedUserFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedUserFilter", condition = "deleted = :isDeleted")
 public class User extends BaseClass {
 
 	private String firstName;

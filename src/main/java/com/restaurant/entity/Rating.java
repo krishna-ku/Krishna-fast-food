@@ -19,10 +19,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE Rating SET deleted=true WHERE id=?")
-//@Where(clause = "deleted=false")
-@FilterDef(name = "deletedRatingFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedRatingFilter", condition = "deleted = :isDeleted")
 public class Rating extends BaseClass {
 
 	// @Column(name = "Rating out of 5")

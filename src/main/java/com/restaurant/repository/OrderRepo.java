@@ -25,7 +25,7 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 	Long findLastOrderNumber();
 
 	@Query(nativeQuery = true, value = "SELECT (DATE(orders.created_on)) date,COUNT(orders.id) count FROM orders WHERE orders.created_on BETWEEN "
-			+ "if(:fromDate is not null, :fromDate, :toDate-7) and if(:toDate is not null, :toDate, CURDATE()) "
+			+ ":fromDate and :toDate "
 			+ "GROUP BY DATE(orders.created_on) ORDER BY date, orders.deleted=false")
 	List<OrderStatistics> oneWeekOrders(String fromDate, String toDate);
 

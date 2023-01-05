@@ -17,15 +17,17 @@ import lombok.Setter;
 public class MenuDTO {
 
 	private long id;
-	@NotEmpty
+	@NotEmpty(message = "dish name not be empty")
 	private String name;
 
 	@Range(min = 1, max = 999)
-	private float price;// float or double
+	private float price;
 
-//	@Pattern(regexp = "[A-Za-z]*$",message = "size must be between 10 to 100 alphabets")//if else check manually
 	@Size(min = 10, max = 100, message = "size must be between 10 to 100 alphabets")
-	private String description;// size validation
+	private String description;
+	
+	@NotEmpty(message = "please specify category of the dish")
+	private String category;
 	
 	private Boolean deleted;
 
@@ -35,6 +37,7 @@ public class MenuDTO {
 		this.price = menu.getPrice();
 		this.description = menu.getDescription();
 		this.deleted=menu.isDeleted();
+		this.category=menu.getCategory();
 	}
 
 	/**

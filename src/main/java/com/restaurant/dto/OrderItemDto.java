@@ -1,7 +1,5 @@
 package com.restaurant.dto;
 
-import javax.validation.constraints.NotEmpty;
-
 import org.hibernate.validator.constraints.Range;
 
 import com.restaurant.entity.OrderItem;
@@ -31,7 +29,6 @@ public class OrderItemDTO {
 	@Range(min = 1, max = 10, message = "Item quantity should not be less than 1 or more than 10")
 	private int itemQuantity;
 
-//	@Pattern(regexp = "[0-9]*$")
 	private long menuId;
 
 }

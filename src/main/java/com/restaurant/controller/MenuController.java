@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ public class MenuController {
 	 * @param menuDto
 	 * @return MenuDto {@link com.restaurant.dto.MenuDTO}
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PostMapping
 	public ResponseEntity<MenuDTO> createMenu(@Valid @RequestBody MenuDTO menuDto) {
 		MenuDTO newmenu = menuService.createMenu(menuDto);
@@ -48,6 +50,7 @@ public class MenuController {
 	 * @param menuDto
 	 * @return Updated MenuDto {@link com.restaurant.dto.MenuDTO}
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PutMapping("/{menuId}")
 	public ResponseEntity<MenuDTO> updateMenu(@RequestBody MenuDTO menuDto, @PathVariable long menuId) {
 		return ResponseEntity.ok(menuService.updateMenu(menuDto, menuId));
@@ -59,6 +62,7 @@ public class MenuController {
 	 * @param id
 	 * 
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@DeleteMapping("/{menuId}")
 	public ResponseEntity<ApiResponse> deleteMenu(@PathVariable long menuId) {
 		menuService.deleteMenu(menuId);
@@ -70,6 +74,7 @@ public class MenuController {
 	 * 
 	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDTO}
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
 	public ResponseEntity<List<MenuDTO>> getAllMenu() {
 		List<MenuDTO> menu = menuService.getAllMenus();
@@ -82,6 +87,7 @@ public class MenuController {
 	 * @param menuDTO
 	 * @return
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping("/filter")
 	public ResponseEntity<List<MenuDTO>> filterMenus(@RequestBody MenuDTO menuDTO) {
 		List<MenuDTO> filterMenus = menuService.filterMenus(menuDTO);
@@ -94,6 +100,7 @@ public class MenuController {
 	 * @param userId
 	 * @return
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PutMapping("/activate/{menuId}")
 	public ResponseEntity<String> activateUserEntity(@PathVariable long menuId) {
 		return ResponseEntity.ok(menuService.activateMenu(menuId));
@@ -106,6 +113,7 @@ public class MenuController {
 	 * @param file
 	 * @return message and status
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PostMapping("/upload")
 	public ResponseEntity<ApiResponse> upload(@RequestParam("file") MultipartFile uploadMenuFromFile) {
 		menuService.checkUploadFileIsCsvOrExcel(uploadMenuFromFile);

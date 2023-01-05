@@ -18,16 +18,7 @@ public interface RatingService {
 	// get all ratings
 	List<RatingDTO> getAllRatings();
 
-	// get rating by id
-	RatingDTO getRatingById(long ratingId);
-
-	// get all deleted and undeleted ratings by header
-	List<RatingDTO> findAllFilter(boolean isDeleted);
-
-	// get ratings by filter
-	List<RatingDTO> ratingsByFilter(int ratingValue);
-
-	// make user active
+	// make raring active
 	String activateRating(long ratingId);
 	
 	//filter ratings

@@ -18,7 +18,6 @@ public class OrderDTO {
 
 	// convert order into orderDto
 	public OrderDTO(Order order) {
-//		this.customer = order.getCustomer();
 		this.orderId = order.getId();
 		this.orderStatus = order.getStatus().toString();
 		this.restaurantName = order.getRestaurant().getName();
@@ -31,7 +30,6 @@ public class OrderDTO {
 
 		}).collect(Collectors.toList());
 		totalPriceWithGst = totalPrice + (totalPrice * Keywords.GST_PERCENTAGE);
-//		totalPriceWithGstAndServiceTax+=totalPrice*Keywords.SERVICE_TAX;
 	}
 
 	private long orderId;
@@ -46,11 +44,9 @@ public class OrderDTO {
 
 	private float totalPrice;
 
-//	private String customer;
 
 	@Valid
 	@NotEmpty
 	private List<OrderItemDTO> orderItems;
 
-	// private Menu menu;
 }

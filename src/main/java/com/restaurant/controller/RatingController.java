@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,6 +62,7 @@ public class RatingController {
 	 * @param id
 	 * 
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@DeleteMapping("/{ratingId}")
 	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long ratingId) {
 		this.ratingService.deleteRating(ratingId);
@@ -72,6 +74,7 @@ public class RatingController {
 	 * 
 	 * @return list of RatingDto {@link com.restaurant.dto.RatingDTO}
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
 	public ResponseEntity<List<RatingDTO>> getAllRatings() {
 		List<RatingDTO> ratingDto = ratingService.getAllRatings();
@@ -84,37 +87,12 @@ public class RatingController {
 	 * @param menuDTO
 	 * @return
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping("/filter")
 	public ResponseEntity<List<RatingDTO>> filterRatings(@RequestBody RatingDTO ratingDTO) {
 		List<RatingDTO> filterRatings = ratingService.filterRatings(ratingDTO);
 		return new ResponseEntity<>(filterRatings, HttpStatus.OK);
 	}
-
-//	/**
-//	 * get list of Rating Service url: /rating method : GET
-//	 * 
-//	 * @return list of RatingDto {@link com.restaurant.dto.RatingDTO}
-//	 */
-//	@GetMapping("filter")
-//	public ResponseEntity<List<RatingDTO>> getAllRatings(@RequestParam(defaultValue = "5") int ratingValue) {
-//		List<RatingDTO> ratingDto = ratingService.ratingsByFilter(ratingValue);
-//		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
-//	}
-
-//	/**
-//	 * get detail of Rating by id Service url: /rating/id method: GET
-//	 * 
-//	 * @param id
-//	 * @return RatingDto of particular id
-//	 * @see com.restaurant.dto.RatingDTO
-//	 */
-//	@GetMapping("/{ratingId}")
-//	public ResponseEntity<RatingDTO> getRatingById(@PathVariable long ratingId) {
-//
-//		return ResponseEntity.ok(ratingService.getRatingById(ratingId));
-//	}
-
-
 
 	/**
 	 * Activate Rating
@@ -122,6 +100,7 @@ public class RatingController {
 	 * @param userId
 	 * @return
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PutMapping("/activate/{ratingId}")
 	public ResponseEntity<String> activateUserEntity(@PathVariable long ratingId) {
 		return ResponseEntity.ok(ratingService.activateRating(ratingId));

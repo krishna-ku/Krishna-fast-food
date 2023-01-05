@@ -3,11 +3,7 @@ package com.restaurant.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Filter;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,14 +29,11 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	EmailService emailService;
-	
+
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
 //	private static final Logger LOG=LoggerFactory.getLogger(UserServiceImpl.class);
-
-	@Autowired
-	private EntityManager entityManager;
 
 	/**
 	 * add User.
@@ -147,6 +140,7 @@ public class UserServiceImpl implements UserService {
 		List<User> users = this.userRepo.findAll();
 		return users.stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
 	}
+
 	/**
 	 * filter users on the basis of id,firstName,email,deleted
 	 * 
@@ -154,42 +148,9 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 */
 	@Override
-	public List<UserDTO> filterUsers(UserDTO userDTO){
-		Specification<User> specification=Specification.where(UserSpecification.filterUsers(userDTO));
-		return userRepo.findAll(specification).stream().map(user->new UserDTO(user)).collect(Collectors.toList());
-	}
-
-	/**
-	 * find User by id
-	 * 
-	 * @param userId
-	 * @return User by id
-	 * @see com.restaurant.entity.User
-	 */
-	@Override
-	public UserDTO getUserById(Long userId) {
-
-		User user = this.userRepo.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-
-		return new UserDTO(user);
-	}
-
-	/**
-	 * return lists of deleted and undeleted users
-	 * 
-	 * @param isDeleted=true or false
-	 * @return list of deleted or undeleted User
-	 * @see com.restaurant.entity.User
-	 */
-	public List<UserDTO> findAllFilter(boolean isDeleted) {
-		Session session = entityManager.unwrap(Session.class);
-		Filter filter = session.enableFilter("deletedUserFilter");
-		filter.setParameter("isDeleted", isDeleted);
-		List<User> users = userRepo.findAll();
-		session.disableFilter("deletedUserFilter");
-
-		return users.stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
+	public List<UserDTO> filterUsers(UserDTO userDTO) {
+		Specification<User> specification = Specification.where(UserSpecification.filterUsers(userDTO));
+		return userRepo.findAll(specification).stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
 	}
 
 	/**

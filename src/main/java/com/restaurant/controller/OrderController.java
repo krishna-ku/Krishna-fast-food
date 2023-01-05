@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
@@ -22,7 +22,6 @@ import com.restaurant.dto.OrderDTO;
 import com.restaurant.dto.OrderItemDTO;
 import com.restaurant.service.OrderService;
 
-//@Validated //todo
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -39,7 +38,6 @@ public class OrderController {
 	 */
 	@PostMapping("/{userId}")
 	public OrderDTO placeOrder(@RequestBody @Valid OrderDTO orderDto, @PathVariable long userId) {
-//		orderItemDto.forEach(System.out::println);
 		return orderService.placedOrder(orderDto, userId);
 
 	}
@@ -54,10 +52,10 @@ public class OrderController {
 	@PutMapping("/{orderId}")
 	public OrderDTO updateOrder(@RequestBody List<OrderItemDTO> orderItemDto, @PathVariable long orderId) {
 		orderItemDto.forEach(System.out::println);
-		// orderItemDto.forEach(o -> System.out.println(o));
 		return orderService.updateOrder(orderItemDto, orderId);
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@DeleteMapping("/{orderId}")
 	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long orderId) {
 		this.orderService.deleteOrder(orderId);
@@ -69,6 +67,7 @@ public class OrderController {
 	 * 
 	 * @return list of User {@link com.restaurant.entity.User}
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
 	public ResponseEntity<List<OrderDTO>> getAllOrders() {
 		List<OrderDTO> allOrders = orderService.getAllOrders();
@@ -81,6 +80,7 @@ public class OrderController {
 	 * @param menuDTO
 	 * @return
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping("/filter")
 	public ResponseEntity<List<OrderDTO>> filterOrders(@RequestBody OrderDTO orderDTO) {
 		List<OrderDTO> filterOrders = orderService.filterOrders(orderDTO);
@@ -93,36 +93,10 @@ public class OrderController {
 	 * @param userId
 	 * @return
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PutMapping("/activate/{orderId}")
 	public ResponseEntity<String> activateUserEntity(@PathVariable long orderId) {
 		return ResponseEntity.ok(orderService.activateOrder(orderId));
 	}
-
-//	/**
-//	 * get detail of order by id Service url: /orders/id method: GET
-//	 * 
-//	 * @param id
-//	 * @return orderDTO
-//	 * @see com.restaurant.dto.OrderDTO
-//	 */
-//	@GetMapping("/{orderId}")
-//	public ResponseEntity<OrderDTO> getOrderById(@PathVariable long orderId) {
-//
-//		return ResponseEntity.ok(orderService.getOrderById(orderId));
-//
-//	}
-
-//	/**
-//	 * get details of user isDelted or notDeleted service url :/order/
-//	 * 
-//	 * @param isDeleted=true or false
-//	 * @return list of users
-//	 */
-//	@GetMapping("/filterorders")
-//	public ResponseEntity<List<OrderDTO>> findAll(
-//			@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean isDeleted) {
-//		List<OrderDTO> orderDtos = orderService.findAllFilter(isDeleted);
-//		return new ResponseEntity<>(orderDtos, HttpStatus.OK);
-//	}
 
 }
