@@ -1,6 +1,11 @@
 package com.restaurant.service;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.UserDTO;
 
@@ -24,4 +29,10 @@ public interface UserService {
 	
 	//filter users
 	List<UserDTO> filterUsers(UserDTO userDTO);
+	
+	//upload image in user profile
+	UserDTO uploadImage(MultipartFile image, long userId) throws IOException;
+	
+	//download image or view image
+	void downloadImage(String image,HttpServletResponse response) throws IOException;
 }

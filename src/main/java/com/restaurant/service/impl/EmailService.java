@@ -1,23 +1,14 @@
 package com.restaurant.service.impl;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.Transport;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -76,12 +67,12 @@ public class EmailService {
 	 * @param email
 	 * @param name
 	 */
-	public void sendOrderMailToUser(String subject, @NotEmpty String email, String name,byte[] byteArray) {
+	public void sendOrderMailToUser(String subject, @NotEmpty String email, String name, byte[] byteArray) {
 		try {
 
 			log.info("sending mail on user placing order :: {} ", email);
 			MimeMessage mailMessage = emailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(mailMessage,true);
+			MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true);
 			Context context = new Context();
 			Map<String, Object> map = new HashMap<>();
 			map.put("name", name);
@@ -93,13 +84,13 @@ public class EmailService {
 			helper.setSubject(subject);
 			helper.setText(text, true);
 			helper.setFrom(sender, "Delhi-fast-food");
-			
+
 //			String path="C:\\Users\\user\\Desktop\\restro.pdf";
-			
+
 //			FileSystemResource file=new FileSystemResource(new File(path));
-			ByteArrayResource byteArrayResource=new ByteArrayResource(byteArray);
+			ByteArrayResource byteArrayResource = new ByteArrayResource(byteArray);
 			helper.addAttachment("bill.pdf", byteArrayResource);
-			
+
 			emailSender.send(mailMessage);
 		} catch (Exception e) {
 			log.error("Error while sending mail on user order placed :: {} ", e.getMessage());

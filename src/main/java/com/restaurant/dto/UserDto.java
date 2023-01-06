@@ -27,6 +27,12 @@ public class UserDTO {
 
 	private String email;
 
+	private String address;
+
+	private String imageName;
+
+	private long mobileNumber;
+
 	private Boolean deleted;
 
 	@Pattern(regexp = "[A-Za-z]+[!@#$%^&*]+[0-9]*$", message = "Password should be like this user@123")
@@ -38,7 +44,10 @@ public class UserDTO {
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();
 		this.email = user.getEmail();
-		this.password = user.getPassword();
+//		this.password = user.getPassword();
 		this.deleted = user.isDeleted();
+		this.address = user.getAddress();
+		this.mobileNumber = user.getMobileNumber();
+		this.imageName=user.getImageName();
 	}
 }

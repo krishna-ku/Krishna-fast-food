@@ -69,6 +69,9 @@ public class OrderServiceImpl implements OrderService {
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
+		if (user.getAddress() == null && user.getMobileNumber() != 10)
+			throw new BadRequestException("please first enter your mobile number and adress then try to placed order");
+
 		Restaurant restaurant = restaurantRepo.findById((long) 1)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RESTAURANT, Keywords.RESTAURANT_ID, 1));
 

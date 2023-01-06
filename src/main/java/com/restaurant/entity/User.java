@@ -31,6 +31,12 @@ public class User extends BaseClass {
 
 	private String email;
 	
+	private String address;
+	
+	private long mobileNumber;
+	
+	private String imageName;
+	
 	private String role;
 
 	private String password;
@@ -47,6 +53,9 @@ public class User extends BaseClass {
 		this.role=userDto.getRole();
 		this.email = userDto.getEmail();
 		this.password = userDto.getPassword();
+		this.address=userDto.getAddress();
+		this.mobileNumber=userDto.getMobileNumber();
+		this.imageName=userDto.getImageName();
 	}
 //
 //	@OneToOne

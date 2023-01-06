@@ -1,13 +1,21 @@
 package com.restaurant.service.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.engine.jdbc.StreamUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.Keywords;
 import com.restaurant.dto.UserDTO;
@@ -15,6 +23,7 @@ import com.restaurant.entity.User;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.UserRepo;
+import com.restaurant.service.ImageService;
 import com.restaurant.service.UserService;
 import com.restaurant.specification.UserSpecification;
 
@@ -28,10 +37,16 @@ public class UserServiceImpl implements UserService {
 	private UserRepo userRepo;
 
 	@Autowired
+	private ImageService imageService;
+
+	@Autowired
 	EmailService emailService;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
+
+	@Value("${project.image}")
+	private String path;
 
 //	private static final Logger LOG=LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -169,5 +184,37 @@ public class UserServiceImpl implements UserService {
 		userRepo.save(user);
 		return "User is active";
 	}
+
+	/**
+	 * Upload Image in DB
+	 * @param image
+	 * @param userId
+	 * @return
+	 * @throws IOException
+	 */
+	public UserDTO uploadImage(MultipartFile image, long userId) throws IOException {
+		log.info("Uploading image in user profile");
+		
+		User user = this.userRepo.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
+		String imageName = this.imageService.uploadImage(path, image);
+		user.setImageName(imageName);
+		userRepo.save(user);
+		
+		log.info("upload image successfully");
+		return new UserDTO(user);
+	}
+	/**
+	 * download image or view image
+	 * @param image
+	 * @param response
+	 * @throws IOException
+	 */
+	public void downloadImage(String image,HttpServletResponse response) throws IOException {
+		
+		InputStream resource = this.imageService.getResource(path, image);
+		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+		StreamUtils.copy(resource,response.getOutputStream());
+	} 
 
 }
