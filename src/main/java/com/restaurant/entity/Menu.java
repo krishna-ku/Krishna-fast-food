@@ -1,6 +1,10 @@
 package com.restaurant.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import com.restaurant.dto.MenuDTO;
 
@@ -10,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
+@SQLDelete(sql = "UPDATE Menu SET deleted=true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Menu extends BaseClass {
 
 	private String name;
@@ -17,8 +23,11 @@ public class Menu extends BaseClass {
 	private float price;
 
 	private String description;
-	
-	private String category;
+
+	private int category;
+
+	@OneToOne
+	private MenuCategory menuCategory;
 
 ////	@OneToOne
 //	@JoinColumn(name = "orders_id")
@@ -31,7 +40,7 @@ public class Menu extends BaseClass {
 		this.name = menuDto.getName();
 		this.price = menuDto.getPrice();
 		this.description = menuDto.getDescription();
-		this.category=menuDto.getCategory();
+		this.category = menuDto.getCategory();
 	}
 
 }

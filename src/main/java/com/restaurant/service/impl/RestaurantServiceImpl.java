@@ -109,6 +109,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public void deleteRestaurant(long restaurantId) {
 		log.info("Deleting Restaurant from {}", restaurantId);
+		
+		restaurantRepo.findById(restaurantId).orElseThrow(()->new ResourceNotFoundException(Keywords.RESTAURANT, Keywords.RATING_ID, restaurantId));
 
 		restaurantRepo.deleteById(restaurantId);
 		log.info("Restaurant deleted successfuly");

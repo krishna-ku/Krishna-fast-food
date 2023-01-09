@@ -10,6 +10,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import com.restaurant.dto.RatingDTO;
 
@@ -19,6 +20,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE Rating SET deleted=true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Rating extends BaseClass {
 
 	// @Column(name = "Rating out of 5")

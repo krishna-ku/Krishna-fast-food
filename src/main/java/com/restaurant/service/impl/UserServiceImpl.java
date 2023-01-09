@@ -137,10 +137,10 @@ public class UserServiceImpl implements UserService {
 
 		log.info("Deleting user for {}", userId);
 
-		User user = userRepo.findById(userId)
+		userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
-		this.userRepo.delete(user);
+		this.userRepo.deleteById(userId);
 		log.info("User Deleted Successfully");
 	}
 
@@ -187,6 +187,7 @@ public class UserServiceImpl implements UserService {
 
 	/**
 	 * Upload Image in DB
+	 * 
 	 * @param image
 	 * @param userId
 	 * @return
@@ -194,27 +195,29 @@ public class UserServiceImpl implements UserService {
 	 */
 	public UserDTO uploadImage(MultipartFile image, long userId) throws IOException {
 		log.info("Uploading image in user profile");
-		
+
 		User user = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 		String imageName = this.imageService.uploadImage(path, image);
 		user.setImageName(imageName);
 		userRepo.save(user);
-		
+
 		log.info("upload image successfully");
 		return new UserDTO(user);
 	}
+
 	/**
-	 * download image or view image
+	 * view image or view image
+	 * 
 	 * @param image
 	 * @param response
 	 * @throws IOException
 	 */
-	public void downloadImage(String image,HttpServletResponse response) throws IOException {
-		
+	public void downloadImage(String image, HttpServletResponse response) throws IOException {
+
 		InputStream resource = this.imageService.getResource(path, image);
 		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-		StreamUtils.copy(resource,response.getOutputStream());
-	} 
+		StreamUtils.copy(resource, response.getOutputStream());
+	}
 
 }

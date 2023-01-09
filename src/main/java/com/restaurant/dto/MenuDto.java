@@ -25,10 +25,10 @@ public class MenuDTO {
 
 	@Size(min = 10, max = 100, message = "size must be between 10 to 100 alphabets")
 	private String description;
-	
-	@NotEmpty(message = "please specify category of the dish")
-	private String category;
-	
+
+//	@NotEmpty(message = "please specify category of the dish")
+	private int category;
+
 	private Boolean deleted;
 
 	public MenuDTO(Menu menu) {
@@ -36,8 +36,8 @@ public class MenuDTO {
 		this.name = menu.getName();
 		this.price = menu.getPrice();
 		this.description = menu.getDescription();
-		this.deleted=menu.isDeleted();
-		this.category=menu.getCategory();
+		this.deleted = menu.isDeleted();
+		this.category = menu.getCategory();
 	}
 
 	/**
@@ -45,13 +45,12 @@ public class MenuDTO {
 	 */
 	@Override
 	public int hashCode() {
-		int p=97;
-		int r=p+name.hashCode();
-		r=p*r+(int) id;
+		int p = 97;
+		int r = p + name.hashCode();
+		r = p * r + (int) id;
 		return r;
 	}
-	
-	
+
 	@Override
 	public boolean equals(Object obj) {
 

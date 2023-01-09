@@ -3,26 +3,18 @@ package com.restaurant.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Generated;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import com.restaurant.enums.OrderStatus;
 
@@ -32,6 +24,8 @@ import lombok.Data;
 @Entity
 //@Entity(name = "Orders")
 @Table(name = "orders")
+@SQLDelete(sql = "UPDATE orders SET deleted=true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Order extends BaseClass {
 
 	@Enumerated(EnumType.STRING)
@@ -42,8 +36,7 @@ public class Order extends BaseClass {
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private User user;
-	
-	
+
 	private long orderNumber;
 
 //	private String customer;

@@ -14,6 +14,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import com.restaurant.dto.UserDTO;
 
@@ -22,8 +23,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(indexes = @Index(name = "idx_user_firstName", columnList = "firstName"))
+@Table(indexes = @Index(name = "idx_user_firstName", columnList = "firstName"))//for indexing
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE user SET deleted=true WHERE id=?")
+@Where(clause = "deleted=false")
 public class User extends BaseClass {
 
 	private String firstName;
@@ -33,7 +36,7 @@ public class User extends BaseClass {
 	
 	private String address;
 	
-	private long mobileNumber;
+	private String mobileNumber;
 	
 	private String imageName;
 	

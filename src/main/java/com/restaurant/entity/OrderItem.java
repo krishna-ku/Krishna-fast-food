@@ -5,6 +5,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import com.restaurant.dto.OrderItemDTO;
 
 import lombok.Data;
@@ -13,6 +16,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE order_item SET deleted=true WHERE id=?")
+@Where(clause = "deleted=false")
 public class OrderItem extends BaseClass {
 
 //	private long menuId;//orderitem.getmenu.getid

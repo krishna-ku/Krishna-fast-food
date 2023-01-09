@@ -31,7 +31,7 @@ public class UserDTO {
 
 	private String imageName;
 
-	private long mobileNumber;
+	private String mobileNumber;
 
 	private Boolean deleted;
 

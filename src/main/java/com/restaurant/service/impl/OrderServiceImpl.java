@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
-		if (user.getAddress() == null && user.getMobileNumber() != 10)
+		if (StringUtils.isBlank(user.getAddress()) || StringUtils.length(user.getMobileNumber())!=10)
 			throw new BadRequestException("please first enter your mobile number and adress then try to placed order");
 
 		Restaurant restaurant = restaurantRepo.findById((long) 1)

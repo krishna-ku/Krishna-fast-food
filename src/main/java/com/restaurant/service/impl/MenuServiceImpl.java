@@ -100,10 +100,10 @@ public class MenuServiceImpl implements MenuService {
 
 		log.info("Deleting menu for {} ", menuId);
 
-		Menu menu = this.menuRepo.findById(menuId)
+		this.menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
 
-		menuRepo.delete(menu);
+		menuRepo.deleteById(menuId);
 		log.info("Menu deleted successfully");
 	}
 

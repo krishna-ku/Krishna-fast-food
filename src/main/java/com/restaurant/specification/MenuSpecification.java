@@ -29,9 +29,9 @@ public class MenuSpecification {
 				predicates.add(criteriaBuilder.like(root.get("name"), "%" + menuDTO.getName() + "%"));
 			}
 			
-			if(menuDTO.getCategory()!=null) {
-				predicates.add(criteriaBuilder.like(root.get("category"), "%"+menuDTO.getCategory()+"%"));
-			}
+//			if(menuDTO.getCategory()!=null) {
+//				predicates.add(criteriaBuilder.like(root.get("category"), "%"+menuDTO.getCategory()+"%"));
+//			}
 
 			if (menuDTO.getPrice() > 0) {
 				predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), menuDTO.getPrice()));

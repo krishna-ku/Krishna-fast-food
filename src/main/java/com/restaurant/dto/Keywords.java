@@ -22,6 +22,9 @@ public class Keywords {
 	public static final String ORDER = "Order";
 	public static final String ORDER_ID = "OrderId";
 	
+	public static final String MENU_CATEGORY="MenuCategory";
+	public static final String MENU_CATEGORY_ID="MenuCategoryId";
+	
 	public static final String RESTAURANT="Restaurant";
 	public static final String RESTAURANT_ID="RestaurantId";
 
