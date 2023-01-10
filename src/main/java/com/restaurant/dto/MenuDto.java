@@ -26,8 +26,11 @@ public class MenuDTO {
 	@Size(min = 10, max = 100, message = "size must be between 10 to 100 alphabets")
 	private String description;
 
-//	@NotEmpty(message = "please specify category of the dish")
-	private int category;
+//	@Range(min = 1,message = "category cannot be null")
+//	private int category;
+	
+	@Range(min = 1,max = 5,message = "please give rating menu dishes")
+	private int dishRating;
 
 	private Boolean deleted;
 
@@ -37,7 +40,8 @@ public class MenuDTO {
 		this.price = menu.getPrice();
 		this.description = menu.getDescription();
 		this.deleted = menu.isDeleted();
-		this.category = menu.getCategory();
+		this.dishRating=menu.getDishRating();
+//		this.category = menu.getCategory();
 	}
 
 	/**

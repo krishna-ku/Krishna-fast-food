@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
-		if (StringUtils.isBlank(user.getAddress()) || StringUtils.length(user.getMobileNumber())!=10)
+		if (StringUtils.isBlank(user.getAddress()) || StringUtils.length(user.getMobileNumber()) != 10)
 			throw new BadRequestException("please first enter your mobile number and adress then try to placed order");
 
 		Restaurant restaurant = restaurantRepo.findById((long) 1)
@@ -215,10 +218,14 @@ public class OrderServiceImpl implements OrderService {
 	 * @return list of Orders
 	 * @see com.restaurant.dto.OrderDTO
 	 */
-	@Override
-	public List<OrderDTO> getAllOrders() {
+//	@Override
+	public List<OrderDTO> getAllOrders(Integer pageNumber, Integer pageSize) {
 
-		List<Order> orders = orderRepo.findAll();
+		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+		Page<Order> page = orderRepo.findAll(pageable);
+		List<Order> orders = page.getContent();
+
 		return orders.stream().map(OrderDTO::new).collect(Collectors.toList());
 	}
 
@@ -249,6 +256,20 @@ public class OrderServiceImpl implements OrderService {
 		order.setDeleted(false);
 		orderRepo.save(order);
 		return "Order is activate";
+	}
+	
+	@Override
+	public List<OrderDTO> getOrdersByRating() {
+//		Sort sort = null;
+//		if (sortDir.equalsIgnoreCase("asc"))
+//			sort.by(sortBy).ascending();
+//		else
+//			sort.by(sortBy).descending();
+
+		List<Order> orders = orderRepo.findAll();
+
+		return orders.stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
+
 	}
 
 }

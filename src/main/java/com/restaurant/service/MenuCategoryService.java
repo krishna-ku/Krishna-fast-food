@@ -17,7 +17,7 @@ public interface MenuCategoryService {
 	void deleteCategory(long menuCategoryId);
 	
 	//get MenuCategoris
-	List<MenuCategoryDTO> getAllMenusCategories();
+	List<MenuCategoryDTO> getAllMenusCategories(Integer pageNumber,Integer pageSize);
 	
 	//get MenuCategories by filter like delete and name
 	List<MenuCategoryDTO> filterMenuCategories(MenuCategoryDTO menuCategoryDTO);

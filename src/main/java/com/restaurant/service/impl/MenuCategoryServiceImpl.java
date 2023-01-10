@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -102,9 +105,12 @@ public class MenuCategoryServiceImpl implements MenuCategoryService {
 	 * @see com.restaurant.dto.MenuCategoryDTO
 	 */
 	@Override
-	public List<MenuCategoryDTO> getAllMenusCategories() {
+	public List<MenuCategoryDTO> getAllMenusCategories(Integer pageNumber, Integer pageSize) {
 
-		List<MenuCategory> menuCategories = menuCategoryRepo.findAll();
+		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+		Page<MenuCategory> page = menuCategoryRepo.findAll(pageable);
+		List<MenuCategory> menuCategories = page.getContent();
 
 		return menuCategories.stream().map(m -> new MenuCategoryDTO(m)).collect(Collectors.toList());
 	}

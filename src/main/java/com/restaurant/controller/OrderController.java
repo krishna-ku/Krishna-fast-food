@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
@@ -69,8 +70,10 @@ public class OrderController {
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
-	public ResponseEntity<List<OrderDTO>> getAllOrders() {
-		List<OrderDTO> allOrders = orderService.getAllOrders();
+	public ResponseEntity<List<OrderDTO>> getAllOrders(
+			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
+		List<OrderDTO> allOrders = orderService.getAllOrders(pageNumber, pageSize);
 		return new ResponseEntity<>(allOrders, HttpStatus.OK);
 	}
 
@@ -97,6 +100,11 @@ public class OrderController {
 	@PutMapping("/activate/{orderId}")
 	public ResponseEntity<String> activateUserEntity(@PathVariable long orderId) {
 		return ResponseEntity.ok(orderService.activateOrder(orderId));
+	}
+
+	@GetMapping("/rating")
+	public ResponseEntity<List<OrderDTO>> getOrdersRating() {
+		return ResponseEntity.ok(orderService.getOrdersByRating());
 	}
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
@@ -76,8 +77,10 @@ public class RatingController {
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
-	public ResponseEntity<List<RatingDTO>> getAllRatings() {
-		List<RatingDTO> ratingDto = ratingService.getAllRatings();
+	public ResponseEntity<List<RatingDTO>> getAllRatings(
+			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
+		List<RatingDTO> ratingDto = ratingService.getAllRatings(pageNumber, pageSize);
 		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
 	}
 

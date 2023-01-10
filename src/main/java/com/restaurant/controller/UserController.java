@@ -81,8 +81,10 @@ public class UserController {
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
-	public ResponseEntity<List<UserDTO>> getAllUsers() {
-		List<UserDTO> users = userService.getAllUsers();
+	public ResponseEntity<List<UserDTO>> getAllUsers(
+			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
+		List<UserDTO> users = userService.getAllUsers(pageNumber, pageSize);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 

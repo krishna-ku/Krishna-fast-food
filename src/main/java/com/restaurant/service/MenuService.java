@@ -18,7 +18,7 @@ public interface MenuService {
 	void deleteMenu(long menuId);
 
 	// get users
-	List<MenuDTO> getAllMenus();
+	List<MenuDTO> getAllMenus(Integer pageNumber,Integer pageSize,String sortBy,String sortDirection);
 
 	// save data from excel file
 	void saveExcelFile(MultipartFile file);

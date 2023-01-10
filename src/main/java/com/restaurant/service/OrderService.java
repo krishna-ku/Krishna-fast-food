@@ -17,12 +17,15 @@ public interface OrderService {
 	void deleteOrder(long orderId);
 
 	// get users
-	List<OrderDTO> getAllOrders();
+	List<OrderDTO> getAllOrders(Integer pageNumber,Integer pageSize);
 
 	// activate orders
 	String activateOrder(long orderId);
 
 	//get filter orders
 	List<OrderDTO> filterOrders(OrderDTO orderDTO);
+	
+	//give order rating
+	List<OrderDTO> getOrdersByRating();
 
 }

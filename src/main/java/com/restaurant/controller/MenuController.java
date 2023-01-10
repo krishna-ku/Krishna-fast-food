@@ -76,8 +76,12 @@ public class MenuController {
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
-	public ResponseEntity<List<MenuDTO>> getAllMenu() {
-		List<MenuDTO> menu = menuService.getAllMenus();
+	public ResponseEntity<List<MenuDTO>> getAllMenu(
+			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+			@RequestParam(value = "sort", defaultValue = "price", required = false) String sort,
+			@RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection) {
+		List<MenuDTO> menu = menuService.getAllMenus(pageNumber, pageSize, sort, sortDirection);
 		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
 

@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -114,9 +118,15 @@ public class MenuServiceImpl implements MenuService {
 	 * @see com.restaurant.dto.MenuDTO
 	 */
 	@Override
-	public List<MenuDTO> getAllMenus() {
+	public List<MenuDTO> getAllMenus(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
 
-		List<Menu> menus = menuRepo.findAll();
+		Sort sort = (sortDirection.equalsIgnoreCase("asc")) ? Sort.by(sortBy).ascending()
+				: Sort.by(sortBy).descending();
+
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+		Page<Menu> page = menuRepo.findAll(pageable);
+		List<Menu> menus = page.getContent();
 
 //		List<MenuDto> menuDtos = menus.stream().map(menu -> menuToDto(menu)).collect(Collectors.toList());
 

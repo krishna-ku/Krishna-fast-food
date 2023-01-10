@@ -25,8 +25,10 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 	Long findLastOrderNumber();
 
 	@Query(nativeQuery = true, value = "SELECT (DATE(orders.created_on)) date,COUNT(orders.id) count FROM orders WHERE orders.created_on BETWEEN "
-			+ ":fromDate and :toDate "
-			+ "GROUP BY DATE(orders.created_on) ORDER BY date, orders.deleted=false")
+			+ ":fromDate and :toDate " + "GROUP BY DATE(orders.created_on) ORDER BY date, orders.deleted=false")
 	List<OrderStatistics> oneWeekOrders(String fromDate, String toDate);
+
+	@Query(nativeQuery = true, value = "select orders.id,orders.order_number,rating.rating from restaurant.orders inner join restaurant.rating on restaurant.orders.id=restaurant.rating.order_id")
+	List<Object[]> filterOrdersBasedOnRatingAndPrice();
 
 }

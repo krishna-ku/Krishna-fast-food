@@ -11,6 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.jdbc.StreamUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -151,8 +154,10 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public List<UserDTO> getAllUsers() {
-		List<User> users = this.userRepo.findAll();
+	public List<UserDTO> getAllUsers(Integer pageNumber, Integer pageSize) {
+		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+		Page<User> page = this.userRepo.findAll(pageable);
+		List<User> users = page.getContent();
 		return users.stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
 	}
 

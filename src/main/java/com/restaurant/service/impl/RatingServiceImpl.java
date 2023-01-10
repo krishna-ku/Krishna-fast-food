@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -89,9 +92,12 @@ public class RatingServiceImpl implements RatingService {
 	 * @see com.restaurant.dto.RatingDTO
 	 */
 	@Override
-	public List<RatingDTO> getAllRatings() {
+	public List<RatingDTO> getAllRatings(Integer pageNumber, Integer pageSize) {
 
-		List<Rating> ratings = this.ratingRepo.findAll();
+		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+		Page<Rating> page = this.ratingRepo.findAll(pageable);
+		List<Rating> ratings = page.getContent();
 
 		return ratings.stream().map(rating -> new RatingDTO(rating)).collect(Collectors.toList());
 	}

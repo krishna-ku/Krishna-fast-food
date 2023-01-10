@@ -22,7 +22,7 @@ public interface UserService {
 
 	// get users
 //	@Query("Select u from User u where u.email=:email")//here i am using jpql u is our UserDto alias u and e is variable and by the help of @param e is bind 
-	List<UserDTO> getAllUsers();
+	List<UserDTO> getAllUsers(Integer pageNumber,Integer pageSize);
 
 	// make user active
 	String activateUser(long userId);

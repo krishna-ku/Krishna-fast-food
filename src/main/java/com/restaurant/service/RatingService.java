@@ -16,7 +16,7 @@ public interface RatingService {
 	void deleteRating(long ratingId);
 
 	// get all ratings
-	List<RatingDTO> getAllRatings();
+	List<RatingDTO> getAllRatings(Integer pageNumber,Integer pageSize);
 
 	// make raring active
 	String activateRating(long ratingId);

@@ -23,8 +23,10 @@ public class Menu extends BaseClass {
 	private float price;
 
 	private String description;
+	
+	private int dishRating;
 
-	private int category;
+//	private int category;
 
 	@OneToOne
 	private MenuCategory menuCategory;
@@ -40,7 +42,8 @@ public class Menu extends BaseClass {
 		this.name = menuDto.getName();
 		this.price = menuDto.getPrice();
 		this.description = menuDto.getDescription();
-		this.category = menuDto.getCategory();
+		this.dishRating=menuDto.getDishRating();
+//		this.category = menuDto.getCategory();
 	}
 
 }
