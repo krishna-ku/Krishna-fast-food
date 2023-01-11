@@ -137,11 +137,11 @@ public class UserController {
 	 * @param response
 	 * @throws IOException
 	 */
-	@GetMapping(value = "/downloadimage/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
+	@GetMapping(value = "/viewimage/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
 	public void downloadImage(@PathVariable("imageName") String imageName, HttpServletResponse response)
 			throws IOException {
 
-		userService.downloadImage(imageName, response);
+		userService.viewImage(imageName, response);
 	}
 
 }

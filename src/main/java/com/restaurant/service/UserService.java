@@ -34,5 +34,5 @@ public interface UserService {
 	UserDTO uploadImage(MultipartFile image, long userId) throws IOException;
 	
 	//download image or view image
-	void downloadImage(String image,HttpServletResponse response) throws IOException;
+	void viewImage(String image,HttpServletResponse response) throws IOException;
 }

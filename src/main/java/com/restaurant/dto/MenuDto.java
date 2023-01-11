@@ -26,11 +26,15 @@ public class MenuDTO {
 	@Size(min = 10, max = 100, message = "size must be between 10 to 100 alphabets")
 	private String description;
 
+	private String availability = "Available";
+
+	private String imageName;
+
 //	@Range(min = 1,message = "category cannot be null")
 //	private int category;
-	
-	@Range(min = 1,max = 5,message = "please give rating menu dishes")
-	private int dishRating;
+
+//	@Range(min = 1,max = 5,message = "please give rating menu dishes")
+	private int dishRating = 5;
 
 	private Boolean deleted;
 
@@ -40,7 +44,9 @@ public class MenuDTO {
 		this.price = menu.getPrice();
 		this.description = menu.getDescription();
 		this.deleted = menu.isDeleted();
-		this.dishRating=menu.getDishRating();
+		this.dishRating = menu.getDishRating();
+		this.availability = menu.getAvailability();
+		this.imageName=menu.getImageName();
 //		this.category = menu.getCategory();
 	}
 

@@ -102,9 +102,19 @@ public class OrderController {
 		return ResponseEntity.ok(orderService.activateOrder(orderId));
 	}
 
-	@GetMapping("/rating")
-	public ResponseEntity<List<OrderDTO>> getOrdersRating() {
-		return ResponseEntity.ok(orderService.getOrdersByRating());
+//	@GetMapping("/rating")
+//	public ResponseEntity<List<OrderDTO>> getOrdersRating() {
+//		return ResponseEntity.ok(orderService.getOrdersByRating());
+//	}
+	/**
+	 * repeat user order Service url: /orders/userId/repeatorder/orderId method : POST
+	 * @param userId
+	 * @param orderId
+	 * @return OrderDTO
+	 */
+	@PostMapping("/{userId}/repeatorder/{orderId}")
+	public ResponseEntity<OrderDTO> repeatOrder(@PathVariable long userId, @PathVariable long orderId) {
+		return ResponseEntity.ok(orderService.repeatOrder(userId, orderId));
 	}
 
 }

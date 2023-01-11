@@ -26,6 +26,9 @@ public interface OrderService {
 	List<OrderDTO> filterOrders(OrderDTO orderDTO);
 	
 	//give order rating
-	List<OrderDTO> getOrdersByRating();
+//	List<OrderDTO> getOrdersByRating();
+	
+	//repeat order
+	OrderDTO repeatOrder(long userId,long orderID);
 
 }

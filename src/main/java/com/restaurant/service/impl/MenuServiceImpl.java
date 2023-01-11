@@ -1,17 +1,23 @@
 package com.restaurant.service.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.engine.jdbc.StreamUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +28,7 @@ import com.restaurant.entity.Menu;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.MenuRepo;
+import com.restaurant.service.ImageService;
 import com.restaurant.service.MenuService;
 import com.restaurant.specification.MenuSpecification;
 
@@ -33,6 +40,12 @@ public class MenuServiceImpl implements MenuService {
 
 	@Autowired
 	private MenuRepo menuRepo;
+
+	@Autowired
+	private ImageService imageService;
+
+	@Value("${project.image}")
+	private String path;
 
 	/**
 	 * add Menu.
@@ -85,6 +98,10 @@ public class MenuServiceImpl implements MenuService {
 
 		if (!StringUtils.isEmpty(menuDto.getDescription())) {
 			updatedMenu.setDescription(menuDto.getDescription());
+		}
+
+		if (!StringUtils.isEmpty(menuDto.getAvailability())) {
+			updatedMenu.setAvailability(menuDto.getAvailability());
 		}
 
 		log.info("Menu updated successfully");
@@ -240,6 +257,43 @@ public class MenuServiceImpl implements MenuService {
 		} catch (Exception e) {
 			throw new BadRequestException(e.getMessage());
 		}
+	}
+
+	/**
+	 * Upload Image in DB
+	 * 
+	 * @param image
+	 * @param menuId
+	 * @return menuDTO
+	 * @throws IOException
+	 */
+	@Override
+	public MenuDTO uploadImage(MultipartFile image, long menuId) throws IOException {
+		log.info("Uploading image in user profile");
+
+		Menu menu = this.menuRepo.findById(menuId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
+		String imageName = this.imageService.uploadImage(path, image);
+		menu.setImageName(imageName);
+		menuRepo.save(menu);
+
+		log.info("upload image successfully");
+		return new MenuDTO(menu);
+	}
+
+	/**
+	 * view image or view image
+	 * 
+	 * @param image
+	 * @param response
+	 * @throws IOException
+	 */
+	@Override
+	public void viewImage(String image, HttpServletResponse response) throws IOException {
+
+		InputStream resource = this.imageService.getResource(path, image);
+		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+		StreamUtils.copy(resource, response.getOutputStream());
 	}
 
 }

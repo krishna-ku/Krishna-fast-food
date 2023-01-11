@@ -198,6 +198,7 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 * @throws IOException
 	 */
+	@Override
 	public UserDTO uploadImage(MultipartFile image, long userId) throws IOException {
 		log.info("Uploading image in user profile");
 
@@ -218,7 +219,8 @@ public class UserServiceImpl implements UserService {
 	 * @param response
 	 * @throws IOException
 	 */
-	public void downloadImage(String image, HttpServletResponse response) throws IOException {
+	@Override
+	public void viewImage(String image, HttpServletResponse response) throws IOException {
 
 		InputStream resource = this.imageService.getResource(path, image);
 		response.setContentType(MediaType.IMAGE_JPEG_VALUE);

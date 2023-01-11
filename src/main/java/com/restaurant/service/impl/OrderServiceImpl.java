@@ -257,19 +257,36 @@ public class OrderServiceImpl implements OrderService {
 		orderRepo.save(order);
 		return "Order is activate";
 	}
-	
-	@Override
-	public List<OrderDTO> getOrdersByRating() {
-//		Sort sort = null;
-//		if (sortDir.equalsIgnoreCase("asc"))
-//			sort.by(sortBy).ascending();
-//		else
-//			sort.by(sortBy).descending();
 
-		List<Order> orders = orderRepo.findAll();
+	/**
+	 *Repeat user previous order which order user wants to repeat like user 1 is order 6 times and he wants to repeat order 4 then he need to pass its userId and OrderId
+	 *@param userId
+	 *@param orderId
+	 *@return OrderDTO
+	 */
+	public OrderDTO repeatOrder(long userId,long orderID) {
+		User user = userRepo.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
-		return orders.stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
-
+		List<Order> previousOrders = user.getOrders();
+		Order repeat = previousOrders.stream().filter(order -> order.getId()==orderID).findFirst().orElseThrow(()->new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
+		OrderDTO newOrder = new OrderDTO(repeat);
+		OrderDTO placedOrder = placedOrder(newOrder, user.getId());
+		return placedOrder;
 	}
+
+//	@Override
+//	public List<OrderDTO> getOrdersByRating() {
+////		Sort sort = null;
+////		if (sortDir.equalsIgnoreCase("asc"))
+////			sort.by(sortBy).ascending();
+////		else
+////			sort.by(sortBy).descending();
+//
+//		List<Order> orders = orderRepo.findAll();
+//
+//		return orders.stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
+//
+//	}
 
 }

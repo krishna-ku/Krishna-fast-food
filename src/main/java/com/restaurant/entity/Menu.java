@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@SQLDelete(sql = "UPDATE Menu SET deleted=true WHERE id=?")
-@Where(clause = "deleted=false")
+@SQLDelete(sql = "UPDATE Menu SET deleted=true, availability='not available' where id=?")
+@Where(clause = "deleted=false AND availability='available'")
 public class Menu extends BaseClass {
 
 	private String name;
@@ -23,8 +23,12 @@ public class Menu extends BaseClass {
 	private float price;
 
 	private String description;
-	
+
 	private int dishRating;
+
+	private String availability = "Available";
+
+	private String imageName;
 
 //	private int category;
 
@@ -42,7 +46,9 @@ public class Menu extends BaseClass {
 		this.name = menuDto.getName();
 		this.price = menuDto.getPrice();
 		this.description = menuDto.getDescription();
-		this.dishRating=menuDto.getDishRating();
+		this.dishRating = menuDto.getDishRating();
+		this.availability = menuDto.getAvailability();
+		this.imageName = menuDto.getImageName();
 //		this.category = menuDto.getCategory();
 	}
 
