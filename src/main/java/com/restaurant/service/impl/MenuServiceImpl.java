@@ -145,9 +145,13 @@ public class MenuServiceImpl implements MenuService {
 		Page<Menu> page = menuRepo.findAll(pageable);
 		List<Menu> menus = page.getContent();
 
-//		List<MenuDto> menuDtos = menus.stream().map(menu -> menuToDto(menu)).collect(Collectors.toList());
+//		List<Menu> filterMenusByDeletedTrue = menus.stream().filter(m -> !m.isDeleted()).collect(Collectors.toList());
 
-		return menus.stream().map(MenuDTO::new).collect(Collectors.toList());
+		return menus.stream().filter(m -> !m.isDeleted()).map(MenuDTO::new).collect(Collectors.toList());//do this by query
+
+//		List<MenuDTO> menuDtos = menus.stream().map(menu -> menuToDto(menu)).collect(Collectors.toList());
+//		return filterMenusByDeletedTrue.stream().map(MenuDTO::new).collect(Collectors.toList());
+//		return menuDtos;
 	}
 
 	/**

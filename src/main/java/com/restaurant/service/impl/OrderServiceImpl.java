@@ -259,20 +259,31 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	/**
-	 *Repeat user previous order which order user wants to repeat like user 1 is order 6 times and he wants to repeat order 4 then he need to pass its userId and OrderId
-	 *@param userId
-	 *@param orderId
-	 *@return OrderDTO
+	 * Repeat user previous order which order user wants to repeat like user 1 is
+	 * order 6 times and he wants to repeat order 4 then he need to pass its userId
+	 * and OrderId
+	 * 
+	 * @param userId
+	 * @param orderId
+	 * @return OrderDTO
 	 */
-	public OrderDTO repeatOrder(long userId,long orderID) {
+	public OrderDTO repeatOrder(long userId, long orderID) {
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
-		List<Order> previousOrders = user.getOrders();
-		Order repeat = previousOrders.stream().filter(order -> order.getId()==orderID).findFirst().orElseThrow(()->new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
-		OrderDTO newOrder = new OrderDTO(repeat);
-		OrderDTO placedOrder = placedOrder(newOrder, user.getId());
-		return placedOrder;
+//		List<Order> previousOrders = user.getOrders();
+//		Order repeat = previousOrders.stream().filter(order -> order.getId() == orderID).findFirst()
+//				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
+//		OrderDTO newOrder = new OrderDTO(repeat);
+
+		Order order = orderRepo.findById(orderID)//check this by query orderId and userId
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
+
+		if (order.getUser().getId() == userId ) {
+			return placedOrder(new OrderDTO(order), user.getId());
+		}
+
+		throw new BadRequestException("Order not found");
 	}
 
 //	@Override

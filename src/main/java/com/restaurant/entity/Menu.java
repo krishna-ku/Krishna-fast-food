@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @SQLDelete(sql = "UPDATE Menu SET deleted=true, availability='not available' where id=?")
-@Where(clause = "deleted=false AND availability='available'")
+//@Where(clause = "deleted=false AND availability='available'")
 public class Menu extends BaseClass {
 
 	private String name;

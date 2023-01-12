@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.restaurant.dto.OrderDTO;
+import com.restaurant.dto.UserDTO;
 import com.restaurant.entity.Order;
 
 @Component
@@ -30,6 +31,7 @@ public class OrderSpecification {
 
 			if (orderDTO.getOrderStatus() != null)
 				predicates.add(criteriaBuilder.equal(root.get("orderStatus"), orderDTO.getOrderStatus()));
+			
 
 			return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 		});
