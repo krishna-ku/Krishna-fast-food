@@ -68,7 +68,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		response.addHeader("Authorization", "Bearer " + token);
+		response.addHeader("Authorization", token);
 	}
 
 	@Override
