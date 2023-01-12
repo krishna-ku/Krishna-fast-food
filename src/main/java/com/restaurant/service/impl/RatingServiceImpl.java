@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
-import com.restaurant.dto.RatingDto;
+import com.restaurant.dto.RatingDTO;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.Rating;
 import com.restaurant.entity.User;
@@ -16,8 +20,12 @@ import com.restaurant.repository.OrderRepo;
 import com.restaurant.repository.RatingRepo;
 import com.restaurant.repository.UserRepo;
 import com.restaurant.service.RatingService;
+import com.restaurant.specification.RatingSpecification;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class RatingServiceImpl implements RatingService {
 
 	@Autowired
@@ -32,14 +40,16 @@ public class RatingServiceImpl implements RatingService {
 	/**
 	 * add Rating.
 	 * 
-	 * @param RatingDto
+	 * @param RatingDTO
 	 * @param orderId
 	 * @param userId
 	 * @return RatingDto
-	 * @see com.restaurant.dto.RatingDto
+	 * @see com.restaurant.dto.RatingDTO
 	 */
 	@Override
-	public RatingDto createRating(RatingDto ratingDto, long orderId, long userId) {
+	public RatingDTO createRating(RatingDTO ratingDto, long orderId, long userId) {
+
+		log.info("Creating rating for {} ", ratingDto);
 
 		User user = userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
@@ -55,7 +65,9 @@ public class RatingServiceImpl implements RatingService {
 
 		this.ratingRepo.save(rating);
 
-		return new RatingDto(rating);
+		log.info("Rating created successfully");
+
+		return new RatingDTO(rating);
 	}
 
 	/**
@@ -77,32 +89,46 @@ public class RatingServiceImpl implements RatingService {
 	 * 
 	 * @return list of RatingDtos
 	 * 
-	 * @see com.restaurant.dto.RatingDto
+	 * @see com.restaurant.dto.RatingDTO
 	 */
 	@Override
-	public List<RatingDto> getAllRatings() {
+	public List<RatingDTO> getAllRatings(Integer pageNumber, Integer pageSize) {
 
-		List<Rating> ratings = this.ratingRepo.findAll();
+		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-//		List<RatingDto> ratingDtos = ratings.stream().map(rating -> ratingToDto(rating)).collect(Collectors.toList());
-		return ratings.stream().map(rating -> new RatingDto(rating)).collect(Collectors.toList());
-//		return ratings.stream().map(new::Rating).collect(Collectors.toList());
+		Page<Rating> page = this.ratingRepo.findAll(pageable);
+		List<Rating> ratings = page.getContent();
+
+		return ratings.stream().map(rating -> new RatingDTO(rating)).collect(Collectors.toList());
 	}
 
 	/**
-	 * return Rating by id
+	 * filter rating on the basis of id,rating and deleted
 	 * 
-	 * @param id
-	 * @return RatingDto by id
-	 * @see com.restaurant.dto.RatingDto
+	 * @param menuDTO
+	 * @return
 	 */
 	@Override
-	public RatingDto getRatingById(long ratingId) {
+	public List<RatingDTO> filterRatings(RatingDTO ratingDTO) {
+		Specification<Rating> specification = Specification.where(RatingSpecification.filterRatings(ratingDTO));
+		return ratingRepo.findAll(specification).stream().map(r -> new RatingDTO(r)).collect(Collectors.toList());
+	}
 
-		Rating rating = this.ratingRepo.findById(ratingId)
+	/**
+	 * activate the deleted rating
+	 * 
+	 * @param ratingId
+	 * @return String
+	 * @see com.restaurant.entity.Rating
+	 */
+	@Override
+	public String activateRating(long ratingId) {
+
+		Rating rating = ratingRepo.findById(ratingId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RATING, Keywords.RATING_ID, ratingId));
-
-		return new RatingDto(rating);
+		rating.setDeleted(false);
+		ratingRepo.save(rating);
+		return "Rating is active";
 	}
 
 }

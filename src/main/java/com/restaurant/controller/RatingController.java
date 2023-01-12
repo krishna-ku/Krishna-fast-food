@@ -7,44 +7,46 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
-import com.restaurant.dto.RatingDto;
+import com.restaurant.dto.RatingDTO;
 import com.restaurant.service.RatingService;
 
 @RestController
-@RequestMapping("/rating")
+@RequestMapping("/ratings")
 public class RatingController {
 
 	@Autowired
 	private RatingService ratingService;
 
 	/**
-	 * Add Rating
-	 * service url : /rating
-	 * method : Post
-	 * @param RatingDto
-	 * @return RatingDto {@link com.restaurant.dto.RatingDto}
+	 * Add Rating service url : /rating method : Post
+	 * 
+	 * @param RatingDTO
+	 * @return RatingDto {@link com.restaurant.dto.RatingDTO}
 	 */
 	@PostMapping("/{orderId}/user/{userId}")
-	public ResponseEntity<RatingDto> createRating(@Valid @RequestBody RatingDto ratingDto, @PathVariable long orderId,@PathVariable long userId) {
+	public ResponseEntity<RatingDTO> createRating(@Valid @RequestBody RatingDTO ratingDto, @PathVariable long orderId,
+			@PathVariable long userId) {
 
-		RatingDto rating = ratingService.createRating(ratingDto,orderId,userId);
+		RatingDTO rating = ratingService.createRating(ratingDto, orderId, userId);
 
-		return new ResponseEntity<>(rating ,HttpStatus.CREATED);
+		return new ResponseEntity<>(rating, HttpStatus.CREATED);
 	}
 
 	/**
-	 * Update Rating by id
-	 * service url: /rating/id
-	 * method : PUT
+	 * Update Rating by id service url: /rating/id method : PUT
+	 * 
 	 * @param id
 	 * @param RatingDto
 	 * @return Updated RatingDto {@link com.restaurant.dto.RatingDto}
@@ -56,42 +58,55 @@ public class RatingController {
 //	}
 
 	/**
-	 * Delete Rating by id
-	 * Method : DELETE
-	 * Service url: /rating/id
+	 * Delete Rating by id Method : DELETE Service url: /rating/id
+	 * 
 	 * @param id
 	 * 
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@DeleteMapping("/{ratingId}")
-	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long ratingId){
+	public ResponseEntity<ApiResponse> deleteOrder(@PathVariable long ratingId) {
 		this.ratingService.deleteRating(ratingId);
-		return new ResponseEntity<>(new ApiResponse("Rating delete successfully",true),HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse("Rating delete successfully", true), HttpStatus.OK);
 	}
 
 	/**
-	 * get list of Rating
-	 * Service url: /rating
-	 * method :  GET
-	 * @return list of RatingDto {@link com.restaurant.dto.RatingDto}
+	 * get list of Rating Service url: /rating method : GET
+	 * 
+	 * @return list of RatingDto {@link com.restaurant.dto.RatingDTO}
 	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
-	public ResponseEntity<List<RatingDto>> getAllRatings() {
-		List<RatingDto> ratingDto = ratingService.getAllRatings();
+	public ResponseEntity<List<RatingDTO>> getAllRatings(
+			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
+		List<RatingDTO> ratingDto = ratingService.getAllRatings(pageNumber, pageSize);
 		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
 	}
 
 	/**
-	 * get detail of Rating by id
-	 * Service url: /rating/id
-	 * method: GET
-	 *@param id
-	 * @return RatingDto of particular id
-	 * @see com.restaurant.dto.RatingDto
+	 * filter ratings on basis of id,rating and deleted
+	 * 
+	 * @param menuDTO
+	 * @return
 	 */
-	@GetMapping("/{ratingId}")
-	public ResponseEntity<RatingDto> getRatingById(@PathVariable long ratingId) {
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+	@GetMapping("/filter")
+	public ResponseEntity<List<RatingDTO>> filterRatings(@RequestBody RatingDTO ratingDTO) {
+		List<RatingDTO> filterRatings = ratingService.filterRatings(ratingDTO);
+		return new ResponseEntity<>(filterRatings, HttpStatus.OK);
+	}
 
-		return ResponseEntity.ok(ratingService.getRatingById(ratingId));
+	/**
+	 * Activate Rating
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+	@PutMapping("/activate/{ratingId}")
+	public ResponseEntity<String> activateUserEntity(@PathVariable long ratingId) {
+		return ResponseEntity.ok(ratingService.activateRating(ratingId));
 	}
 
 }

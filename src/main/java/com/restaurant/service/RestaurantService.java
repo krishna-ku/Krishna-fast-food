@@ -2,26 +2,30 @@ package com.restaurant.service;
 
 import java.util.List;
 
-import com.restaurant.dto.RestaurantDto;
+import com.restaurant.dto.RestaurantDTO;
+import com.restaurant.dto.UserDTO;
 
 public interface RestaurantService {
 
 	// create restaurant
-	RestaurantDto createRestaurant(RestaurantDto restaurantDto);
+	RestaurantDTO createRestaurant(RestaurantDTO restaurantDto);
 
 	// update restaurant
-	RestaurantDto updateRestaurant(RestaurantDto restauratDto, Long restaurantId);
+	RestaurantDTO updateRestaurant(RestaurantDTO restauratDto);
 
 	// delete user
 	void deleteRestaurant(long restaurantId);
 
 	// get users
-	List<RestaurantDto> getAllRestaurat();
+	List<RestaurantDTO> getAllRestaurat();
 
 	// get user
-	RestaurantDto getRestauratById(Long restaurantId);
-	
-	//get restaurant details
-	RestaurantDto getRestaurantDetails();
+	RestaurantDTO getRestauratById(Long restaurantId);
+
+	// get restaurant details
+	RestaurantDTO getRestaurantDetails();
+
+	// get all restaurants by header
+	List<RestaurantDTO> findAllFilter(boolean isDeleted);
 
 }

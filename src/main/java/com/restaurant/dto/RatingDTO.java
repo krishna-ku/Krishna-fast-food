@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RatingDto {
+public class RatingDTO {
 
 	private long id;
 
@@ -23,12 +23,15 @@ public class RatingDto {
 
 	@Size(min = 0, max = 100, message = "Review minimum between 10 to 100 !!")
 	private String review;
+	
+	private Boolean deleted;
 
 	private User user;
 
-	public RatingDto(Rating rating) {
+	public RatingDTO(Rating rating) {
 		this.id = rating.getId();
 		this.rating = rating.getRating();
 		this.review = rating.getReview();
+		this.deleted=rating.isDeleted();
 	}
 }

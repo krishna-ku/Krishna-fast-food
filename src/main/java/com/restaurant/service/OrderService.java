@@ -2,24 +2,33 @@ package com.restaurant.service;
 
 import java.util.List;
 
-import com.restaurant.dto.OrderDto;
-import com.restaurant.dto.OrderItemDto;
+import com.restaurant.dto.OrderDTO;
+import com.restaurant.dto.OrderItemDTO;
 
 public interface OrderService {
 
 	// create user
-	OrderDto placedOrder(OrderDto orderDto,long userId);
+	OrderDTO placedOrder(OrderDTO orderDto, long userId);
 
 	// update user
-	OrderDto updateOrder(List<OrderItemDto> orderItemDto, Long orderId);
+	OrderDTO updateOrder(List<OrderItemDTO> orderItemDto, Long orderId);
 
 	// delete user
 	void deleteOrder(long orderId);
 
 	// get users
-	List<OrderDto> getAllOrders();
+	List<OrderDTO> getAllOrders(Integer pageNumber,Integer pageSize);
 
-	// get user
-	OrderDto getOrderById(Long orderId);
+	// activate orders
+	String activateOrder(long orderId);
+
+	//get filter orders
+	List<OrderDTO> filterOrders(OrderDTO orderDTO);
+	
+	//give order rating
+//	List<OrderDTO> getOrdersByRating();
+	
+	//repeat order
+	OrderDTO repeatOrder(String userId,long orderID);
 
 }
