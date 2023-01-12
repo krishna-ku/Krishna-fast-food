@@ -277,14 +277,9 @@ public class OrderServiceImpl implements OrderService {
 //				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
 //		OrderDTO newOrder = new OrderDTO(repeat);
 
-        Order order = orderRepo.findById(orderID)//check this by query orderId and userId
+        Order order = orderRepo.findByIdAndUsername(orderID, username)//check this by query orderId and userId
                 .orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
-
-        if (order.getUser().getEmail().equals(username)) {
-            return placedOrder(new OrderDTO(order), user.getId());
-        }
-
-        throw new BadRequestException("Order not found");
+        return placedOrder(new OrderDTO(order), user.getId());
     }
 
 //	@Override

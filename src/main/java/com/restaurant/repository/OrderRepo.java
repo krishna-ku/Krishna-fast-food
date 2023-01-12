@@ -1,6 +1,7 @@
 package com.restaurant.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -30,5 +31,6 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 
 	@Query(nativeQuery = true, value = "select orders.id,orders.order_number,rating.rating from restaurant.orders inner join restaurant.rating on restaurant.orders.id=restaurant.rating.order_id")
 	List<Object[]> filterOrdersBasedOnRatingAndPrice();
-
+@Query("select o from Order o where o.id = :orderId and o.user.email = :username and o.deleted = false")
+    Optional<Order> findByIdAndUsername(long orderId, String username);
 }
