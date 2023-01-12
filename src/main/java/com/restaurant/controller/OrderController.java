@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -112,9 +113,9 @@ public class OrderController {
 	 * @param orderId
 	 * @return OrderDTO
 	 */
-	@PostMapping("/{userId}/repeatorder/{orderId}")
-	public ResponseEntity<OrderDTO> repeatOrder(@PathVariable long userId, @PathVariable long orderId) {
-		return ResponseEntity.ok(orderService.repeatOrder(userId, orderId));
+	@PostMapping("/{orderId}/repeat")
+	public ResponseEntity<OrderDTO> repeatOrder (@PathVariable long orderId, @AuthenticationPrincipal String username) {
+		return ResponseEntity.ok(orderService.repeatOrder(username, orderId));
 	}
 
 }

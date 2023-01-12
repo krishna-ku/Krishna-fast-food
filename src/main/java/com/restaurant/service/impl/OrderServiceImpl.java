@@ -44,247 +44,248 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
-	@Autowired
-	private OrderRepo orderRepo;
+    @Autowired
+    private OrderRepo orderRepo;
 
-	@Autowired
-	EmailService emailService;
+    @Autowired
+    EmailService emailService;
 
-	@Autowired
-	private RestaurantRepo restaurantRepo;
+    @Autowired
+    private RestaurantRepo restaurantRepo;
 
-	@Autowired
-	private UserRepo userRepo;
+    @Autowired
+    private UserRepo userRepo;
 
-	@Autowired
-	private MenuRepo menuRepo;
+    @Autowired
+    private MenuRepo menuRepo;
 
-	/**
-	 * Placed Order.
-	 * 
-	 * @param List<OrderItemDto>
-	 * @return OrderDto
-	 * @see com.restaurant.dto.OrderDTO
-	 */
-	public OrderDTO placedOrder(OrderDTO orderDto, long userId) {
+    /**
+     * Placed Order.
+     *
+     * @param List<OrderItemDto>
+     * @return OrderDto
+     * @see com.restaurant.dto.OrderDTO
+     */
+    public OrderDTO placedOrder(OrderDTO orderDto, long userId) {
 
-		log.info("Placing order for {} ", orderDto);
+        log.info("Placing order for {} ", orderDto);
 
-		User user = userRepo.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
-		if (StringUtils.isBlank(user.getAddress()) || StringUtils.length(user.getMobileNumber()) != 10)
-			throw new BadRequestException("please first enter your mobile number and adress then try to placed order");
+        if (StringUtils.isBlank(user.getAddress()) || StringUtils.length(user.getMobileNumber()) != 10)
+            throw new BadRequestException("please first enter your mobile number and adress then try to placed order");
 
-		Restaurant restaurant = restaurantRepo.findById((long) 1)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.RESTAURANT, Keywords.RESTAURANT_ID, 1));
+        Restaurant restaurant = restaurantRepo.findById((long) 1)
+                .orElseThrow(() -> new ResourceNotFoundException(Keywords.RESTAURANT, Keywords.RESTAURANT_ID, 1));
 
-		String customer = user.getFirstName() + " " + user.getLastName();
+        String customer = user.getFirstName() + " " + user.getLastName();
 
-		Order order = new Order();
+        Order order = new Order();
 
-		Set<Long> set = new HashSet<>();
+        Set<Long> set = new HashSet<>();
 
-		if (restaurant.getStatus().equals("CLOSE"))
-			throw new BadRequestException("Restaurant is closed please order when restaurant is open");
+        if (restaurant.getStatus().equals("CLOSE"))
+            throw new BadRequestException("Restaurant is closed please order when restaurant is open");
 
-		List<OrderItem> orderItems = orderDto.getOrderItems().stream().map(o -> {
+        List<OrderItem> orderItems = orderDto.getOrderItems().stream().map(o -> {
 
-			if (set.contains(o.getMenuId())) {
-				return null;
-			}
-			set.add(o.getMenuId());
-			OrderItem orderItem = new OrderItem(o);
+            if (set.contains(o.getMenuId())) {
+                return null;
+            }
+            set.add(o.getMenuId());
+            OrderItem orderItem = new OrderItem(o);
 
-			Menu menu = this.menuRepo.findById(o.getMenuId())
-					.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, o.getMenuId()));
-			orderItem.setMenu(menu);
+            Menu menu = this.menuRepo.findById(o.getMenuId())
+                    .orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, o.getMenuId()));
+            orderItem.setMenu(menu);
 
-			orderItem.setOrder(order);
-			return orderItem;
+            orderItem.setOrder(order);
+            return orderItem;
 
-		}).filter(Objects::nonNull).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
 
-		order.setStatus(OrderStatus.WAITING);
-		order.setOrderItems(orderItems);
-		order.setUser(user);
-		order.setRestaurant(restaurant);
+        order.setStatus(OrderStatus.WAITING);
+        order.setOrderItems(orderItems);
+        order.setUser(user);
+        order.setRestaurant(restaurant);
 //		orderRepo.save(order);
-		saveOrderNumber(order);
+        saveOrderNumber(order);
 
-		CompletableFuture.runAsync(() -> {
+        CompletableFuture.runAsync(() -> {
 
-			byte[] createPdf = PdfGenerator.createPdf(order);
+            byte[] createPdf = PdfGenerator.createPdf(order);
 
-			emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName(), createPdf);
-		});
+            emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName(), createPdf);
+        });
 
-		log.info("Order placed successfully");
+        log.info("Order placed successfully");
 
-		return new OrderDTO(order);
-	}
+        return new OrderDTO(order);
+    }
 
-	/**
-	 * set order number and increment by 1 every time
-	 * 
-	 * @param order
-	 */
-	public void saveOrderNumber(Order order) {
-		synchronized (this) {
-			Long lastOrderNumber = orderRepo.findLastOrderNumber();
-			order.setOrderNumber(lastOrderNumber + 1);
-			orderRepo.save(order);
-		}
-	}
+    /**
+     * set order number and increment by 1 every time
+     *
+     * @param order
+     */
+    public void saveOrderNumber(Order order) {
+        synchronized (this) {
+            Long lastOrderNumber = orderRepo.findLastOrderNumber();
+            order.setOrderNumber(lastOrderNumber + 1);
+            orderRepo.save(order);
+        }
+    }
 
-	/**
-	 * update Order.
-	 * 
-	 * @param List<OrderItemDto>
-	 * @param Orderid
-	 * @return updated null if order is not updated else return updated order
-	 * @see com.restaurant.dto.OrderDTO
-	 */
-	@Override
-	public OrderDTO updateOrder(List<OrderItemDTO> orderItemList, Long orderId) {
+    /**
+     * update Order.
+     *
+     * @param List<OrderItemDto>
+     * @param Orderid
+     * @return updated null if order is not updated else return updated order
+     * @see com.restaurant.dto.OrderDTO
+     */
+    @Override
+    public OrderDTO updateOrder(List<OrderItemDTO> orderItemList, Long orderId) {
 
-		log.info("Updating order for {}", orderItemList);
+        log.info("Updating order for {}", orderItemList);
 
-		Order order = orderRepo.findById(orderId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
 
-		if (order != null) {
+        if (order != null) {
 
-			order.setStatus(OrderStatus.WAITING);
-			List<OrderItem> orderItems = order.getOrderItems();
-			Map<Long, OrderItem> collect = orderItems.stream()
-					.collect(Collectors.toMap(o -> o.getMenu().getId(), Function.identity()));
-			List<OrderItem> updatedOrderItemList = new ArrayList<>();
+            order.setStatus(OrderStatus.WAITING);
+            List<OrderItem> orderItems = order.getOrderItems();
+            Map<Long, OrderItem> collect = orderItems.stream()
+                    .collect(Collectors.toMap(o -> o.getMenu().getId(), Function.identity()));
+            List<OrderItem> updatedOrderItemList = new ArrayList<>();
 //			List<OrderItem> deleteOrderItemList=new ArrayList<>();
-			for (OrderItemDTO orderItemDto : orderItemList) {
+            for (OrderItemDTO orderItemDto : orderItemList) {
 
-				if (orderItemDto.getItemQuantity() > 10 || orderItemDto.getItemQuantity() < 1)
-					throw new BadRequestException("Item quantity should not be less than 1 or more than 10");
+                if (orderItemDto.getItemQuantity() > 10 || orderItemDto.getItemQuantity() < 1)
+                    throw new BadRequestException("Item quantity should not be less than 1 or more than 10");
 
-				if (collect.containsKey(orderItemDto.getMenuId())) {
-					OrderItem item = collect.get(orderItemDto.getMenuId());
-					item.setItemQuantity(orderItemDto.getItemQuantity());
-					updatedOrderItemList.add(item);
-				} else {
-					Menu menu = menuRepo.findById(orderItemDto.getMenuId())
-							.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID,
-									orderItemDto.getMenuId()));
-					if (menu != null) {
-						OrderItem newOrderItem = new OrderItem(orderItemDto);
-						newOrderItem.setOrder(order);
-						newOrderItem.setMenu(menu);
-						updatedOrderItemList.add(newOrderItem);
+                if (collect.containsKey(orderItemDto.getMenuId())) {
+                    OrderItem item = collect.get(orderItemDto.getMenuId());
+                    item.setItemQuantity(orderItemDto.getItemQuantity());
+                    updatedOrderItemList.add(item);
+                } else {
+                    Menu menu = menuRepo.findById(orderItemDto.getMenuId())
+                            .orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID,
+                                    orderItemDto.getMenuId()));
+                    if (menu != null) {
+                        OrderItem newOrderItem = new OrderItem(orderItemDto);
+                        newOrderItem.setOrder(order);
+                        newOrderItem.setMenu(menu);
+                        updatedOrderItemList.add(newOrderItem);
 
-					}
+                    }
 
-				}
-			}
-			order.setOrderItems(updatedOrderItemList);
-			orderRepo.save(order);
+                }
+            }
+            order.setOrderItems(updatedOrderItemList);
+            orderRepo.save(order);
 
-			log.info("Order updated successfully");
+            log.info("Order updated successfully");
 
-			return new OrderDTO(order);
+            return new OrderDTO(order);
 
-		}
+        }
 
-		throw new NullRequestException("menuId is not found please enter correct menuId");
-	}
+        throw new NullRequestException("menuId is not found please enter correct menuId");
+    }
 
-	/**
-	 * delete Order
-	 * 
-	 * @param id
-	 * @return void
-	 */
-	@Override
-	public void deleteOrder(long orderId) {
+    /**
+     * delete Order
+     *
+     * @param id
+     * @return void
+     */
+    @Override
+    public void deleteOrder(long orderId) {
 
-		log.info("Deleting order for {} ", orderId);
+        log.info("Deleting order for {} ", orderId);
 
-		this.orderRepo.deleteById(orderId);
-		log.info("Order deleted successfully");
+        this.orderRepo.deleteById(orderId);
+        log.info("Order deleted successfully");
 
-	}
+    }
 
-	/**
-	 * return all Orders
-	 * 
-	 * @return list of Orders
-	 * @see com.restaurant.dto.OrderDTO
-	 */
+    /**
+     * return all Orders
+     *
+     * @return list of Orders
+     * @see com.restaurant.dto.OrderDTO
+     */
 //	@Override
-	public List<OrderDTO> getAllOrders(Integer pageNumber, Integer pageSize) {
+    public List<OrderDTO> getAllOrders(Integer pageNumber, Integer pageSize) {
 
-		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-		Page<Order> page = orderRepo.findAll(pageable);
-		List<Order> orders = page.getContent();
+        Page<Order> page = orderRepo.findAll(pageable);
+        List<Order> orders = page.getContent();
 
-		return orders.stream().map(OrderDTO::new).collect(Collectors.toList());
-	}
+        return orders.stream().map(OrderDTO::new).collect(Collectors.toList());
+    }
 
-	/**
-	 * filter orders on the basis of id,status
-	 * 
-	 * @param menuDTO
-	 * @return
-	 */
-	@Override
-	public List<OrderDTO> filterOrders(OrderDTO orderDTO) {
-		Specification<Order> specification = Specification.where(OrderSpecification.filterOrders(orderDTO));
-		return orderRepo.findAll(specification).stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
-	}
+    /**
+     * filter orders on the basis of id,status
+     *
+     * @param menuDTO
+     * @return
+     */
+    @Override
+    public List<OrderDTO> filterOrders(OrderDTO orderDTO) {
+        Specification<Order> specification = Specification.where(OrderSpecification.filterOrders(orderDTO));
+        return orderRepo.findAll(specification).stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
+    }
 
-	/**
-	 * activate the deleted order
-	 * 
-	 * @param userId
-	 * @return String
-	 * @see com.restaurant.entity.User
-	 */
-	@Override
-	public String activateOrder(long orderId) {
+    /**
+     * activate the deleted order
+     *
+     * @param userId
+     * @return String
+     * @see com.restaurant.entity.User
+     */
+    @Override
+    public String activateOrder(long orderId) {
 
-		Order order = orderRepo.findById(orderId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
-		order.setDeleted(false);
-		orderRepo.save(order);
-		return "Order is activate";
-	}
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderId));
+        order.setDeleted(false);
+        orderRepo.save(order);
+        return "Order is activate";
+    }
 
-	/**
-	 * Repeat user previous order which order user wants to repeat like user 1 is
-	 * order 6 times and he wants to repeat order 4 then he need to pass its userId
-	 * and OrderId
-	 * 
-	 * @param userId
-	 * @param orderId
-	 * @return OrderDTO
-	 */
-	public OrderDTO repeatOrder(long userId, long orderID) {
-		User user = userRepo.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-
+    /**
+     * Repeat user previous order which order user wants to repeat like user 1 is
+     * order 6 times and he wants to repeat order 4 then he need to pass its userId
+     * and OrderId
+     *
+     * @param userId
+     * @param orderId
+     * @return OrderDTO
+     */
+    public OrderDTO repeatOrder(String username, long orderID) {
+        User user = userRepo.findByEmail(username);
+        if (user == null) {
+            throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, username);
+        }
 //		List<Order> previousOrders = user.getOrders();
 //		Order repeat = previousOrders.stream().filter(order -> order.getId() == orderID).findFirst()
 //				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
 //		OrderDTO newOrder = new OrderDTO(repeat);
 
-		Order order = orderRepo.findById(orderID)//check this by query orderId and userId
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
+        Order order = orderRepo.findById(orderID)//check this by query orderId and userId
+                .orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
 
-		if (order.getUser().getId() == userId ) {
-			return placedOrder(new OrderDTO(order), user.getId());
-		}
+        if (order.getUser().getEmail().equals(username)) {
+            return placedOrder(new OrderDTO(order), user.getId());
+        }
 
-		throw new BadRequestException("Order not found");
-	}
+        throw new BadRequestException("Order not found");
+    }
 
 //	@Override
 //	public List<OrderDTO> getOrdersByRating() {

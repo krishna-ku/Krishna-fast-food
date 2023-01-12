@@ -29,6 +29,6 @@ public interface OrderService {
 //	List<OrderDTO> getOrdersByRating();
 	
 	//repeat order
-	OrderDTO repeatOrder(long userId,long orderID);
+	OrderDTO repeatOrder(String userId,long orderID);
 
 }

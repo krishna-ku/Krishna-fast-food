@@ -13,9 +13,9 @@ public class ResourceNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1290687379605159538L;
 	private final String resouceName;
 	private final String fieldName;
-	private final long fieldValue;
+	private final Object fieldValue;
 
-	public ResourceNotFoundException(String resouceName, String fieldName, long fieldValue) {
+	public ResourceNotFoundException(String resouceName, String fieldName, Object fieldValue) {
 		super(String.format("%s not found with %s : %s", resouceName, fieldName, fieldValue));
 		this.resouceName = resouceName;
 		this.fieldName = fieldName;
