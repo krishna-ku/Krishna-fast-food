@@ -50,6 +50,7 @@ public class Menu extends BaseClass {
 		this.availability = menuDto.getAvailability();
 		this.imageName = menuDto.getImageName();
 //		this.category = menuDto.getCategory();
+//		this.menuCategory=menuDto.getCategory();
 	}
 
 }

@@ -10,9 +10,6 @@ import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -23,7 +20,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(indexes = @Index(name = "idx_user_firstName", columnList = "firstName"))//for indexing
+@Table(indexes = @Index(name = "idx_user_firstName", columnList = "firstName")) // for indexing
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE user SET deleted=true WHERE id=?")
 @Where(clause = "deleted=false")
@@ -33,16 +30,21 @@ public class User extends BaseClass {
 	private String lastName;
 
 	private String email;
-	
+
 	private String address;
-	
+
 	private String mobileNumber;
-	
+
 	private String imageName;
-	
+
 	private String role;
 
 	private String password;
+
+//	@Override
+//	public String toString() {
+//		return "User [email=" + email + "]";
+//	}
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	List<Order> orders = new ArrayList<>();
@@ -53,12 +55,12 @@ public class User extends BaseClass {
 	public User(UserDTO userDto) {
 		this.firstName = userDto.getFirstName();
 		this.lastName = userDto.getLastName();
-		this.role=userDto.getRole();
+		this.role = userDto.getRole();
 		this.email = userDto.getEmail();
 		this.password = userDto.getPassword();
-		this.address=userDto.getAddress();
-		this.mobileNumber=userDto.getMobileNumber();
-		this.imageName=userDto.getImageName();
+		this.address = userDto.getAddress();
+		this.mobileNumber = userDto.getMobileNumber();
+		this.imageName = userDto.getImageName();
 	}
 //
 //	@OneToOne

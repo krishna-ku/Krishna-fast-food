@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.ApiResponse;
 import com.restaurant.dto.MenuDTO;
+import com.restaurant.dto.PagingDTO;
 import com.restaurant.service.MenuService;
 
 @RestController
@@ -79,12 +80,12 @@ public class MenuController {
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
-	public ResponseEntity<List<MenuDTO>> getAllMenu(
+	public ResponseEntity<PagingDTO> getAllMenu(
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
 			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
 			@RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
 			@RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection) {
-		List<MenuDTO> menu = menuService.getAllMenus(pageNumber, pageSize, sortBy, sortDirection);
+		PagingDTO menu = menuService.getAllMenus(pageNumber, pageSize, sortBy, sortDirection);
 		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
 

@@ -2,6 +2,7 @@ package com.restaurant.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,11 +17,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.Keywords;
+import com.restaurant.dto.PagingDTO;
 import com.restaurant.dto.UserDTO;
 import com.restaurant.entity.User;
 import com.restaurant.exception.BadRequestException;
@@ -154,11 +157,13 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public List<UserDTO> getAllUsers(Integer pageNumber, Integer pageSize) {
+	public PagingDTO getAllPagedUsers(Integer pageNumber, Integer pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 		Page<User> page = this.userRepo.findAll(pageable);
 		List<User> users = page.getContent();
-		return users.stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
+		List<UserDTO> userDTOs = users.stream().map(m -> new UserDTO(m)).collect(Collectors.toList());
+		PagingDTO pagingDTO = new PagingDTO(userDTOs, page.getTotalElements(), page.getTotalPages());
+		return pagingDTO;
 	}
 
 	/**
@@ -168,10 +173,23 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 */
 	@Override
-	public List<UserDTO> filterUsers(UserDTO userDTO) {
-		Specification<User> specification = Specification.where(UserSpecification.filterUsers(userDTO));
-		return userRepo.findAll(specification).stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
+	public List<UserDTO> filterUsers(UserDTO userDTO, String userName,
+			Collection<? extends GrantedAuthority> authorities) {
+//		User validUser = userRepo.findByEmail(userName);
+//		if (validUser.getRole().equals("USER")) {
+//			Specification<User> specification = Specification
+//					.where(userDetailsByToken.filterUserSpecificationByToken(userName));
+//			return userRepo.findAll(specification).stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
+//		}
+		Specification<User> specification = Specification
+				.where(UserSpecification.filterUsers(userDTO, userName, authorities));
+		return userRepo.findAll(specification).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
 	}
+
+//	public List<UserDTO> filterUserDetailsByToken(UserDTO userDTO){
+//		
+//		Specification<User> specification=Specification.where(UserDetailsByToken.filterUserSpecificationByToken(userDTO))
+//	}
 
 	/**
 	 * activate the deleted user

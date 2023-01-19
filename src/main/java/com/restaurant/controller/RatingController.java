@@ -1,5 +1,6 @@
 package com.restaurant.controller;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -8,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.ApiResponse;
+import com.restaurant.dto.PagingDTO;
 import com.restaurant.dto.RatingDTO;
 import com.restaurant.service.RatingService;
+import com.restaurant.service.impl.CouponServiceImpl;
 
 @RestController
 @RequestMapping("/ratings")
@@ -28,6 +34,9 @@ public class RatingController {
 
 	@Autowired
 	private RatingService ratingService;
+
+	@Autowired
+	private CouponServiceImpl couponServiceImpl;
 
 	/**
 	 * Add Rating service url : /rating method : Post
@@ -77,10 +86,10 @@ public class RatingController {
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
-	public ResponseEntity<List<RatingDTO>> getAllRatings(
+	public ResponseEntity<PagingDTO> getAllRatings(
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
 			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
-		List<RatingDTO> ratingDto = ratingService.getAllRatings(pageNumber, pageSize);
+		PagingDTO ratingDto = ratingService.getAllRatings(pageNumber, pageSize);
 		return new ResponseEntity<>(ratingDto, HttpStatus.OK);
 	}
 
@@ -90,10 +99,13 @@ public class RatingController {
 	 * @param menuDTO
 	 * @return
 	 */
-	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
 	@GetMapping("/filter")
-	public ResponseEntity<List<RatingDTO>> filterRatings(@RequestBody RatingDTO ratingDTO) {
-		List<RatingDTO> filterRatings = ratingService.filterRatings(ratingDTO);
+	public ResponseEntity<List<RatingDTO>> filterRatings(@RequestBody RatingDTO ratingDTO,
+			@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+		String userName = (String) authentication.getPrincipal();
+		List<RatingDTO> filterRatings = ratingService.filterRatings(ratingDTO, userName, authorities);
 		return new ResponseEntity<>(filterRatings, HttpStatus.OK);
 	}
 

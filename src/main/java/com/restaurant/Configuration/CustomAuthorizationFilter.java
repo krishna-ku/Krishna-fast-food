@@ -59,6 +59,8 @@ public class CustomAuthorizationFilter extends BasicAuthenticationFilter {
             String username = verify.get("sub").toString();
             List<Map<String, String>> object = (List<Map<String, String>>)verify.get("authorities");
             if (username != null) {
+//            	new org.springframework.security.core.userdetails.User(username, null,
+//            			getAuthorities(object));
                 return new UsernamePasswordAuthenticationToken(username, null, getAuthorities(object));
             }
             return null;

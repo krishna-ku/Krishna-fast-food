@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.MenuDTO;
+import com.restaurant.dto.PagingDTO;
 
 public interface MenuService {
 
@@ -21,7 +22,7 @@ public interface MenuService {
 	void deleteMenu(long menuId);
 
 	// get users
-	List<MenuDTO> getAllMenus(Integer pageNumber,Integer pageSize,String sortBy,String sortDirection);
+	PagingDTO getAllMenus(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
 
 	// save data from excel file
 	void saveExcelFile(MultipartFile file);
@@ -37,11 +38,11 @@ public interface MenuService {
 
 	// filter menus
 	List<MenuDTO> filterMenus(MenuDTO menuDTO);
-	
-	//upload image in menu
+
+	// upload image in menu
 	MenuDTO uploadImage(MultipartFile image, long userId) throws IOException;
-	
-	//view image
+
+	// view image
 	void viewImage(String image, HttpServletResponse response) throws IOException;
 
 }

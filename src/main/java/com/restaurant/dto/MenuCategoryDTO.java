@@ -1,8 +1,5 @@
 package com.restaurant.dto;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
 import com.restaurant.entity.MenuCategory;
 
 import lombok.Getter;

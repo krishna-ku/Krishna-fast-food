@@ -37,7 +37,7 @@ public class MenuDTO {
 	private int dishRating = 5;
 
 	private Boolean deleted;
-
+	
 	private MenuCategoryDTO category;
 
 	public MenuDTO(Menu menu) {
@@ -49,6 +49,7 @@ public class MenuDTO {
 		this.dishRating = menu.getDishRating();
 		this.availability = menu.getAvailability();
 		this.imageName=menu.getImageName();
+//		this.category = menu.getCategory();
 		this.category = new MenuCategoryDTO(menu.getMenuCategory());
 	}
 

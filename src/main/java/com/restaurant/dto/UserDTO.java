@@ -35,6 +35,9 @@ public class UserDTO {
 
 	private Boolean deleted;
 
+	//for fetching data from orders
+	private OrderDTO orders;
+
 	@Pattern(regexp = "[A-Za-z]+[!@#$%^&*]+[0-9]*$", message = "Password should be like this user@123")
 	@Size(min = 8, max = 16, message = "password must be between 8 to 16 characters")
 	private String password;
@@ -48,6 +51,6 @@ public class UserDTO {
 		this.deleted = user.isDeleted();
 		this.address = user.getAddress();
 		this.mobileNumber = user.getMobileNumber();
-		this.imageName=user.getImageName();
+		this.imageName = user.getImageName();
 	}
 }
