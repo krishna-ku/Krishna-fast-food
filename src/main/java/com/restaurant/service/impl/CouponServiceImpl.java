@@ -6,12 +6,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.entity.Coupon;
 import com.restaurant.entity.MailHistory;
 import com.restaurant.entity.User;
 import com.restaurant.enums.CouponStatus;
+import com.restaurant.enums.EmailStatus;
+import com.restaurant.exception.BadRequestException;
 import com.restaurant.repository.CouponRepo;
 import com.restaurant.repository.MailHistoryRepo;
 import com.restaurant.repository.UserRepo;
@@ -76,11 +79,12 @@ public class CouponServiceImpl {
 			coupon.setMinPercentage(couponObject.getMinPercentage());
 			coupon.setExpireDate(couponObject.getExpireDate());
 
-			Date expireDate = coupon.getExpireDate();
-			Date currentDate = new Date();
-			if (expireDate.before(currentDate)) {
-				coupon.setCouponStatus(CouponStatus.EXPIRED);
-			}
+			coupon.getExpireDate();
+//			Date expireDate = coupon.getExpireDate();
+//			Date currentDate = new Date();
+//			if (expireDate.before(currentDate)) {
+//				coupon.setCouponStatus(CouponStatus.EXPIRED);
+//			}
 			mailHistory.setSubject(subject);
 //			couponRepo.save(coupon);
 			String content = "<h1>Dear " + user.getFirstName() + " " + user.getLastName()
@@ -99,11 +103,34 @@ public class CouponServiceImpl {
 	}
 
 	/**
-	 * send coupon mails to all users in Database
+	 * send coupon mails to all users
 	 */
-//	@Scheduled(cron = "1 1 0 * * SAT")
-//	public void sendDiscountCoupons() {
-//
+	@Scheduled(cron = "1 1 0 * * SAT")
+	public void sendDiscountCouponsMailToUsers() {
+
+		List<MailHistory> mailHistories = mailHistoryRepo.findAll();
+
+		if (mailHistories != null) {
+			for (MailHistory mailHistory : mailHistories) {
+
+				String userEmail = mailHistory.getTo();
+				String mailContent = mailHistory.getMailContent();
+
+				mailHistory.setSentTime(new Date());
+
+				boolean emailStatus = emailService.sendCouponCodeEamil(userEmail, mailContent);
+				if (emailStatus == true)
+					mailHistory.setStatus(EmailStatus.SENT);
+				else {
+					mailHistory.setStatus(EmailStatus.FAILED);
+				}
+				mailHistoryRepo.save(mailHistory);
+
+			}
+		} else
+			throw new BadRequestException("There is no coupons for users please create coupons first");
+	}
+
 //		while (!queue.isEmpty()) {
 //			MailHistory emailDetails = queue.poll();
 //			String email = emailDetails.getTo();

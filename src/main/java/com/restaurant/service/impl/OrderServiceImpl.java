@@ -2,6 +2,7 @@ package com.restaurant.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,13 @@ import com.restaurant.dto.Keywords;
 import com.restaurant.dto.OrderDTO;
 import com.restaurant.dto.OrderItemDTO;
 import com.restaurant.dto.PagingDTO;
+import com.restaurant.entity.Coupon;
 import com.restaurant.entity.Menu;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.OrderItem;
 import com.restaurant.entity.Restaurant;
 import com.restaurant.entity.User;
+import com.restaurant.enums.CouponStatus;
 import com.restaurant.enums.OrderStatus;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.NullRequestException;
@@ -51,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 	private OrderRepo orderRepo;
 
 	@Autowired
-	EmailService emailService;
+	private EmailService emailService;
 
 	@Autowired
 	private RestaurantRepo restaurantRepo;
@@ -107,6 +110,23 @@ public class OrderServiceImpl implements OrderService {
 			return orderItem;
 
 		}).filter(Objects::nonNull).collect(Collectors.toList());
+
+		Coupon coupon = new Coupon();
+
+		if (order.getApplyCoupon() != null && user.getEmail() == coupon.getUserEmail()
+				&& coupon.getCouponStatus().equals("ACTIVE")) {
+
+			if (coupon.getExpireDate().before(new Date()))
+				coupon.setCouponStatus(CouponStatus.EXPIRED);
+
+			float totalPrice = orderDto.getTotalPrice();
+
+			if (totalPrice >= coupon.getMinPrice())
+				throw new BadRequestException("please order minimum 100 rupees order from our restro thank you");
+
+			order.getApplyCoupon();
+
+		}
 
 		order.setStatus(OrderStatus.WAITING);
 		order.setOrderItems(orderItems);

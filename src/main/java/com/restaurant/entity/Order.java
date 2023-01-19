@@ -39,6 +39,8 @@ public class Order extends BaseClass {
 
 	private long orderNumber;
 
+	private String applyCoupon;
+
 //	private String customer;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

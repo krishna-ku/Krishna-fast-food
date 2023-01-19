@@ -18,15 +18,27 @@ public class CouponController {
 	private CouponServiceImpl couponServiceImpl;
 
 	/**
-	 * creat coupons and save in database 
+	 * creat coupons and save in database
+	 * 
 	 * @param coupon
 	 * @return
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@PostMapping("/createcoupons")
-	public ResponseEntity<Void> createCoupons(@RequestBody Coupon coupon) {
+	public ResponseEntity<Void> createCouponsForUsers(@RequestBody Coupon coupon) {
 		couponServiceImpl.createDiscountCoupons(coupon);
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	/**
+	 * send coupon mails to all users
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+	@PostMapping("/sendcoupons")
+	public ResponseEntity<Void> sendCouponsToUsers() {
+		couponServiceImpl.sendDiscountCouponsMailToUsers();
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

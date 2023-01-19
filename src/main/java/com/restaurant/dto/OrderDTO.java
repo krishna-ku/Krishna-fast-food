@@ -30,6 +30,8 @@ public class OrderDTO {
 
 		}).collect(Collectors.toList());
 		totalPriceWithGst = totalPrice + (totalPrice * Keywords.GST_PERCENTAGE);
+		
+		this.applyCoupon = order.getApplyCoupon();
 	}
 
 	private long orderId;
@@ -44,6 +46,7 @@ public class OrderDTO {
 
 	private float totalPrice;
 
+	private String applyCoupon;
 
 	@Valid
 	@NotEmpty

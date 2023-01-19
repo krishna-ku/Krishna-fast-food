@@ -103,7 +103,7 @@ public class EmailService {
 	 * @param name
 	 * @param couponcode
 	 */
-	public boolean sendCouponCodeEamil(String email, String name, String couponcode) {
+	public boolean sendCouponCodeEamil(String email, String mailContent) {
 		try {
 			log.info("sending coupon mails to user ");
 
@@ -111,13 +111,14 @@ public class EmailService {
 			MimeMessageHelper helper = new MimeMessageHelper(mailMessage);
 			Context context = new Context();
 			Map<String, Object> map = new HashMap<>();
-			map.put("name", name);
+//			map.put("name", name);
 			map.put("email", email);
 			context.setVariables(map);
 			helper.addTo(email);
 			helper.setSubject("Discount coupon");
-			helper.setText("<h1>Dear " + name + "</h1> <h2> Use this coupon code: <span style='color:red;'>"
-					+ couponcode + "</span> to get Discount on your order</h2>", true);
+			helper.setText(mailContent);
+//			helper.setText("<h1>Dear " + name + "</h1> <h2> Use this coupon code: <span style='color:red;'>"
+//					+ couponcode + "</span> to get Discount on your order</h2>", true);
 //			helper.setText(sender,"Delhi-fast-food");
 			emailSender.send(mailMessage);
 

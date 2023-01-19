@@ -12,9 +12,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PagingDTO {
+public class PagingDTO<T> {
 
-	private List<?> data=new ArrayList<>();
+	private List<T> data=new ArrayList<>();
 	private long totalElements;
 	private int totalPages;
 	
