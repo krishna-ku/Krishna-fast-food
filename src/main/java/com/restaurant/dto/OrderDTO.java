@@ -30,7 +30,7 @@ public class OrderDTO {
 
 		}).collect(Collectors.toList());
 		totalPriceWithGst = totalPrice + (totalPrice * Keywords.GST_PERCENTAGE);
-		
+
 		this.applyCoupon = order.getApplyCoupon();
 	}
 
@@ -39,6 +39,8 @@ public class OrderDTO {
 	private String orderStatus;
 
 	private float totalPriceWithGst;
+
+	private float totalPriceAfterDiscount;
 
 	private String restaurantName;
 

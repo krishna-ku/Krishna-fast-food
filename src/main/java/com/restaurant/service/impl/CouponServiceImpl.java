@@ -54,6 +54,7 @@ public class CouponServiceImpl {
 	/**
 	 * create discount coupons and save in database
 	 */
+//	@Scheduled(cron = "1 1 0 * * SAT")
 	public void createDiscountCoupons(Coupon couponObject) {
 
 		List<User> users = userRepo.findAll();
@@ -75,6 +76,7 @@ public class CouponServiceImpl {
 			coupon.setCouponCode(couponCode);
 			coupon.setCouponStatus(CouponStatus.ACTIVE);
 			coupon.setUserEmail(user.getEmail());
+			coupon.setUser(user);
 			coupon.setMinPrice(couponObject.getMinPrice());
 			coupon.setMinPercentage(couponObject.getMinPercentage());
 			coupon.setExpireDate(couponObject.getExpireDate());
@@ -105,7 +107,7 @@ public class CouponServiceImpl {
 	/**
 	 * send coupon mails to all users
 	 */
-	@Scheduled(cron = "1 1 0 * * SAT")
+	@Scheduled(cron = "1 2 0 * * SAT")
 	public void sendDiscountCouponsMailToUsers() {
 
 		List<MailHistory> mailHistories = mailHistoryRepo.findAll();

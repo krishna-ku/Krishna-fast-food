@@ -37,6 +37,7 @@ import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.NullRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.pdfgenerator.PdfGenerator;
+import com.restaurant.repository.CouponRepo;
 import com.restaurant.repository.MenuRepo;
 import com.restaurant.repository.OrderRepo;
 import com.restaurant.repository.RestaurantRepo;
@@ -55,6 +56,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private EmailService emailService;
+
+	@Autowired
+	private CouponRepo couponRepo;
 
 	@Autowired
 	private RestaurantRepo restaurantRepo;
@@ -111,25 +115,45 @@ public class OrderServiceImpl implements OrderService {
 
 		}).filter(Objects::nonNull).collect(Collectors.toList());
 
-		Coupon coupon = new Coupon();
+		order.setOrderItems(orderItems);
 
-		if (order.getApplyCoupon() != null && user.getEmail() == coupon.getUserEmail()
-				&& coupon.getCouponStatus().equals("ACTIVE")) {
-
-			if (coupon.getExpireDate().before(new Date()))
-				coupon.setCouponStatus(CouponStatus.EXPIRED);
-
-			float totalPrice = orderDto.getTotalPrice();
-
-			if (totalPrice >= coupon.getMinPrice())
-				throw new BadRequestException("please order minimum 100 rupees order from our restro thank you");
-
-			order.getApplyCoupon();
-
+		float totalPrice = 0f;
+		for (OrderItem orderItem : order.getOrderItems()) {
+			totalPrice += orderItem.getMenu().getPrice() * orderItem.getItemQuantity();
 		}
 
+//		float totalPrice = order.getOrderItems().stream().map(o -> o.getMenu().getPrice() * o.getItemQuantity())
+//				.reduce(0f, Float::sum);
+
+		String applyCoupon = orderDto.getApplyCoupon();
+
+		if (applyCoupon != null) {
+
+			Coupon userCoupon = couponRepo.findCouponBycodeAndUserId(applyCoupon, userId);
+
+			if (userCoupon == null)
+				throw new BadRequestException("Please enter valid coupon");
+
+			else if (userCoupon.getExpireDate().before(new Date()))
+				userCoupon.setCouponStatus(CouponStatus.EXPIRED);
+
+			else if (totalPrice <= userCoupon.getMinPrice())
+				throw new BadRequestException("please order minimum 100 rupees order from our restro thank you");
+
+			else if (userCoupon.getCouponStatus().equals(CouponStatus.ACTIVE)) {
+				totalPrice = totalPrice + (totalPrice * 0.18f);
+				totalPrice = totalPrice * 0.6f;
+				userCoupon.setCouponStatus(CouponStatus.REDEEM);
+			}
+
+			else {
+				throw new BadRequestException("Coupon is already used!!");
+			}
+		}
+
+		orderDto.setTotalPriceAfterDiscount(totalPrice);
+		order.setApplyCoupon(orderDto.getApplyCoupon());
 		order.setStatus(OrderStatus.WAITING);
-		order.setOrderItems(orderItems);
 		order.setUser(user);
 		order.setRestaurant(restaurant);
 //		orderRepo.save(order);
