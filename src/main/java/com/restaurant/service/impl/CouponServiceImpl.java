@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.entity.Coupon;
@@ -24,6 +25,9 @@ public class CouponServiceImpl {
 
 	@Value("${spring.mail.username}")
 	private String sender;
+
+	@Autowired
+	private ThreadPoolTaskExecutor taskExecutor;
 
 	@Autowired
 	private MailHistoryRepo mailHistoryRepo;
@@ -112,22 +116,28 @@ public class CouponServiceImpl {
 
 		List<MailHistory> mailHistories = mailHistoryRepo.findAll();
 
+//		int totalUsers=mailHistoryRepo.findAll();
+
 		if (mailHistories != null) {
+
+//			ExecutorService executor=Executors.newFixedThreadPool(2)
+
 			for (MailHistory mailHistory : mailHistories) {
 
-				String userEmail = mailHistory.getTo();
-				String mailContent = mailHistory.getMailContent();
+				taskExecutor.execute(() -> {
+					String userEmail = mailHistory.getTo();
+					String mailContent = mailHistory.getMailContent();
 
-				mailHistory.setSentTime(new Date());
+					mailHistory.setSentTime(new Date());
 
-				boolean emailStatus = emailService.sendCouponCodeEamil(userEmail, mailContent);
-				if (emailStatus == true)
-					mailHistory.setStatus(EmailStatus.SENT);
-				else {
-					mailHistory.setStatus(EmailStatus.FAILED);
-				}
-				mailHistoryRepo.save(mailHistory);
-
+					boolean emailStatus = emailService.sendCouponCodeEamil(userEmail, mailContent);
+					if (emailStatus == true)
+						mailHistory.setStatus(EmailStatus.SENT);
+					else {
+						mailHistory.setStatus(EmailStatus.FAILED);
+					}
+					mailHistoryRepo.save(mailHistory);
+				});
 			}
 		} else
 			throw new BadRequestException("There is no coupons for users please create coupons first");

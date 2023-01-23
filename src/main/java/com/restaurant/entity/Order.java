@@ -41,6 +41,12 @@ public class Order extends BaseClass {
 
 	private String applyCoupon;
 
+	private float totalPrice;
+
+	private float totalPriceWithGst;
+
+	private float totalPriceAfterDiscount;
+
 //	private String customer;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

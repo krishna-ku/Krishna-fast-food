@@ -124,6 +124,8 @@ public class OrderServiceImpl implements OrderService {
 
 //		float totalPrice = order.getOrderItems().stream().map(o -> o.getMenu().getPrice() * o.getItemQuantity())
 //				.reduce(0f, Float::sum);
+		Float totalPriceWithGST = 0f;
+		Float totalPriceAfterDiscount = 0f;
 
 		String applyCoupon = orderDto.getApplyCoupon();
 
@@ -134,15 +136,18 @@ public class OrderServiceImpl implements OrderService {
 			if (userCoupon == null)
 				throw new BadRequestException("Please enter valid coupon");
 
-			else if (userCoupon.getExpireDate().before(new Date()))
+			else if (userCoupon.getExpireDate().before(new Date())) {
 				userCoupon.setCouponStatus(CouponStatus.EXPIRED);
+				couponRepo.save(userCoupon);
+				throw new BadRequestException("Coupon is expired");
+			}
 
 			else if (totalPrice <= userCoupon.getMinPrice())
 				throw new BadRequestException("please order minimum 100 rupees order from our restro thank you");
 
 			else if (userCoupon.getCouponStatus().equals(CouponStatus.ACTIVE)) {
-				totalPrice = totalPrice + (totalPrice * 0.18f);
-				totalPrice = totalPrice * 0.6f;
+				totalPriceWithGST = totalPrice + (totalPrice * 0.18f);
+				totalPriceAfterDiscount = totalPriceWithGST * (userCoupon.getMinPercentage() / 100.0f);
 				userCoupon.setCouponStatus(CouponStatus.REDEEM);
 			}
 
@@ -151,7 +156,9 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 
-		orderDto.setTotalPriceAfterDiscount(totalPrice);
+		order.setTotalPrice(totalPrice);
+		order.setTotalPriceWithGst(totalPriceWithGST);
+		order.setTotalPriceAfterDiscount(totalPriceAfterDiscount);
 		order.setApplyCoupon(orderDto.getApplyCoupon());
 		order.setStatus(OrderStatus.WAITING);
 		order.setUser(user);
