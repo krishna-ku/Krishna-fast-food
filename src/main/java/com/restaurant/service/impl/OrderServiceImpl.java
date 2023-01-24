@@ -124,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
 
 //		float totalPrice = order.getOrderItems().stream().map(o -> o.getMenu().getPrice() * o.getItemQuantity())
 //				.reduce(0f, Float::sum);
-		Float totalPriceWithGST = 0f;
+		Float totalPriceWithGST = totalPrice + (totalPrice * 0.18f);
 		Float totalPriceAfterDiscount = 0f;
 
 		String applyCoupon = orderDto.getApplyCoupon();
@@ -146,7 +146,6 @@ public class OrderServiceImpl implements OrderService {
 				throw new BadRequestException("please order minimum 100 rupees order from our restro thank you");
 
 			else if (userCoupon.getCouponStatus().equals(CouponStatus.ACTIVE)) {
-				totalPriceWithGST = totalPrice + (totalPrice * 0.18f);
 				totalPriceAfterDiscount = totalPriceWithGST * (userCoupon.getMinPercentage() / 100.0f);
 				userCoupon.setCouponStatus(CouponStatus.REDEEM);
 			}

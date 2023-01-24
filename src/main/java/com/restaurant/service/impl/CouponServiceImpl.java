@@ -6,18 +6,19 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.entity.Coupon;
 import com.restaurant.entity.MailHistory;
+import com.restaurant.entity.Order;
 import com.restaurant.entity.User;
 import com.restaurant.enums.CouponStatus;
 import com.restaurant.enums.EmailStatus;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.repository.CouponRepo;
 import com.restaurant.repository.MailHistoryRepo;
+import com.restaurant.repository.OrderRepo;
 import com.restaurant.repository.UserRepo;
 
 @Service
@@ -28,6 +29,9 @@ public class CouponServiceImpl {
 
 	@Autowired
 	private ThreadPoolTaskExecutor taskExecutor;
+
+	@Autowired
+	private OrderRepo orderRepo;
 
 	@Autowired
 	private MailHistoryRepo mailHistoryRepo;
@@ -59,7 +63,7 @@ public class CouponServiceImpl {
 	 * create discount coupons and save in database
 	 */
 //	@Scheduled(cron = "1 1 0 * * SAT")
-	public void createDiscountCoupons(Coupon couponObject) {
+	public void createDiscountCoupons(Coupon couponObject, Integer orderNumber, Date date) {
 
 		List<User> users = userRepo.findAll();
 
@@ -70,48 +74,56 @@ public class CouponServiceImpl {
 		String subject = "Discount coupon";
 
 		for (User user : users) {
-			MailHistory mailHistory = new MailHistory();
-			mailHistory.setTo(user.getEmail());
-			mailHistory.setFrom(sender);
-//			emailDetailsRepo.save(emailDetails);
-			Coupon coupon = new Coupon();
-//			String couponCode = generateCouponCode();
-			String couponCode = "Delhi60";
-			coupon.setCouponCode(couponCode);
-			coupon.setCouponStatus(CouponStatus.ACTIVE);
-			coupon.setUserEmail(user.getEmail());
-			coupon.setUser(user);
-			coupon.setMinPrice(couponObject.getMinPrice());
-			coupon.setMinPercentage(couponObject.getMinPercentage());
-			coupon.setExpireDate(couponObject.getExpireDate());
 
-			coupon.getExpireDate();
+			List<Order> userOrders = orderRepo.findByUser(user);
+
+			if ((orderNumber == null || userOrders.size() >= orderNumber)
+					&& (date == null || user.getCreatedOn().before(date))) {
+
+				MailHistory mailHistory = new MailHistory();
+				mailHistory.setTo(user.getEmail());
+				mailHistory.setFrom(sender);
+//			emailDetailsRepo.save(emailDetails);
+				Coupon coupon = new Coupon();
+//			String couponCode = generateCouponCode();
+				String couponCode = "Delhi60";
+				coupon.setCouponCode(couponCode);
+				coupon.setCouponStatus(CouponStatus.ACTIVE);
+				coupon.setUserEmail(user.getEmail());
+				coupon.setUser(user);
+				coupon.setMinPrice(couponObject.getMinPrice());
+				coupon.setMinPercentage(couponObject.getMinPercentage());
+				coupon.setExpireDate(couponObject.getExpireDate());
+
+				coupon.getExpireDate();
 //			Date expireDate = coupon.getExpireDate();
 //			Date currentDate = new Date();
 //			if (expireDate.before(currentDate)) {
 //				coupon.setCouponStatus(CouponStatus.EXPIRED);
 //			}
-			mailHistory.setSubject(subject);
+				mailHistory.setSubject(subject);
 //			couponRepo.save(coupon);
-			String content = "<h1>Dear " + user.getFirstName() + " " + user.getLastName()
-					+ "</h1> <h2> Use this coupon code: <span style='color:red;'>" + couponCode
-					+ "</span> to get Discount on your order</h2>";
-			mailHistory.setMailContent(content);
-			coupons.add(coupon);
-			list.add(mailHistory);
-		}
-		if (!coupons.isEmpty())
-			couponRepo.saveAll(coupons);
+				String content = "<h1>Dear " + user.getFirstName() + " " + user.getLastName()
+						+ "</h1> <h2> Use this coupon code: <span style='color:red;'>" + couponCode
+						+ "</span> to get Discount on your order</h2>";
+				mailHistory.setMailContent(content);
+				coupons.add(coupon);
+				list.add(mailHistory);
+			}
+			if (!coupons.isEmpty())
+				couponRepo.saveAll(coupons);
 
-		if (!list.isEmpty()) {
-			mailHistoryRepo.saveAll(list);
+			if (!list.isEmpty()) {
+				mailHistoryRepo.saveAll(list);
+			}
 		}
+
 	}
 
 	/**
 	 * send coupon mails to all users
 	 */
-	@Scheduled(cron = "1 2 0 * * SAT")
+//	@Scheduled(cron = "1 2 0 * * SAT")
 	public void sendDiscountCouponsMailToUsers() {
 
 		List<MailHistory> mailHistories = mailHistoryRepo.findAll();
@@ -168,6 +180,20 @@ public class CouponServiceImpl {
 //			String email = user.getEmail();
 //			String firstName = user.getFirstName();
 //			emailService.sendCouponCodeEamil(email, firstName, couponCode);
+//		}
+//	}
+
+//	public void generateCouponOnBasisOfDateOrOrders(int orderNumber,Date date,Coupon couponObject) {
+//		
+////		User user=new User();
+//		Specification<Coupon> specification=Specification.where(CouponSpecification.generateCouponBasisOfDateAndOrders(orderNumber, date));
+//		
+//		List<User> users=userRepo.findAll();
+//		for(User user:users) {
+//			user.getOrders().equals(orderNumber);
+//		   createDiscountCoupons(couponObject);
+//		   if(user.getCreatedOn().before(date)) {
+//			   createDiscountCoupons(couponObject);}
 //		}
 //	}
 

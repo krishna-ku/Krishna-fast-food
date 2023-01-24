@@ -154,9 +154,9 @@ public class MenuServiceImpl implements MenuService {
 		List<Menu> menus = page.getContent();
 
 		List<Menu> filterMenusByDeletedTrue = menus.stream().filter(m -> !m.isDeleted()).collect(Collectors.toList());
-		List<MenuDTO> menuDTOs =filterMenusByDeletedTrue.stream().map(m->new MenuDTO(m)).collect(Collectors.toList());
+		List<MenuDTO> menuDTOs = filterMenusByDeletedTrue.stream().map(m -> new MenuDTO(m))
+				.collect(Collectors.toList());
 		PagingDTO pagingDTO = new PagingDTO(menuDTOs, page.getTotalElements(), page.getTotalPages());
-		
 
 //		return menus.stream().filter(m -> !m.isDeleted()).map(MenuDTO::new).collect(Collectors.toList());// do this by
 		// query

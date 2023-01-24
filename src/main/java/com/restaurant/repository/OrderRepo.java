@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.restaurant.dto.DashboardView;
 import com.restaurant.dto.OrderStatistics;
 import com.restaurant.entity.Order;
+import com.restaurant.entity.User;
 
 public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
@@ -31,8 +32,10 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 
 	@Query(nativeQuery = true, value = "select orders.id,orders.order_number,rating.rating from restaurant.orders inner join restaurant.rating on restaurant.orders.id=restaurant.rating.order_id")
 	List<Object[]> filterOrdersBasedOnRatingAndPrice();
-	
+
 	@Query("select o from Order o where o.id = :orderId and o.user.email = :username and o.deleted = false")
-    Optional<Order> findByIdAndUsername(long orderId, String username);
+	Optional<Order> findByIdAndUsername(long orderId, String username);
+
+	List<Order> findByUser(User user);
 
 }
