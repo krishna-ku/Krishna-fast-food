@@ -1,11 +1,14 @@
 package com.restaurant.dto;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Range;
 
 import com.restaurant.entity.Menu;
+import com.restaurant.enums.MenuAvailabilityStatus;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +29,8 @@ public class MenuDTO {
 	@Size(min = 10, max = 100, message = "size must be between 10 to 100 alphabets")
 	private String description;
 
-	private String availability = "Available";
+	@Enumerated(EnumType.STRING)
+	private MenuAvailabilityStatus availability = MenuAvailabilityStatus.AVAILABLE;
 
 	private String imageName;
 

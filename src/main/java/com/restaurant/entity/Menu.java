@@ -1,12 +1,14 @@
 package com.restaurant.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import com.restaurant.dto.MenuDTO;
+import com.restaurant.enums.MenuAvailabilityStatus;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +28,8 @@ public class Menu extends BaseClass {
 
 	private int dishRating;
 
-	private String availability = "Available";
+	@Enumerated(EnumType.STRING)
+	private MenuAvailabilityStatus availability;
 
 	private String imageName;
 

@@ -157,13 +157,13 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public PagingDTO getAllPagedUsers(Integer pageNumber, Integer pageSize) {
+	public PagingDTO<UserDTO> getAllPagedUsers(Integer pageNumber, Integer pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 		Page<User> page = this.userRepo.findAll(pageable);
 		List<User> users = page.getContent();
-		List<UserDTO> userDTOs = users.stream().map(m -> new UserDTO(m)).collect(Collectors.toList());
-		PagingDTO pagingDTO = new PagingDTO(userDTOs, page.getTotalElements(), page.getTotalPages());
-		return pagingDTO;
+		List<UserDTO> userDTOs = users.stream().filter(m -> !m.isDeleted()).map(m -> new UserDTO(m))
+				.collect(Collectors.toList());
+		return new PagingDTO<>(userDTOs, page.getTotalElements(), page.getTotalPages());
 	}
 
 	/**

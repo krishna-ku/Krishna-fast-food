@@ -18,5 +18,8 @@ public interface MenuRepo extends JpaRepository<Menu, Long>,JpaSpecificationExec
 	
 	@Query("select m from Menu m where m.name=:name")
 	Menu findByName(String name);
+	
+	@Query("select m from Menu m where m.deleted=false")
+	List<Menu> filterMenusByDeleteOrNotAvailable(List<Menu> menus);
 
 }

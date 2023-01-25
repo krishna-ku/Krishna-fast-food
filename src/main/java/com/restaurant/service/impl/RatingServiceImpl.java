@@ -95,15 +95,16 @@ public class RatingServiceImpl implements RatingService {
 	 * @see com.restaurant.dto.RatingDTO
 	 */
 	@Override
-	public PagingDTO getAllRatings(Integer pageNumber, Integer pageSize) {
+	public PagingDTO<RatingDTO> getAllRatings(Integer pageNumber, Integer pageSize) {
 
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
 		Page<Rating> page = this.ratingRepo.findAll(pageable);
 		List<Rating> ratings = page.getContent();
-		List<RatingDTO> rating = ratings.stream().map(m->new RatingDTO(m)).collect(Collectors.toList());
-		PagingDTO pagingDTO = new PagingDTO(rating, page.getTotalElements(), page.getTotalPages());
-		return pagingDTO;
+		List<RatingDTO> rating = ratings.stream().filter(m -> !m.isDeleted()).map(RatingDTO::new)
+				.collect(Collectors.toList());
+		return new PagingDTO<>(rating, page.getTotalElements(), page.getTotalPages());
+//		return pagingDTO;
 	}
 
 	/**
@@ -113,8 +114,10 @@ public class RatingServiceImpl implements RatingService {
 	 * @return
 	 */
 	@Override
-	public List<RatingDTO> filterRatings(RatingDTO ratingDTO,String userName,Collection<? extends GrantedAuthority> authorities) {
-		Specification<Rating> specification = Specification.where(RatingSpecification.filterRatings(ratingDTO,userName,authorities));
+	public List<RatingDTO> filterRatings(RatingDTO ratingDTO, String userName,
+			Collection<? extends GrantedAuthority> authorities) {
+		Specification<Rating> specification = Specification
+				.where(RatingSpecification.filterRatings(ratingDTO, userName, authorities));
 		return ratingRepo.findAll(specification).stream().map(r -> new RatingDTO(r)).collect(Collectors.toList());
 	}
 

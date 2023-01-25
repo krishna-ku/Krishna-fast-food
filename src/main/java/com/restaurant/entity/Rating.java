@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE Rating SET deleted=true WHERE id=?")
-@Where(clause = "deleted=false")
+//@Where(clause = "deleted=false")
 public class Rating extends BaseClass {
 
 	// @Column(name = "Rating out of 5")

@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(indexes = @Index(name = "idx_user_firstName", columnList = "firstName")) // for indexing
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE user SET deleted=true WHERE id=?")
-@Where(clause = "deleted=false")
+//@Where(clause = "deleted=false")
 public class User extends BaseClass {
 
 	private String firstName;

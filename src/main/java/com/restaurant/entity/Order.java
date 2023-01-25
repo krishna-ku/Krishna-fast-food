@@ -25,7 +25,7 @@ import lombok.Data;
 //@Entity(name = "Orders")
 @Table(name = "orders")
 @SQLDelete(sql = "UPDATE orders SET deleted=true WHERE id=?")
-@Where(clause = "deleted=false")
+//@Where(clause = "deleted=false")
 public class Order extends BaseClass {
 
 	@Enumerated(EnumType.STRING)

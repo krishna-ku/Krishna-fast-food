@@ -27,6 +27,7 @@ import com.restaurant.dto.MenuDTO;
 import com.restaurant.dto.PagingDTO;
 import com.restaurant.entity.Menu;
 import com.restaurant.entity.MenuCategory;
+import com.restaurant.enums.MenuAvailabilityStatus;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.repository.MenuCategoryRepo;
@@ -108,7 +109,7 @@ public class MenuServiceImpl implements MenuService {
 			updatedMenu.setDescription(menuDto.getDescription());
 		}
 
-		if (!StringUtils.isEmpty(menuDto.getAvailability())) {
+		if (menuDto.getAvailability() != null) {
 			updatedMenu.setAvailability(menuDto.getAvailability());
 		}
 
@@ -153,7 +154,8 @@ public class MenuServiceImpl implements MenuService {
 		Page<Menu> page = menuRepo.findAll(pageable);
 		List<Menu> menus = page.getContent();
 
-		List<Menu> filterMenusByDeletedTrue = menus.stream().filter(m -> !m.isDeleted()).collect(Collectors.toList());
+//		List<Menu> filterMenusByDeletedTrue = menus.stream().filter(m -> !m.isDeleted()).collect(Collectors.toList());
+		List<Menu> filterMenusByDeletedTrue = menuRepo.filterMenusByDeleteOrNotAvailable(menus);
 		List<MenuDTO> menuDTOs = filterMenusByDeletedTrue.stream().map(m -> new MenuDTO(m))
 				.collect(Collectors.toList());
 		PagingDTO pagingDTO = new PagingDTO(menuDTOs, page.getTotalElements(), page.getTotalPages());
@@ -190,6 +192,7 @@ public class MenuServiceImpl implements MenuService {
 		Menu menu = menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
 		menu.setDeleted(false);
+		menu.setAvailability(MenuAvailabilityStatus.NOTAVAILABLE);
 		menuRepo.save(menu);
 		return "Menu is Activated";
 	}

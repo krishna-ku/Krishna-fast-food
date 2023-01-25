@@ -272,15 +272,16 @@ public class OrderServiceImpl implements OrderService {
 	 * @see com.restaurant.dto.OrderDTO
 	 */
 //	@Override
-	public PagingDTO getAllOrders(Integer pageNumber, Integer pageSize) {
+	public PagingDTO<OrderDTO> getAllOrders(Integer pageNumber, Integer pageSize) {
 
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
 		Page<Order> page = orderRepo.findAll(pageable);
 		List<Order> orders = page.getContent();
-		List<OrderDTO> orderDTOs = orders.stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
-		PagingDTO pagingDTO = new PagingDTO(orderDTOs, page.getTotalElements(), page.getTotalPages());
-		return pagingDTO;
+		List<OrderDTO> orderDTOs = orders.stream().filter(m -> !m.isDeleted())
+				.map(OrderDTO::new)
+				.collect(Collectors.toList());
+		return new PagingDTO<>(orderDTOs, page.getTotalElements(), page.getTotalPages());
 	}
 
 	/**

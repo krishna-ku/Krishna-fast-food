@@ -63,7 +63,7 @@ public class CouponServiceImpl {
 	 * create discount coupons and save in database
 	 */
 //	@Scheduled(cron = "1 1 0 * * SAT")
-	public void createDiscountCoupons(Coupon couponObject, Integer orderNumber, Date date) {
+	public void createDiscountCoupons(Coupon couponObject, Integer totalUserOrders, Date date) {
 
 		List<User> users = userRepo.findAll();
 
@@ -77,7 +77,7 @@ public class CouponServiceImpl {
 
 			List<Order> userOrders = orderRepo.findByUser(user);
 
-			if ((orderNumber == null || userOrders.size() >= orderNumber)
+			if ((totalUserOrders == null || userOrders.size() >= totalUserOrders)
 					&& (date == null || user.getCreatedOn().before(date))) {
 
 				MailHistory mailHistory = new MailHistory();
