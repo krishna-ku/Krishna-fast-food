@@ -55,8 +55,6 @@ public class UserServiceImpl implements UserService {
 	@Value("${project.image}")
 	private String path;
 
-//	private static final Logger LOG=LoggerFactory.getLogger(UserServiceImpl.class);
-
 	/**
 	 * add User.
 	 * 
@@ -88,7 +86,7 @@ public class UserServiceImpl implements UserService {
 						userDto.getFirstName());
 			});
 
-			log.info("User created successfully");
+			log.info("User {} created successfully", user.getFirstName(), user.getId());
 
 			return new UserDTO(save);
 
@@ -146,18 +144,6 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void deleteUser(long userId) {
-
-//		log.info("Deleting user for {}", userId);
-//
-//		if (!userRepo.existsById(userId)) {
-//			throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId);
-//		}
-////		userRepo.findById(userId)
-////				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-//
-//		this.userRepo.deleteById(userId);
-//		log.info("User Deleted Successfully");
-
 		log.info("Deleting user for {}", userId);
 		try {
 
@@ -180,8 +166,6 @@ public class UserServiceImpl implements UserService {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 		Page<User> page = userRepo.findAllNotDeletedUsers(pageable);
 		List<User> users = page.getContent();
-//		List<UserDTO> userDTOs = users.stream().filter(m -> !m.isDeleted()).map(m -> new UserDTO(m))
-//				.collect(Collectors.toList());
 		List<UserDTO> userDTOs = users.stream().map(m -> new UserDTO(m)).collect(Collectors.toList());
 		return new PagingDTO<>(userDTOs, page.getTotalElements(), page.getTotalPages());
 	}
@@ -195,21 +179,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<UserDTO> filterUsers(UserDTO userDTO, String userName,
 			Collection<? extends GrantedAuthority> authorities) {
-//		User validUser = userRepo.findByEmail(userName);
-//		if (validUser.getRole().equals("USER")) {
-//			Specification<User> specification = Specification
-//					.where(userDetailsByToken.filterUserSpecificationByToken(userName));
-//			return userRepo.findAll(specification).stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
-//		}
 		Specification<User> specification = Specification
 				.where(UserSpecification.filterUsers(userDTO, userName, authorities));
 		return userRepo.findAll(specification).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
 	}
-
-//	public List<UserDTO> filterUserDetailsByToken(UserDTO userDTO){
-//		
-//		Specification<User> specification=Specification.where(UserDetailsByToken.filterUserSpecificationByToken(userDTO))
-//	}
 
 	/**
 	 * activate the deleted user

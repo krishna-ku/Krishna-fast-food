@@ -172,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
 			emailService.sendOrderMailToUser("Order Placed", user.getEmail(), user.getFirstName(), createPdf);
 		});
 
-		log.info("Order placed successfully");
+		log.info("Order placed successfully by user {}", user.getFirstName());
 
 		return new OrderDTO(order);
 	}
@@ -278,8 +278,7 @@ public class OrderServiceImpl implements OrderService {
 
 		Page<Order> page = orderRepo.findAll(pageable);
 		List<Order> orders = page.getContent();
-		List<OrderDTO> orderDTOs = orders.stream().filter(m -> !m.isDeleted())
-				.map(OrderDTO::new)
+		List<OrderDTO> orderDTOs = orders.stream().filter(m -> !m.isDeleted()).map(OrderDTO::new)
 				.collect(Collectors.toList());
 		return new PagingDTO<>(orderDTOs, page.getTotalElements(), page.getTotalPages());
 	}

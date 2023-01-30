@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.restaurant.dto.DashboardView;
 import com.restaurant.dto.OrderStatistics;
+import com.restaurant.dto.RestaurantPeekHours;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.User;
 
@@ -37,5 +38,8 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 	Optional<Order> findByIdAndUsername(long orderId, String username);
 
 	List<Order> findByUser(User user);
+
+	@Query(nativeQuery = true, value = "SELECT HOUR(created_on) as Time,COUNT(*) as Orders FROM orders GROUP BY HOUR(created_on) ORDER BY Orders DESC LIMIT 1")
+	RestaurantPeekHours restaurantPeekHours();
 
 }
