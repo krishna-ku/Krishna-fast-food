@@ -99,10 +99,9 @@ public class RatingServiceImpl implements RatingService {
 
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-		Page<Rating> page = this.ratingRepo.findAll(pageable);
+		Page<Rating> page = this.ratingRepo.findAllNotDeletedRatings(pageable);
 		List<Rating> ratings = page.getContent();
-		List<RatingDTO> rating = ratings.stream().filter(m -> !m.isDeleted()).map(RatingDTO::new)
-				.collect(Collectors.toList());
+		List<RatingDTO> rating = ratings.stream().map(RatingDTO::new).collect(Collectors.toList());
 		return new PagingDTO<>(rating, page.getTotalElements(), page.getTotalPages());
 //		return pagingDTO;
 	}

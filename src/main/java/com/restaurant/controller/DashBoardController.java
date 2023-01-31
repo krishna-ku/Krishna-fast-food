@@ -1,5 +1,7 @@
 package com.restaurant.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +30,14 @@ public class DashBoardController {
 		return orderRepo.viewDashBoardByDated(fromDate, toDate);
 	}
 
+	/**
+	 * Know Restaurant Peek Hours on the basis of last 15 days orders
+	 * 
+	 * @return list<RestaurantPeekHours>
+	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping("/peekhours")
-	public RestaurantPeekHours getRestaurantPeekHours() {
+	public List<RestaurantPeekHours> getRestaurantPeekHours() {
 		return orderRepo.restaurantPeekHours();
 	}
 

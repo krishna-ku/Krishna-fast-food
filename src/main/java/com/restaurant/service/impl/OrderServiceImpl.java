@@ -276,10 +276,9 @@ public class OrderServiceImpl implements OrderService {
 
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-		Page<Order> page = orderRepo.findAll(pageable);
+		Page<Order> page = orderRepo.findAllNotDeletedOrders(pageable);
 		List<Order> orders = page.getContent();
-		List<OrderDTO> orderDTOs = orders.stream().filter(m -> !m.isDeleted()).map(OrderDTO::new)
-				.collect(Collectors.toList());
+		List<OrderDTO> orderDTOs = orders.stream().map(OrderDTO::new).collect(Collectors.toList());
 		return new PagingDTO<>(orderDTOs, page.getTotalElements(), page.getTotalPages());
 	}
 

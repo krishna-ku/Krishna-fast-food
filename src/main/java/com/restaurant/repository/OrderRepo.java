@@ -3,6 +3,8 @@ package com.restaurant.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -21,9 +23,6 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 			+ "where  orders.created_on between :fromDate and :toDate and orders.deleted=false")
 	DashboardView viewDashBoardByDated(String fromDate, String toDate);
 
-//	@Query("select o from Order o where o.deleted=:deleted")
-//	List<Order> findOrdersByDeleted(@Param("deleted") boolean d);
-
 	@Query(nativeQuery = true, value = "select coalesce(max(order_number),1000) as max_value from orders")
 	Long findLastOrderNumber();
 
@@ -37,9 +36,16 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 	@Query("select o from Order o where o.id = :orderId and o.user.email = :username and o.deleted = false")
 	Optional<Order> findByIdAndUsername(long orderId, String username);
 
+	// this method is for couponServiceImpl
 	List<Order> findByUser(User user);
 
-	@Query(nativeQuery = true, value = "SELECT HOUR(created_on) as Time,COUNT(*) as Orders FROM orders GROUP BY HOUR(created_on) ORDER BY Orders DESC LIMIT 1")
-	RestaurantPeekHours restaurantPeekHours();
+	@Query("select o from Order o where o.deleted=false")
+	Page<Order> findAllNotDeletedOrders(Pageable pageable);
+
+	@Query(nativeQuery = true, value = "select CONCAT(IF(HOUR(created_on) >= 12, HOUR(created_on) - 12, HOUR(created_on)), "
+			+ "'-',IF(HOUR(created_on) >= 12, HOUR(created_on) - 11, HOUR(created_on) + 1)) as Time,count(*) Orders from orders "
+			+ "where created_on between date_sub(Now(),interval 15 day) and Now() and Hour(created_on) between 10 and 21 "
+			+ "group by Time order by Orders desc limit 2")
+	List<RestaurantPeekHours> restaurantPeekHours();
 
 }
