@@ -328,35 +328,10 @@ public class OrderServiceImpl implements OrderService {
 		if (user == null) {
 			throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, username);
 		}
-//			List<Order> previousOrders = user.getOrders();
-//			Order repeat = previousOrders.stream().filter(order -> order.getId() == orderID).findFirst()
-//					.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
-//			OrderDTO newOrder = new OrderDTO(repeat);
-
-//	        Order order = orderRepo.findById(orderID)//check this by query orderId and userId
 		Order order = orderRepo.findByIdAndUsername(orderID, username)// check this by query orderId and userId
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.ORDER, Keywords.ORDER_ID, orderID));
 
-//	        if (order.getUser().getEmail().equals(username)) {
-//	            return placedOrder(new OrderDTO(order), user.getId());
-//	        }
-//
-//	        throw new BadRequestException("Order not found");
 		return placedOrder(new OrderDTO(order), user.getId());
 	}
-
-//	@Override
-//	public List<OrderDTO> getOrdersByRating() {
-////		Sort sort = null;
-////		if (sortDir.equalsIgnoreCase("asc"))
-////			sort.by(sortBy).ascending();
-////		else
-////			sort.by(sortBy).descending();
-//
-//		List<Order> orders = orderRepo.findAll();
-//
-//		return orders.stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
-//
-//	}
 
 }

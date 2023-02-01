@@ -18,7 +18,7 @@
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 				<!--Max Size of file to start Archive -->
-				<maxFileSize>10GB</maxFileSize>
+				<maxFileSize>100MB</maxFileSize>
 			</timeBasedFileNamingAndTriggeringPolicy>
 
 			<!-- Days till log history to keep -->
@@ -29,6 +29,6 @@
 
 	<root level="DEBUG">
 		<appender-ref ref="SIZE_TIME_OUTPUT_FILE" />
-		<appender-ref ref = "STDOUT"/>
+		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>

@@ -45,7 +45,10 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 	@Query(nativeQuery = true, value = "select CONCAT(IF(HOUR(created_on) >= 12, HOUR(created_on) - 12, HOUR(created_on)), "
 			+ "'-',IF(HOUR(created_on) >= 12, HOUR(created_on) - 11, HOUR(created_on) + 1)) as Time,count(*) Orders from orders "
 			+ "where created_on between date_sub(Now(),interval 15 day) and Now() and Hour(created_on) between 10 and 21 "
-			+ "group by Time order by Orders desc limit 2")
+			+ "group by Time order by Orders desc")
 	List<RestaurantPeekHours> restaurantPeekHours();
+
+	@Query(nativeQuery = true, value = "SELECT * FROM orders WHERE created_on BETWEEN NOW() - INTERVAL 15 DAY AND NOW()")
+	List<Order> getLastFifteenDaysOrders();
 
 }

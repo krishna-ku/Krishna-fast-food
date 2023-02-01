@@ -9,14 +9,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaurant.dto.DashboardView;
+import com.restaurant.dto.MostSoldDishesInLastFifteenDays;
 import com.restaurant.dto.RestaurantPeekHours;
 import com.restaurant.repository.OrderRepo;
+import com.restaurant.service.impl.DashBoardServiceImpl;
 
 @RestController
 public class DashBoardController {
 
 	@Autowired
 	private OrderRepo orderRepo;
+
+	@Autowired
+	private DashBoardServiceImpl dashBoardServiceImpl;
 
 	/**
 	 * get Dashboard view of orders Service url: /rating method : GET
@@ -39,6 +44,17 @@ public class DashBoardController {
 	@GetMapping("/peekhours")
 	public List<RestaurantPeekHours> getRestaurantPeekHours() {
 		return orderRepo.restaurantPeekHours();
+	}
+
+	/**
+	 * get 3 dishes which order most in our restaurant in last 15 days
+	 * 
+	 * @return List<MostSoldDishesInLastFifteenDays>
+	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+	@GetMapping("/mostorderdish")
+	public List<MostSoldDishesInLastFifteenDays> getMostOrderDish() {
+		return dashBoardServiceImpl.getMostSoldDishes();
 	}
 
 }
