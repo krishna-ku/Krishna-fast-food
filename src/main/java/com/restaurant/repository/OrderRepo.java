@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import com.restaurant.dto.DashboardView;
+import com.restaurant.dto.FilteredMenuItemDetail;
 import com.restaurant.dto.OrderStatistics;
 import com.restaurant.dto.RestaurantPeekHours;
 import com.restaurant.entity.Order;
@@ -48,7 +49,8 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 			+ "group by Time order by Orders desc")
 	List<RestaurantPeekHours> restaurantPeekHours();
 
-	@Query(nativeQuery = true, value = "SELECT * FROM orders WHERE created_on BETWEEN NOW() - INTERVAL 15 DAY AND NOW()")
-	List<Order> getLastFifteenDaysOrders();
+	@Query(nativeQuery = true, value = "select m.id as id, m.name as menuItem ,count(m.id) count from restaurant.orders o inner join order_item oi on oi.order_id=o.id inner join menu m on oi.menu_id=m.id "
+			+ "where o.created_on between now()-interval 15 day and now() group by m.id,m.name order by count(m.id) desc limit 3")
+	List<FilteredMenuItemDetail> getLastFifteenDaysMostOrderMenuItems();
 
 }
