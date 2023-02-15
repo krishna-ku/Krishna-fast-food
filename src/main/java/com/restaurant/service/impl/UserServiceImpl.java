@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.jdbc.StreamUtils;
@@ -62,6 +63,7 @@ public class UserServiceImpl implements UserService {
 	 * @return UserDto object
 	 * @see com.restaurant.dto.UserDTO
 	 */
+	@Transactional
 	@Override
 	public UserDTO createUser(UserDTO userDto) {
 
@@ -86,7 +88,7 @@ public class UserServiceImpl implements UserService {
 						userDto.getFirstName());
 			});
 
-			log.info("User {} created successfully", user.getFirstName(), user.getId());
+			log.info("User {} created successfully", newUser.getFirstName(), newUser.getRole());
 
 			return new UserDTO(save);
 

@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ import com.restaurant.service.UserService;
 
 @RestController
 @RequestMapping("/users")
+//@CrossOrigin(origins = "http://localhost:4200/",maxAge = 3600)
 public class UserController {
 
 	@Autowired
@@ -84,7 +86,7 @@ public class UserController {
 	 * 
 	 * @return list of User {@link com.restaurant.entity.User}
 	 */
-	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+//	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
 	public ResponseEntity<PagingDTO> getAllUsers(
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,

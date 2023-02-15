@@ -32,7 +32,7 @@ public class SecurityConfig {
 					response.setHeader("WWW-Authenticate", accessDeniedException.getMessage());
 				}).and()
 				.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry
-						.antMatchers("/login","/menus/**").permitAll().anyRequest().authenticated())
+						.antMatchers("/login","/menus/**","/users/**").permitAll().anyRequest().authenticated())
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilter(new CustomAuthenticationFilter(authenticationManager))
 				.addFilter(new CustomAuthorizationFilter(authenticationManager));
@@ -43,6 +43,7 @@ public class SecurityConfig {
 		CorsConfiguration corsConfig = new CorsConfiguration();
 		corsConfig.applyPermitDefaultValues();
 		corsConfig.addAllowedOrigin(request.getHeader("Origin"));
+		corsConfig.addExposedHeader("Authorization");
 		return corsConfig;
 	}
 

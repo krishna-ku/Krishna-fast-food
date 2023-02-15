@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 
 import com.restaurant.dto.DashboardView;
 import com.restaurant.dto.FilteredMenuItemDetail;
@@ -49,8 +50,10 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 			+ "group by Time order by Orders desc")
 	List<RestaurantPeekHours> restaurantPeekHours();
 
-	@Query(nativeQuery = true, value = "select m.id as id, m.name as menuItem ,count(m.id) count from restaurant.orders o inner join order_item oi on oi.order_id=o.id inner join menu m on oi.menu_id=m.id "
-			+ "where o.created_on between now()-interval 15 day and now() group by m.id,m.name order by count(m.id) desc limit 3")
+//	@Query(nativeQuery = true, value = "select m.id as id, m.name as menuItem ,count(m.id) count from restaurant.orders "
+//			+ "o inner join order_item oi on oi.order_id=o.id inner join menu m on oi.menu_id=m.id "
+//			+ "where o.created_on between now()-interval 15 day and now() group by m.id,m.name order by count(m.id) desc limit 3")
+	@Query(nativeQuery = true, value = "CALL get_last_fifteen_days_most_ordered_menu_items()")
 	List<FilteredMenuItemDetail> getLastFifteenDaysMostOrderMenuItems();
 
 }
