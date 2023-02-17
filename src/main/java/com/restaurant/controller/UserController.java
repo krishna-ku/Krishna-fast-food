@@ -153,5 +153,9 @@ public class UserController {
 
 		userService.viewImage(imageName, response);
 	}
-
+	
+	@PostMapping("/email")
+	public ResponseEntity<Boolean> checkEmailExist(@RequestBody String email){
+		return ResponseEntity.ok(userService.checkEmailExist(email));
+	}
 }

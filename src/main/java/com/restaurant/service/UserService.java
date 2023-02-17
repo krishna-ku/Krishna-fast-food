@@ -38,4 +38,7 @@ public interface UserService {
 
 	// download image or view image
 	void viewImage(String image, HttpServletResponse response) throws IOException;
+	
+	//check email is exists or not
+	boolean checkEmailExist(String email);
 }

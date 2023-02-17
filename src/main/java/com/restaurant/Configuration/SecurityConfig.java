@@ -3,6 +3,7 @@ package com.restaurant.configuration;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,7 +33,9 @@ public class SecurityConfig {
 					response.setHeader("WWW-Authenticate", accessDeniedException.getMessage());
 				}).and()
 				.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry
-						.antMatchers("/login","/menus/**","/users/**").permitAll().anyRequest().authenticated())
+						.antMatchers("/login","/users/**","/menus/**","/swagger-ui/**","/v3/**").permitAll()
+						.antMatchers(HttpMethod.POST,"/users").permitAll()
+						.anyRequest().authenticated())
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilter(new CustomAuthenticationFilter(authenticationManager))
 				.addFilter(new CustomAuthorizationFilter(authenticationManager));

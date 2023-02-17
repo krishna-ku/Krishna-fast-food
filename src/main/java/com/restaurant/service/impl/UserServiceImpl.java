@@ -239,5 +239,18 @@ public class UserServiceImpl implements UserService {
 		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 		StreamUtils.copy(resource, response.getOutputStream());
 	}
+	/**
+	 * check email is exists in database or not
+	 * @param email
+	 * @return
+	 */
+	public boolean checkEmailExist(String email) {
+		User user = userRepo.findByEmail(email);
+		if(user!=null)
+		return true;
+		else {
+			return false;
+		}
+	}
 
 }
