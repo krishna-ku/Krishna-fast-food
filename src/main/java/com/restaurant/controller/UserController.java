@@ -86,11 +86,11 @@ public class UserController {
 	 * 
 	 * @return list of User {@link com.restaurant.entity.User}
 	 */
-//	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
 	public ResponseEntity<PagingDTO> getAllUsers(
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
+			@RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
 		PagingDTO users = userService.getAllPagedUsers(pageNumber, pageSize);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}

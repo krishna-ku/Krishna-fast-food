@@ -33,7 +33,7 @@ public class SecurityConfig {
 					response.setHeader("WWW-Authenticate", accessDeniedException.getMessage());
 				}).and()
 				.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry
-						.antMatchers("/login","/users/**","/menus/**","/swagger-ui/**","/v3/**").permitAll()
+						.antMatchers("/login","/menus/**","/swagger-ui/**","/v3/**").permitAll()
 						.antMatchers(HttpMethod.POST,"/users").permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
