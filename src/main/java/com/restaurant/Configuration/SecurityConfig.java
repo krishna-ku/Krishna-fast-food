@@ -35,6 +35,7 @@ public class SecurityConfig {
 				.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry
 						.antMatchers("/login","/menus/**","/swagger-ui/**","/v3/**").permitAll()
 						.antMatchers(HttpMethod.POST,"/users").permitAll()
+						.antMatchers(HttpMethod.POST,"/users/email").permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilter(new CustomAuthenticationFilter(authenticationManager))

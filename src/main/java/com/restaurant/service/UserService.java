@@ -41,4 +41,6 @@ public interface UserService {
 	
 	//check email is exists or not
 	boolean checkEmailExist(String email);
+	
+	
 }
