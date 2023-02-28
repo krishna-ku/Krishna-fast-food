@@ -252,5 +252,21 @@ public class UserServiceImpl implements UserService {
 			return false;
 		}
 	}
+	/**
+	 * get logged in user
+	 * @param email
+	 * @return UserDTO
+	 */
+	@Override
+	public UserDTO getLoggedInUser(String email){
+		
+		log.info("getting user details {}");
+		
+		User user = userRepo.findByEmail(email);
+		
+		log.info("get user successfully");
+		
+		return new UserDTO(user);
+	}
 
 }

@@ -1,1 +1,2 @@
-2023-02-24 18:08:43.130 INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 3784 ms
+2023-02-28 18:02:40.155 INFO  c.r.service.impl.UserServiceImpl - getting user details {}
+2023-02-28 18:02:40.249 INFO  c.r.service.impl.UserServiceImpl - get user successfully

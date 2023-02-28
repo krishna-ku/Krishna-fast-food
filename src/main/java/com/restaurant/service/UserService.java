@@ -42,5 +42,8 @@ public interface UserService {
 	//check email is exists or not
 	boolean checkEmailExist(String email);
 	
+	//get logged in user
+	UserDTO getLoggedInUser(String email);
+	
 	
 }

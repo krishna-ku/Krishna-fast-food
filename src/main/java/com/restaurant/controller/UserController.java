@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -90,7 +91,7 @@ public class UserController {
 	@GetMapping
 	public ResponseEntity<PagingDTO> getAllUsers(
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
+			@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
 		PagingDTO users = userService.getAllPagedUsers(pageNumber, pageSize);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
@@ -161,5 +162,18 @@ public class UserController {
 	@PostMapping("/email")
 	public ResponseEntity<Boolean> checkEmailExist(@RequestBody String email){
 		return ResponseEntity.ok(userService.checkEmailExist(email));
+	}
+	/**
+	 * get logged in user details
+	 * @param email
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
+	@GetMapping("/profile")
+	public ResponseEntity<UserDTO> getLoggedInUser(@AuthenticationPrincipal String email){
+		
+		UserDTO loggedInUser = userService.getLoggedInUser(email);
+		
+		return new ResponseEntity<>(loggedInUser,HttpStatus.OK);
 	}
 }
