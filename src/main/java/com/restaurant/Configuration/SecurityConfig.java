@@ -1,5 +1,8 @@
 package com.restaurant.configuration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.annotation.Bean;
@@ -46,8 +49,12 @@ public class SecurityConfig {
 	private CorsConfiguration corsConfiguration(HttpServletRequest request) {
 		CorsConfiguration corsConfig = new CorsConfiguration();
 		corsConfig.applyPermitDefaultValues();
-		corsConfig.addAllowedOrigin(request.getHeader("Origin"));
+//		corsConfig.addAllowedOrigin(request.getHeader("Origin"));
 		corsConfig.addExposedHeader("Authorization");
+		corsConfig.setAllowedMethods(Arrays.asList("GET","PUT","POST","DELETE","HEAD","OPTIONS","PATCH"));
+		corsConfig.setAllowedOriginPatterns(Arrays.asList("*"));
+		corsConfig.setAllowCredentials(true);
+		
 		return corsConfig;
 	}
 
