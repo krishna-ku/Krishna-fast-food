@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(indexes = @Index(name = "idx_user_firstName", columnList = "firstName")) // for indexing
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE user SET deleted=true WHERE id=?")
+//@SQLDelete(sql = "UPDATE user SET deleted=true WHERE id=?")
 //@Where(clause = "deleted=false")
 public class User extends BaseClass {
 

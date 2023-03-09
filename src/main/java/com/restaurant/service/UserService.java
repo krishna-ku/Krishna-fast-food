@@ -21,11 +21,12 @@ public interface UserService {
 	UserDTO updateUser(UserDTO userDto, Long userId);
 
 	// delete user
-	void deleteUser(long userId);
+//	void deleteUser(long userId);
 
 	// get users
 //	@Query("Select u from User u where u.email=:email")//here i am using jpql u is our UserDto alias u and e is variable and by the help of @param e is bind 
 	PagingDTO getAllPagedUsers(Integer pageNumber, Integer pageSize);
+//	List<UserDTO> getAllPagedUsers();
 
 	// make user active
 	String activateUser(long userId);
@@ -44,6 +45,9 @@ public interface UserService {
 	
 	//get logged in user
 	UserDTO getLoggedInUser(String email);
+	
+	//Delete Multiple users by them Id
+	void deleteMultipleUsers(List<Long> usersList);
 	
 	
 }

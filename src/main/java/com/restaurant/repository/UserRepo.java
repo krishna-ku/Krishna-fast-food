@@ -6,7 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.restaurant.entity.User;
 
@@ -19,4 +21,8 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
 	@Query("Select u from User u where u.deleted=false")
 	Page<User> findAllNotDeletedUsers(Pageable pageable);
+	
+	@Modifying
+	@Query(value = "UPDATE User u SET u.deleted = true WHERE u.id IN (:userList)")
+	void deleteUserById(List<Long> userList);
 }

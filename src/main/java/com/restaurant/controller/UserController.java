@@ -69,16 +69,22 @@ public class UserController {
 	}
 
 	/**
-	 * Delete User by id Method : DELETE Service url: /users/id
+	 * Delete single and multiple User by them ids Method : DELETE Service url: /users
 	 * 
-	 * @param id
-	 * 
+	 * @param its accept long arrays
+	 * @return string
 	 */
-	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-	@DeleteMapping("/{userId}")
-	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
-		this.userService.deleteUser(userId);
-		return new ResponseEntity<>(new ApiResponse("User delete successfully", true), HttpStatus.OK);
+//	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+//	@DeleteMapping("/{userId}")
+//	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+//		this.userService.deleteUser(userId);
+//		return new ResponseEntity<>(new ApiResponse("User delete successfully", true), HttpStatus.OK);
+//	}
+	@DeleteMapping
+	public ResponseEntity<ApiResponse> deleteMultipleUsers(@RequestBody List<Long> userList){
+		userService.deleteMultipleUsers(userList);
+		return new ResponseEntity<>(new ApiResponse("Users Deleted Successfully",true),HttpStatus.OK);
+		
 	}
 
 	/**
@@ -95,6 +101,13 @@ public class UserController {
 		PagingDTO users = userService.getAllPagedUsers(pageNumber, pageSize);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
+//	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+//	@GetMapping
+//	public ResponseEntity<List<UserDTO>> getAllUsers() {
+//		List<UserDTO> users = userService.getAllPagedUsers();
+//		return new ResponseEntity<>(users,HttpStatus.OK);
+//	}
+
 
 	/**
 	 * filter users on the basis of id,firstName,email,deleted Service url:
@@ -104,7 +117,7 @@ public class UserController {
 	 * @return
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
-	@GetMapping("/filter")
+	@PostMapping("/filter")
 	public ResponseEntity<List<UserDTO>> filterUsers(@RequestBody UserDTO userDTO,
 			@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();

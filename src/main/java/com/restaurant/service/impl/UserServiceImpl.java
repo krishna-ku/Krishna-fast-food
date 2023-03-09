@@ -138,23 +138,45 @@ public class UserServiceImpl implements UserService {
 		return new UserDTO(userRepo.saveAndFlush(user));
 	}
 
+//	/**
+//	 * delete User
+//	 * 
+//	 * @param userId
+//	 * @return void
+//	 */
+//	@Override
+//	public void deleteUser(long userId) {
+//		log.info("Deleting user for {}", userId);
+//		try {
+//
+//			userRepo.deleteById(userId);
+//			log.info("User Deleted Successfully");
+//
+//		} catch (Exception e) {
+//			throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId);
+//		}
+//	}
+	
 	/**
-	 * delete User
-	 * 
-	 * @param userId
+	 * Delete Multiple users by them Id
+	 * @param Arrays of usersId
 	 * @return void
 	 */
-	@Override
-	public void deleteUser(long userId) {
-		log.info("Deleting user for {}", userId);
-		try {
-
-			userRepo.deleteById(userId);
-			log.info("User Deleted Successfully");
-
-		} catch (Exception e) {
-			throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId);
-		}
+	@Transactional
+	public void deleteMultipleUsers(List<Long> usersList) {
+		
+//		for(long userId : usersList) {
+			log.info("Deleting User for {}");
+			try {
+				userRepo.deleteUserById(usersList);;
+				log.info("User deleted Successfully");
+			}
+			catch (Exception e) {
+				log.error(e.getMessage());
+//				throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, usersList);
+			}
+//		}
+		
 	}
 
 	/**
@@ -164,6 +186,14 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
+//	public List<UserDTO> getAllPagedUsers() {
+////		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+////		Page<User> page = userRepo.findAllNotDeletedUsers(pageable);
+////		List<User> users = page.getContent();
+//		List<User> users = userRepo.findAll();
+//		List<UserDTO> collect = users.stream().map(m->new UserDTO(m)).collect(Collectors.toList());
+//		return collect;
+//	}
 	public PagingDTO<UserDTO> getAllPagedUsers(Integer pageNumber, Integer pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 		Page<User> page = userRepo.findAllNotDeletedUsers(pageable);
@@ -268,5 +298,4 @@ public class UserServiceImpl implements UserService {
 		
 		return new UserDTO(user);
 	}
-
 }
