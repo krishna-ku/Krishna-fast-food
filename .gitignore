@@ -1,6 +1,6 @@
 *.gitignore
 *.classpath
-*.logs
+/logs/**
 *.factorypath
 *.project
 *.HELP.md

@@ -78,7 +78,7 @@ public class MenuController {
 	 * 
 	 * @return list of MenuDtos {@link com.restaurant.dto.MenuDTO}
 	 */
-	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+//	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
 	public ResponseEntity<PagingDTO> getAllMenu(
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
