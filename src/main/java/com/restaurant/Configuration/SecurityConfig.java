@@ -1,6 +1,5 @@
 package com.restaurant.configuration;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;

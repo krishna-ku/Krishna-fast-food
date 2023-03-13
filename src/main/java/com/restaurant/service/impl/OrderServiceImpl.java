@@ -93,22 +93,28 @@ public class OrderServiceImpl implements OrderService {
 
 		Order order = new Order();
 
-		Set<Long> set = new HashSet<>();
+		Set<String> set = new HashSet<>();
 
 		if (restaurant.getStatus().equals("CLOSE"))
 			throw new BadRequestException("Restaurant is closed please order when restaurant is open");
 
 		List<OrderItem> orderItems = orderDto.getOrderItems().stream().map(o -> {
 
-			if (set.contains(o.getMenuId())) {
+			if (set.contains(o.getName())) {
 				return null;
 			}
-			set.add(o.getMenuId());
+			set.add(o.getName());
 			OrderItem orderItem = new OrderItem(o);
 
-			Menu menu = this.menuRepo.findById(o.getMenuId())
-					.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, o.getMenuId()));
+//			Menu menu = this.menuRepo.findByName(o.getName())
+//					.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, o.getMenuId()));
+			Menu menu = this.menuRepo.findByName(o.getName());
+			if (menu == null) {
+			    throw new ResourceNotFoundException(Keywords.MENU, Keywords.MENU, o.getName());
+			}
+			else {
 			orderItem.setMenu(menu);
+			}
 
 			orderItem.setOrder(order);
 			return orderItem;
