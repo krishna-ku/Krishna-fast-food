@@ -90,7 +90,7 @@ public class OrderController {
 	 * @return
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
-	@GetMapping("/filter")
+	@PostMapping("/filter")
 	public ResponseEntity<List<OrderDTO>> filterOrders(@RequestBody OrderDTO orderDTO,
 			@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();

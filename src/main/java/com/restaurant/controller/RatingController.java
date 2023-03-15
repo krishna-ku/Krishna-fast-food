@@ -100,7 +100,7 @@ public class RatingController {
 	 * @return
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
-	@GetMapping("/filter")
+	@PostMapping("/filter")
 	public ResponseEntity<List<RatingDTO>> filterRatings(@RequestBody RatingDTO ratingDTO,
 			@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
