@@ -68,6 +68,12 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private MenuRepo menuRepo;
+	
+	@Autowired
+	private CronServices cronServices;
+
+//	@Autowired
+//	private ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * Placed Order.
@@ -110,10 +116,9 @@ public class OrderServiceImpl implements OrderService {
 //					.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, o.getMenuId()));
 			Menu menu = this.menuRepo.findByName(o.getName());
 			if (menu == null) {
-			    throw new ResourceNotFoundException(Keywords.MENU, Keywords.MENU, o.getName());
-			}
-			else {
-			orderItem.setMenu(menu);
+				throw new ResourceNotFoundException(Keywords.MENU, Keywords.MENU, o.getName());
+			} else {
+				orderItem.setMenu(menu);
 			}
 
 			orderItem.setOrder(order);
@@ -193,6 +198,13 @@ public class OrderServiceImpl implements OrderService {
 			Long lastOrderNumber = orderRepo.findLastOrderNumber();
 			order.setOrderNumber(lastOrderNumber + 1);
 			orderRepo.save(order);
+			CompletableFuture.runAsync(()->{
+			try {
+				cronServices.changeOrderStatus();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}});
+//			eventPublisher.publishEvent(new orderPlacedEvent(order));
 		}
 	}
 

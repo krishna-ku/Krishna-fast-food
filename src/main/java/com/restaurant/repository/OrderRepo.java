@@ -7,8 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.query.Param;
 
 import com.restaurant.dto.DashboardView;
 import com.restaurant.dto.FilteredMenuItemDetail;
@@ -16,6 +18,7 @@ import com.restaurant.dto.OrderStatistics;
 import com.restaurant.dto.RestaurantPeekHours;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.User;
+import com.restaurant.enums.OrderStatus;
 
 public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
@@ -55,5 +58,9 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 //			+ "where o.created_on between now()-interval 15 day and now() group by m.id,m.name order by count(m.id) desc limit 3")
 	@Query(nativeQuery = true, value = "CALL get_last_fifteen_days_most_ordered_menu_items()")
 	List<FilteredMenuItemDetail> getLastFifteenDaysMostOrderMenuItems();
+	
+	@Modifying
+	@Query("update Order o set o.status = :newStatus where o.status = :currentStatus")
+	int updateOrderStatus(OrderStatus currentStatus,OrderStatus newStatus);
 
 }
