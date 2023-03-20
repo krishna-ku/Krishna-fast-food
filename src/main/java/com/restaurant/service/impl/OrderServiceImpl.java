@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private MenuRepo menuRepo;
-	
+
 	@Autowired
 	private CronServices cronServices;
 
@@ -198,12 +198,6 @@ public class OrderServiceImpl implements OrderService {
 			Long lastOrderNumber = orderRepo.findLastOrderNumber();
 			order.setOrderNumber(lastOrderNumber + 1);
 			orderRepo.save(order);
-			CompletableFuture.runAsync(()->{
-			try {
-				cronServices.changeOrderStatus();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}});
 //			eventPublisher.publishEvent(new orderPlacedEvent(order));
 		}
 	}

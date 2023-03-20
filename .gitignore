@@ -1,6 +1,5 @@
 *.gitignore
 *.classpath
-/logs/**
 *.factorypath
 *.project
 *.HELP.md
@@ -37,3 +36,4 @@ build/
 !**/src/test/**/build/
 /src/main/resources/application-dev.properties
 /images/
+/logs/

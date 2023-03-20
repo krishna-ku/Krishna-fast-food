@@ -60,7 +60,10 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 	List<FilteredMenuItemDetail> getLastFifteenDaysMostOrderMenuItems();
 	
 	@Modifying
-	@Query("update Order o set o.status = :newStatus where o.status = :currentStatus")
-	int updateOrderStatus(OrderStatus currentStatus,OrderStatus newStatus);
+	@Query("update Order o SET o.status= "
+			+ "case when o.status=:currentStatus THEN :newStatus "
+			+ "when o.status=:newStatus THEN :completeStatus END "
+			+ "where o.status in(:currentStatus,:newStatus)")
+	int updateOrderStatus(OrderStatus currentStatus,OrderStatus newStatus,OrderStatus completeStatus);
 
 }

@@ -34,15 +34,15 @@ public class CronServices {
 
 	}
 	
-	@Transactional
-//	@Scheduled(fixedRate = 60000)
-	public void changeOrderStatus() throws InterruptedException {
-		Thread.sleep(60000);
-	    int updatedRows = orderRepo.updateOrderStatus(OrderStatus.WAITING, OrderStatus.IN_PROCESS);
-	    log.info("Updated {} orders from WAITING to IN_PROCESS", updatedRows);
-	    Thread.sleep(300000);
-	    updatedRows = orderRepo.updateOrderStatus(OrderStatus.IN_PROCESS, OrderStatus.COMPLETED);
-	    log.info("Updated {} orders from IN_PROCESS to COMPLETED", updatedRows);		
+	@Transactional//do this work by procedure
+	@Scheduled(fixedRate = 60000)
+	public void changeOrderStatus() {
+		
+	    int updatedRows = orderRepo.updateOrderStatus(OrderStatus.WAITING, OrderStatus.IN_PROCESS,OrderStatus.COMPLETED);
+//	    log.info("Updated {} orders from WAITING to IN_PROCESS", updatedRows);
+	    
+//	    updatedRows = orderRepo.updateOrderStatus(OrderStatus.IN_PROCESS, OrderStatus.COMPLETED);
+	    log.info("Updated {} orders from WAITING TO IN_PROCESS and IN_PROCESS to COMPLETED", updatedRows);		
 //		for(Order o:orders) {//we don't want to use loop here max 2 queries 
 //			if(o.getStatus()==OrderStatus.WAITING)
 //				o.setStatus(OrderStatus.IN_PROCESS);
