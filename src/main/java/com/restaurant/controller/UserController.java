@@ -1,6 +1,7 @@
 package com.restaurant.controller;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,11 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.ApiResponse;
+import com.restaurant.dto.PagingDTO;
 import com.restaurant.dto.UserDTO;
 import com.restaurant.service.UserService;
 
 @RestController
 @RequestMapping("/users")
+//@CrossOrigin(origins = "http://localhost:4200/",maxAge = 3600)
 public class UserController {
 
 	@Autowired
@@ -61,16 +69,22 @@ public class UserController {
 	}
 
 	/**
-	 * Delete User by id Method : DELETE Service url: /users/id
+	 * Delete single and multiple User by them ids Method : DELETE Service url: /users
 	 * 
-	 * @param id
-	 * 
+	 * @param its accept long arrays
+	 * @return string
 	 */
-	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-	@DeleteMapping("/{userId}")
-	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
-		this.userService.deleteUser(userId);
-		return new ResponseEntity<>(new ApiResponse("User delete successfully", true), HttpStatus.OK);
+//	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+//	@DeleteMapping("/{userId}")
+//	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+//		this.userService.deleteUser(userId);
+//		return new ResponseEntity<>(new ApiResponse("User delete successfully", true), HttpStatus.OK);
+//	}
+	@DeleteMapping
+	public ResponseEntity<ApiResponse> deleteMultipleUsers(@RequestBody List<Long> userList){
+		userService.deleteMultipleUsers(userList);
+		return new ResponseEntity<>(new ApiResponse("Users Deleted Successfully",true),HttpStatus.OK);
+		
 	}
 
 	/**
@@ -81,12 +95,19 @@ public class UserController {
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
 	@GetMapping
-	public ResponseEntity<List<UserDTO>> getAllUsers(
+	public ResponseEntity<PagingDTO> getAllUsers(
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
-		List<UserDTO> users = userService.getAllUsers(pageNumber, pageSize);
+			@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+		PagingDTO users = userService.getAllPagedUsers(pageNumber, pageSize);
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
+//	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+//	@GetMapping
+//	public ResponseEntity<List<UserDTO>> getAllUsers() {
+//		List<UserDTO> users = userService.getAllPagedUsers();
+//		return new ResponseEntity<>(users,HttpStatus.OK);
+//	}
+
 
 	/**
 	 * filter users on the basis of id,firstName,email,deleted Service url:
@@ -95,10 +116,13 @@ public class UserController {
 	 * @param userDTO
 	 * @return
 	 */
-	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-	@GetMapping("/filter")
-	public ResponseEntity<List<UserDTO>> filterUsers(@RequestBody UserDTO userDTO) {
-		List<UserDTO> filterusers = userService.filterUsers(userDTO);
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
+	@PostMapping("/filter")
+	public ResponseEntity<List<UserDTO>> filterUsers(@RequestBody UserDTO userDTO,
+			@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+		String userName = (String) authentication.getPrincipal();
+		List<UserDTO> filterusers = userService.filterUsers(userDTO, userName, authorities);
 		return new ResponseEntity<>(filterusers, HttpStatus.OK);
 	}
 
@@ -143,5 +167,26 @@ public class UserController {
 
 		userService.viewImage(imageName, response);
 	}
-
+	/**
+	 * check email is exists in database or not
+	 * @param email
+	 * @return
+	 */
+	@PostMapping("/email")
+	public ResponseEntity<Boolean> checkEmailExist(@RequestBody String email){
+		return ResponseEntity.ok(userService.checkEmailExist(email));
+	}
+	/**
+	 * get logged in user details
+	 * @param email
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
+	@GetMapping("/profile")
+	public ResponseEntity<UserDTO> getLoggedInUser(@AuthenticationPrincipal String email){
+		
+		UserDTO loggedInUser = userService.getLoggedInUser(email);
+		
+		return new ResponseEntity<>(loggedInUser,HttpStatus.OK);
+	}
 }

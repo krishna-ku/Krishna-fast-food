@@ -1,8 +1,11 @@
 package com.restaurant.configuration;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,7 +35,11 @@ public class SecurityConfig {
 					response.setHeader("WWW-Authenticate", accessDeniedException.getMessage());
 				}).and()
 				.authorizeRequests(expressionInterceptUrlRegistry -> expressionInterceptUrlRegistry
-						.antMatchers("/login","/users/**","/menus/**").permitAll().anyRequest().authenticated())
+						.antMatchers("/login","/menus/**","/swagger-ui/**","/v3/**").permitAll()
+						.antMatchers(HttpMethod.GET,"/menus").permitAll()
+						.antMatchers(HttpMethod.POST,"/users").permitAll()
+						.antMatchers(HttpMethod.POST,"/users/email").permitAll()
+						.anyRequest().authenticated())
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilter(new CustomAuthenticationFilter(authenticationManager))
 				.addFilter(new CustomAuthorizationFilter(authenticationManager));
@@ -42,7 +49,12 @@ public class SecurityConfig {
 	private CorsConfiguration corsConfiguration(HttpServletRequest request) {
 		CorsConfiguration corsConfig = new CorsConfiguration();
 		corsConfig.applyPermitDefaultValues();
-		corsConfig.addAllowedOrigin(request.getHeader("Origin"));
+//		corsConfig.addAllowedOrigin(request.getHeader("Origin"));
+		corsConfig.addExposedHeader("Authorization");
+		corsConfig.setAllowedMethods(Arrays.asList("GET","PUT","POST","DELETE","HEAD","OPTIONS","PATCH"));
+		corsConfig.setAllowedOriginPatterns(Arrays.asList("*"));
+		corsConfig.setAllowCredentials(true);
+		
 		return corsConfig;
 	}
 

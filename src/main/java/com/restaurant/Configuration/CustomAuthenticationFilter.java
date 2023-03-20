@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restaurant.service.impl.TokenService;
 import com.restaurant.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 //    }
 
 	private final AuthenticationManager authenticationManager;
-	@Value("${jwt.key:HjksWEds$31")
-	private String jwtKey;
+//	@Value("${jwt.key:HjksWEds$31")
+//	private String jwtKey;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -68,7 +69,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		response.addHeader("Authorization", token);
+		response.addHeader("Authorization", "Bearer " + token);
+		TokenService.tokeMap.put(principal.getUsername(), token);
 	}
 
 	@Override

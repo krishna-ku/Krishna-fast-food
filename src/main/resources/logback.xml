@@ -1,0 +1,23 @@
+<configuration>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/application.log.%d{yyyy-MM-dd-HH}.%i.gz</fileNamePattern>
+            <maxHistory>90</maxHistory>
+            <maxFileSize>80MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %-5level %logger{35}  - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

@@ -1,9 +1,13 @@
 package com.restaurant.service;
 
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import com.restaurant.dto.OrderDTO;
 import com.restaurant.dto.OrderItemDTO;
+import com.restaurant.dto.PagingDTO;
 
 public interface OrderService {
 
@@ -17,18 +21,18 @@ public interface OrderService {
 	void deleteOrder(long orderId);
 
 	// get users
-	List<OrderDTO> getAllOrders(Integer pageNumber,Integer pageSize);
+	PagingDTO getAllOrders(Integer pageNumber, Integer pageSize);
 
 	// activate orders
 	String activateOrder(long orderId);
 
-	//get filter orders
-	List<OrderDTO> filterOrders(OrderDTO orderDTO);
-	
-	//give order rating
+	// get filter orders
+	List<OrderDTO> filterOrders(OrderDTO orderDTO,String userName,Collection<? extends GrantedAuthority> authorities);
+
+	// give order rating
 //	List<OrderDTO> getOrdersByRating();
-	
-	//repeat order
-	OrderDTO repeatOrder(String userId,long orderID);
+
+	// repeat order
+	OrderDTO repeatOrder(String username, long orderID);
 
 }

@@ -24,9 +24,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.restaurant.dto.ExcelHelper;
 import com.restaurant.dto.Keywords;
 import com.restaurant.dto.MenuDTO;
+import com.restaurant.dto.PagingDTO;
 import com.restaurant.entity.Menu;
+import com.restaurant.entity.MenuCategory;
+import com.restaurant.enums.MenuAvailabilityStatus;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
+import com.restaurant.repository.MenuCategoryRepo;
 import com.restaurant.repository.MenuRepo;
 import com.restaurant.service.ImageService;
 import com.restaurant.service.MenuService;
@@ -44,6 +48,9 @@ public class MenuServiceImpl implements MenuService {
 	@Autowired
 	private ImageService imageService;
 
+	@Autowired
+	private MenuCategoryRepo menuCategoryRepo;
+
 	@Value("${project.image}")
 	private String path;
 
@@ -60,10 +67,12 @@ public class MenuServiceImpl implements MenuService {
 		log.info("Creating menu for {} ", menuDto);
 
 		Menu menuExist = this.menuRepo.findByName(menuDto.getName());
-
+		MenuCategory menuCategory = menuCategoryRepo.findById(menuDto.getCategory().getId())
+				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU_CATEGORY, Keywords.MENU_CATEGORY_ID,
+						menuDto.getCategory().getId()));
 		if (menuExist == null) {
 			Menu newMenu = new Menu(menuDto);
-
+			newMenu.setMenuCategory(menuCategory);
 			log.info("Menu created successfully");
 
 			return new MenuDTO(menuRepo.save(newMenu));
@@ -100,7 +109,7 @@ public class MenuServiceImpl implements MenuService {
 			updatedMenu.setDescription(menuDto.getDescription());
 		}
 
-		if (!StringUtils.isEmpty(menuDto.getAvailability())) {
+		if (menuDto.getAvailability() != null) {
 			updatedMenu.setAvailability(menuDto.getAvailability());
 		}
 
@@ -121,9 +130,11 @@ public class MenuServiceImpl implements MenuService {
 
 		log.info("Deleting menu for {} ", menuId);
 
-		this.menuRepo.findById(menuId)
+		Menu menu = this.menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
 
+		menu.setAvailability(MenuAvailabilityStatus.NOTAVAILABLE);
+		menuRepo.save(menu);
 		menuRepo.deleteById(menuId);
 		log.info("Menu deleted successfully");
 	}
@@ -135,23 +146,18 @@ public class MenuServiceImpl implements MenuService {
 	 * @see com.restaurant.dto.MenuDTO
 	 */
 	@Override
-	public List<MenuDTO> getAllMenus(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
+	public PagingDTO<MenuDTO> getAllMenus(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
 
 		Sort sort = (sortDirection.equalsIgnoreCase("asc")) ? Sort.by(sortBy).ascending()
 				: Sort.by(sortBy).descending();
 
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-
-		Page<Menu> page = menuRepo.findAll(pageable);
+		Page<Menu> page = menuRepo.findAllNotDeletedAndAvailableMenus(pageable);
 		List<Menu> menus = page.getContent();
+		List<MenuDTO> menuDTOs = menus.stream().map(m -> new MenuDTO(m)).collect(Collectors.toList());
+		PagingDTO<MenuDTO> pagingDTO = new PagingDTO<>(menuDTOs, page.getTotalElements(), page.getTotalPages());
 
-//		List<Menu> filterMenusByDeletedTrue = menus.stream().filter(m -> !m.isDeleted()).collect(Collectors.toList());
-
-		return menus.stream().filter(m -> !m.isDeleted()).map(MenuDTO::new).collect(Collectors.toList());//do this by query
-
-//		List<MenuDTO> menuDtos = menus.stream().map(menu -> menuToDto(menu)).collect(Collectors.toList());
-//		return filterMenusByDeletedTrue.stream().map(MenuDTO::new).collect(Collectors.toList());
-//		return menuDtos;
+		return pagingDTO;
 	}
 
 	/**

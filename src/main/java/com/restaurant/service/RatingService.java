@@ -1,7 +1,11 @@
 package com.restaurant.service;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
+
+import com.restaurant.dto.PagingDTO;
 import com.restaurant.dto.RatingDTO;
 
 public interface RatingService {
@@ -16,12 +20,12 @@ public interface RatingService {
 	void deleteRating(long ratingId);
 
 	// get all ratings
-	List<RatingDTO> getAllRatings(Integer pageNumber,Integer pageSize);
+	PagingDTO getAllRatings(Integer pageNumber, Integer pageSize);
 
 	// make raring active
 	String activateRating(long ratingId);
 	
 	//filter ratings
-	List<RatingDTO> filterRatings(RatingDTO ratingDTO);
+	List<RatingDTO> filterRatings(RatingDTO ratingDTO,String userName,Collection<? extends GrantedAuthority> authorities);
 
 }

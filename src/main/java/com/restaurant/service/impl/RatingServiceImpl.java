@@ -1,5 +1,6 @@
 package com.restaurant.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,9 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.dto.Keywords;
+import com.restaurant.dto.PagingDTO;
 import com.restaurant.dto.RatingDTO;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.Rating;
@@ -92,14 +95,15 @@ public class RatingServiceImpl implements RatingService {
 	 * @see com.restaurant.dto.RatingDTO
 	 */
 	@Override
-	public List<RatingDTO> getAllRatings(Integer pageNumber, Integer pageSize) {
+	public PagingDTO<RatingDTO> getAllRatings(Integer pageNumber, Integer pageSize) {
 
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-		Page<Rating> page = this.ratingRepo.findAll(pageable);
+		Page<Rating> page = this.ratingRepo.findAllNotDeletedRatings(pageable);
 		List<Rating> ratings = page.getContent();
-
-		return ratings.stream().map(rating -> new RatingDTO(rating)).collect(Collectors.toList());
+		List<RatingDTO> rating = ratings.stream().map(RatingDTO::new).collect(Collectors.toList());
+		return new PagingDTO<>(rating, page.getTotalElements(), page.getTotalPages());
+//		return pagingDTO;
 	}
 
 	/**
@@ -109,8 +113,10 @@ public class RatingServiceImpl implements RatingService {
 	 * @return
 	 */
 	@Override
-	public List<RatingDTO> filterRatings(RatingDTO ratingDTO) {
-		Specification<Rating> specification = Specification.where(RatingSpecification.filterRatings(ratingDTO));
+	public List<RatingDTO> filterRatings(RatingDTO ratingDTO, String userName,
+			Collection<? extends GrantedAuthority> authorities) {
+		Specification<Rating> specification = Specification
+				.where(RatingSpecification.filterRatings(ratingDTO, userName, authorities));
 		return ratingRepo.findAll(specification).stream().map(r -> new RatingDTO(r)).collect(Collectors.toList());
 	}
 

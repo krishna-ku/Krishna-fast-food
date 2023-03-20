@@ -2,10 +2,13 @@ package com.restaurant.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.jdbc.StreamUtils;
@@ -16,11 +19,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaurant.dto.Keywords;
+import com.restaurant.dto.PagingDTO;
 import com.restaurant.dto.UserDTO;
 import com.restaurant.entity.User;
 import com.restaurant.exception.BadRequestException;
@@ -51,8 +56,6 @@ public class UserServiceImpl implements UserService {
 	@Value("${project.image}")
 	private String path;
 
-//	private static final Logger LOG=LoggerFactory.getLogger(UserServiceImpl.class);
-
 	/**
 	 * add User.
 	 * 
@@ -60,6 +63,7 @@ public class UserServiceImpl implements UserService {
 	 * @return UserDto object
 	 * @see com.restaurant.dto.UserDTO
 	 */
+	@Transactional
 	@Override
 	public UserDTO createUser(UserDTO userDto) {
 
@@ -79,9 +83,12 @@ public class UserServiceImpl implements UserService {
 
 			User save = userRepo.save(newUser);
 
-			emailService.sendAccountCreatedMailToUser("Account Created", userDto.getEmail(), userDto.getFirstName());
+			CompletableFuture.runAsync(() -> {
+				emailService.sendAccountCreatedMailToUser("Account Created", userDto.getEmail(),
+						userDto.getFirstName());
+			});
 
-			log.info("User created successfully");
+			log.info("User {} created successfully", newUser.getFirstName(), newUser.getRole());
 
 			return new UserDTO(save);
 
@@ -102,49 +109,74 @@ public class UserServiceImpl implements UserService {
 
 		log.info("Updating user for {}", userDto);
 
-		User user2 = this.userRepo.findById(userId)
+		User user = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
 
 		if (!StringUtils.isEmpty(userDto.getFirstName())) {
-			user2.setFirstName(userDto.getFirstName());
+			user.setFirstName(userDto.getFirstName());
 		}
 
 		if (!StringUtils.isEmpty(userDto.getLastName())) {
-			user2.setLastName(userDto.getLastName());
+			user.setLastName(userDto.getLastName());
 		}
+
+//		BeanUtils.copyProperties(userDto, user);
 
 		if (!StringUtils.isEmpty(userDto.getEmail())) {
 			if (!Keywords.EMAIL_REGEX.matcher(userDto.getEmail()).matches()) {
 				throw new BadRequestException("Invalid email format please follow this format user@gmail.com");
 			}
-			user2.setEmail(userDto.getEmail());
+			user.setEmail(userDto.getEmail());
 		}
 
 		if (!StringUtils.isEmpty(userDto.getPassword())) {
-			user2.setPassword(userDto.getPassword());
+			user.setPassword(userDto.getPassword());
 		}
 
 		log.info("User updated successfully");
 
-		return new UserDTO(userRepo.save(user2));
+		return new UserDTO(userRepo.saveAndFlush(user));
 	}
 
+//	/**
+//	 * delete User
+//	 * 
+//	 * @param userId
+//	 * @return void
+//	 */
+//	@Override
+//	public void deleteUser(long userId) {
+//		log.info("Deleting user for {}", userId);
+//		try {
+//
+//			userRepo.deleteById(userId);
+//			log.info("User Deleted Successfully");
+//
+//		} catch (Exception e) {
+//			throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId);
+//		}
+//	}
+	
 	/**
-	 * delete User
-	 * 
-	 * @param userId
+	 * Delete Multiple users by them Id
+	 * @param Arrays of usersId
 	 * @return void
 	 */
-	@Override
-	public void deleteUser(long userId) {
-
-		log.info("Deleting user for {}", userId);
-
-		userRepo.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-
-		this.userRepo.deleteById(userId);
-		log.info("User Deleted Successfully");
+	@Transactional
+	public void deleteMultipleUsers(List<Long> usersList) {
+		
+//		for(long userId : usersList) {
+			log.info("Deleting User for {}");
+			try {
+				userRepo.deleteUserById(usersList);;
+				log.info("User deleted Successfully");
+			}
+			catch (Exception e) {
+				log.error(e.getMessage());
+//				throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, usersList);
+			}
+//		}
+		
 	}
 
 	/**
@@ -154,11 +186,20 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public List<UserDTO> getAllUsers(Integer pageNumber, Integer pageSize) {
+//	public List<UserDTO> getAllPagedUsers() {
+////		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+////		Page<User> page = userRepo.findAllNotDeletedUsers(pageable);
+////		List<User> users = page.getContent();
+//		List<User> users = userRepo.findAll();
+//		List<UserDTO> collect = users.stream().map(m->new UserDTO(m)).collect(Collectors.toList());
+//		return collect;
+//	}
+	public PagingDTO<UserDTO> getAllPagedUsers(Integer pageNumber, Integer pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
-		Page<User> page = this.userRepo.findAll(pageable);
+		Page<User> page = userRepo.findAllNotDeletedUsers(pageable);
 		List<User> users = page.getContent();
-		return users.stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
+		List<UserDTO> userDTOs = users.stream().map(m -> new UserDTO(m)).collect(Collectors.toList());
+		return new PagingDTO<>(userDTOs, page.getTotalElements(), page.getTotalPages());
 	}
 
 	/**
@@ -168,9 +209,11 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 */
 	@Override
-	public List<UserDTO> filterUsers(UserDTO userDTO) {
-		Specification<User> specification = Specification.where(UserSpecification.filterUsers(userDTO));
-		return userRepo.findAll(specification).stream().map(user -> new UserDTO(user)).collect(Collectors.toList());
+	public List<UserDTO> filterUsers(UserDTO userDTO, String userName,
+			Collection<? extends GrantedAuthority> authorities) {
+		Specification<User> specification = Specification
+				.where(UserSpecification.filterUsers(userDTO, userName, authorities));
+		return userRepo.findAll(specification).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
 	}
 
 	/**
@@ -226,5 +269,33 @@ public class UserServiceImpl implements UserService {
 		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 		StreamUtils.copy(resource, response.getOutputStream());
 	}
-
+	/**
+	 * check email is exists in database or not
+	 * @param email
+	 * @return
+	 */
+	public boolean checkEmailExist(String email) {
+		User user = userRepo.findByEmail(email);
+		if(user!=null)
+		return true;
+		else {
+			return false;
+		}
+	}
+	/**
+	 * get logged in user
+	 * @param email
+	 * @return UserDTO
+	 */
+	@Override
+	public UserDTO getLoggedInUser(String email){
+		
+		log.info("getting user details {}");
+		
+		User user = userRepo.findByEmail(email);
+		
+		log.info("get user successfully");
+		
+		return new UserDTO(user);
+	}
 }

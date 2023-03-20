@@ -1,0 +1,62 @@
+[2023-01-30 15:23:56] - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+[2023-01-30 15:23:56] - HikariPool-1 - Fill pool skipped, pool is at sufficient level.
+[2023-01-30 15:24:26] - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+[2023-01-30 15:24:26] - HikariPool-1 - Fill pool skipped, pool is at sufficient level.
+[2023-01-30 15:24:37] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2023-01-30 15:24:37] - Initializing Servlet 'dispatcherServlet'
+[2023-01-30 15:24:37] - Detected StandardServletMultipartResolver
+[2023-01-30 15:24:37] - Detected AcceptHeaderLocaleResolver
+[2023-01-30 15:24:37] - Detected FixedThemeResolver
+[2023-01-30 15:24:37] - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@1e466d
+[2023-01-30 15:24:37] - Detected org.springframework.web.servlet.support.SessionFlashMapManager@3d73cd78
+[2023-01-30 15:24:37] - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+[2023-01-30 15:24:37] - Completed initialization in 3 ms
+[2023-01-30 15:24:37] - Securing GET /users
+[2023-01-30 15:24:37] - Set SecurityContextHolder to empty SecurityContext
+[2023-01-30 15:24:38] - Authorized filter invocation [GET /users] with attributes [authenticated]
+[2023-01-30 15:24:38] - Secured GET /users
+[2023-01-30 15:24:38] - GET "/users", parameters={}
+[2023-01-30 15:24:38] - Mapped to com.restaurant.controller.UserController#getAllUsers(Integer, Integer)
+[2023-01-30 15:24:38] - Opening JPA EntityManager in OpenEntityManagerInViewInterceptor
+[2023-01-30 15:24:38] - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity com.restaurant.controller.UserController.getAllUsers(java.lang.Integer,java.lang.Integer); target is of class [com.restaurant.controller.UserController]
+[2023-01-30 15:24:38] - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity com.restaurant.controller.UserController.getAllUsers(java.lang.Integer,java.lang.Integer); target is of class [com.restaurant.controller.UserController]
+[2023-01-30 15:24:38] - select user0_.id as id1_8_, user0_.created_on as created_2_8_, user0_.deleted as deleted3_8_, user0_.updated_on as updated_4_8_, user0_.address as address5_8_, user0_.email as email6_8_, user0_.first_name as first_na7_8_, user0_.image_name as image_na8_8_, user0_.last_name as last_nam9_8_, user0_.mobile_number as mobile_10_8_, user0_.password as passwor11_8_, user0_.role as role12_8_ from user user0_ where user0_.deleted=0 limit ?
+[2023-01-30 15:24:38] - Result set row: 0
+[2023-01-30 15:24:38] - Result row: EntityKey[com.restaurant.entity.User#1]
+[2023-01-30 15:24:38] - Resolving attributes for [com.restaurant.entity.User#1]
+[2023-01-30 15:24:38] - Processing attribute `createdOn` : value = null
+[2023-01-30 15:24:38] - Attribute (`createdOn`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `deleted` : value = false
+[2023-01-30 15:24:38] - Attribute (`deleted`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `updatedOn` : value = null
+[2023-01-30 15:24:38] - Attribute (`updatedOn`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `address` : value = Delhi
+[2023-01-30 15:24:38] - Attribute (`address`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `email` : value = sharmakeshav987@gmail.com
+[2023-01-30 15:24:38] - Attribute (`email`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `firstName` : value = keshav
+[2023-01-30 15:24:38] - Attribute (`firstName`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `imageName` : value = null
+[2023-01-30 15:24:38] - Attribute (`imageName`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `lastName` : value = kumar
+[2023-01-30 15:24:38] - Attribute (`lastName`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `mobileNumber` : value = 9876543210
+[2023-01-30 15:24:38] - Attribute (`mobileNumber`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `orders` : value = NOT NULL COLLECTION
+[2023-01-30 15:24:38] - Attribute (`orders`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `password` : value = $2a$12$NwYyokLy5UWL55OSUOYHBOX/jNQg1x24u5iC3.usTspF0fAnGcxWO
+[2023-01-30 15:24:38] - Attribute (`password`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `rating` : value = NOT NULL COLLECTION
+[2023-01-30 15:24:38] - Attribute (`rating`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Processing attribute `role` : value = ADMIN
+[2023-01-30 15:24:38] - Attribute (`role`)  - enhanced for lazy-loading? - false
+[2023-01-30 15:24:38] - Done materializing entity [com.restaurant.entity.User#1]
+[2023-01-30 15:24:38] - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+[2023-01-30 15:24:38] - Writing [com.restaurant.dto.PagingDTO@52730e8f]
+[2023-01-30 15:24:38] - Closing JPA EntityManager in OpenEntityManagerInViewInterceptor
+[2023-01-30 15:24:38] - Completed 200 OK
+[2023-01-30 15:24:38] - Cleared SecurityContextHolder to complete request
+[2023-01-30 15:24:56] - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+[2023-01-30 15:24:56] - HikariPool-1 - Fill pool skipped, pool is at sufficient level.
+[2023-01-30 15:25:26] - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+[2023-01-30 15:25:26] - HikariPool-1 - Fill pool skipped, pool is at sufficient level.

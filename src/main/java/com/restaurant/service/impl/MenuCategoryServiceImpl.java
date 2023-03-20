@@ -109,7 +109,7 @@ public class MenuCategoryServiceImpl implements MenuCategoryService {
 
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-		Page<MenuCategory> page = menuCategoryRepo.findAll(pageable);
+		Page<MenuCategory> page = menuCategoryRepo.findAllNotDeletedMenuCategories(pageable);
 		List<MenuCategory> menuCategories = page.getContent();
 
 		return menuCategories.stream().map(m -> new MenuCategoryDTO(m)).collect(Collectors.toList());
