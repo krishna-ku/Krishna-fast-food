@@ -43,13 +43,6 @@ public class CronServices {
 	    
 //	    updatedRows = orderRepo.updateOrderStatus(OrderStatus.IN_PROCESS, OrderStatus.COMPLETED);
 	    log.info("Updated {} orders from WAITING TO IN_PROCESS and IN_PROCESS to COMPLETED", updatedRows);		
-//		for(Order o:orders) {//we don't want to use loop here max 2 queries 
-//			if(o.getStatus()==OrderStatus.WAITING)
-//				o.setStatus(OrderStatus.IN_PROCESS);
-//			else if(o.getStatus()==OrderStatus.IN_PROCESS)
-//				o.setStatus(OrderStatus.COMPLETED);
-//			orderRepo.save(o);
-//		}
 	}
 
 }
