@@ -20,6 +20,8 @@ import com.restaurant.entity.Order;
 import com.restaurant.entity.User;
 import com.restaurant.enums.OrderStatus;
 
+import javax.persistence.Tuple;
+
 public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
 	@Query(nativeQuery = true, value = "select count(orders.id) totalOrders ,sum(if(status='COMPLETED',1,0)) as completedOrders,"
@@ -66,4 +68,6 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 			+ "where o.status in(:currentStatus,:newStatus)")
 	int updateOrderStatus(OrderStatus currentStatus,OrderStatus newStatus,OrderStatus completeStatus);
 
+	@Query(nativeQuery = true,value = "select o.id,count(o.status) from orders o where o.deleted=true group by o.id")
+	List<Tuple> findBySomething();
 }
