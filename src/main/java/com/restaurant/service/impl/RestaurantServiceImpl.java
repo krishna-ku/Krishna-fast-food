@@ -91,6 +91,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 				throw new BadRequestException("Please enter valid phone number");
 			restaurant.setContactNo(restaurantDto.getContactNo());
 		}
+		
+		if(!StringUtils.isEmpty(restaurantDto.getOpenTiming()))
+			restaurant.setOpenTiming(restaurantDto.getOpenTiming());
+		
+		if(!StringUtils.isEmpty(restaurantDto.getCloseTiming()))
+			restaurant.setCloseTiming(restaurantDto.getCloseTiming());
+		
 
 		if (!StringUtils.isEmpty(restaurantDto.getStatus()))
 			restaurant.setStatus(restaurantDto.getStatus());

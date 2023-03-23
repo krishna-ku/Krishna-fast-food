@@ -303,10 +303,17 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<OrderDTO> filterOrders(OrderDTO orderDTO, String userName,
 			Collection<? extends GrantedAuthority> authorities) {
+		
+//		orderRepo.findbyu
 
 		Specification<Order> specification = Specification
 				.where(OrderSpecification.filterOrders(orderDTO, userName, authorities));
+		
+		
 		return orderRepo.findAll(specification).stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
+//		List<Order> userOrders = orderRepo.getUserOrders(userName, specification);
+//		return userOrders.stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
+//		return orderRepo.getUserOrders(specification).stream().map(o-> new OrderDTO(o)).collect(Collectors.toList());
 	}
 
 	/**

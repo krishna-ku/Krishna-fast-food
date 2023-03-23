@@ -133,9 +133,10 @@ public class UserController {
 	 * @return
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-	@PutMapping("/activate/{userId}")
-	public ResponseEntity<String> activateUserEntity(@PathVariable long userId) {
-		return ResponseEntity.ok(userService.activateUser(userId));
+	@PutMapping("/activate")
+	public ResponseEntity<ApiResponse> activateUserEntity(@RequestBody List<Long> userId) {
+		userService.activateUser(userId);
+		return new ResponseEntity<>(new ApiResponse("Users Activate Successfully",true),HttpStatus.OK);
 	}
 
 	/**

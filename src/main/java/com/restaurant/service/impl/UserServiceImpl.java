@@ -224,13 +224,24 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public String activateUser(long userId) {
-
-		User user = userRepo.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-		user.setDeleted(false);
-		userRepo.save(user);
-		return "User is active";
+	@Transactional
+	public void activateUser(List<Long> userIds) {
+		
+		log.info("Activate users for {}");
+		try {
+			userRepo.activateUsersById(userIds);
+			log.info("Activate users successfully {}");
+			
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		
+//		long userId=userIds.get(0);
+//		User user = userRepo.findById(userId)
+//				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
+//		user.setDeleted(false);
+//		userRepo.save(user);
+//		return "User is active";
 	}
 
 	/**

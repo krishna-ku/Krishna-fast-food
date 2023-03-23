@@ -29,7 +29,7 @@ public interface UserService {
 //	List<UserDTO> getAllPagedUsers();
 
 	// make user active
-	String activateUser(long userId);
+	void activateUser(List<Long> userId);
 
 	// filter users
 	List<UserDTO> filterUsers(UserDTO userDTO, String userName, Collection<? extends GrantedAuthority> authorities);

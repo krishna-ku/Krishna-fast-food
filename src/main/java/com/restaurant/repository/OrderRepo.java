@@ -5,12 +5,11 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
-import org.springframework.data.repository.query.Param;
 
 import com.restaurant.dto.DashboardView;
 import com.restaurant.dto.FilteredMenuItemDetail;
@@ -19,8 +18,6 @@ import com.restaurant.dto.RestaurantPeekHours;
 import com.restaurant.entity.Order;
 import com.restaurant.entity.User;
 import com.restaurant.enums.OrderStatus;
-
-import javax.persistence.Tuple;
 
 public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
@@ -60,14 +57,13 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 //			+ "where o.created_on between now()-interval 15 day and now() group by m.id,m.name order by count(m.id) desc limit 3")
 	@Query(nativeQuery = true, value = "CALL get_last_fifteen_days_most_ordered_menu_items()")
 	List<FilteredMenuItemDetail> getLastFifteenDaysMostOrderMenuItems();
-	
-	@Modifying
-	@Query("update Order o SET o.status= "
-			+ "case when o.status=:currentStatus THEN :newStatus "
-			+ "when o.status=:newStatus THEN :completeStatus END "
-			+ "where o.status in(:currentStatus,:newStatus)")
-	int updateOrderStatus(OrderStatus currentStatus,OrderStatus newStatus,OrderStatus completeStatus);
 
-	@Query(nativeQuery = true,value = "select o.id,count(o.status) from orders o where o.deleted=true group by o.id")
-	List<Tuple> findBySomething();
+	@Modifying
+	@Query("update Order o SET o.status= " + "case when o.status=:currentStatus THEN :newStatus "
+			+ "when o.status=:newStatus THEN :completeStatus END " + "where o.status in(:currentStatus,:newStatus)") // where
+	int updateOrderStatus(OrderStatus currentStatus, OrderStatus newStatus, OrderStatus completeStatus);
+
+	@Query("SELECT o FROM Order o WHERE o.user =1 AND o.deleted = false")
+	List<Order> getUserOrders(Specification<Order> specification);
+
 }
