@@ -37,6 +37,9 @@ public class Menu extends BaseClass {
 
 	@OneToOne
 	private MenuCategory menuCategory;
+	
+	@OneToOne
+	private MenuAdditionalItems menuAdditionalItems;
 
 ////	@OneToOne
 //	@JoinColumn(name = "orders_id")
