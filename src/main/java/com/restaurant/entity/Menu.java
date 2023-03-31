@@ -32,6 +32,8 @@ public class Menu extends BaseClass {
 	private MenuAvailabilityStatus availability;
 
 	private String imageName;
+	
+	private String type;
 
 //	private int category;
 
@@ -51,6 +53,7 @@ public class Menu extends BaseClass {
 	public Menu(MenuDTO menuDto) {
 		this.name = menuDto.getName();
 		this.price = menuDto.getPrice();
+		this.type=menuDto.getType();
 		this.description = menuDto.getDescription();
 		this.dishRating = menuDto.getDishRating();
 		this.availability = menuDto.getAvailability();

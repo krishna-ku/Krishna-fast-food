@@ -13,6 +13,7 @@ public class OrderItemDTO {
 
 	public OrderItemDTO(OrderItem o) {
 		this.menuId = o.getMenu().getId();
+//		this.additionalItems= o.getItemsOfMenu().getId();
 		this.itemQuantity = o.getItemQuantity();
 		this.name = o.getMenu().getName();
 		this.pricePerItem = o.getMenu().getPrice();
@@ -30,5 +31,7 @@ public class OrderItemDTO {
 	private int itemQuantity;
 
 	private long menuId;
+	
+//	private long additionalItems;
 
 }
