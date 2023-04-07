@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +33,8 @@ public interface UserService {
 	void activateUser(List<Long> userId);
 
 	// filter users
-	List<UserDTO> filterUsers(UserDTO userDTO, String userName, Collection<? extends GrantedAuthority> authorities);
+	Page<UserDTO> filterUsers(UserDTO userDTO, String userName,
+			Collection<? extends GrantedAuthority> authorities, int page, int pageSize);
 
 	// upload image in user profile
 	UserDTO uploadImage(MultipartFile image, long userId) throws IOException;
