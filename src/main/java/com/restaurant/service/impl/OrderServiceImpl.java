@@ -352,5 +352,19 @@ public class OrderServiceImpl implements OrderService {
 
 		return placedOrder(new OrderDTO(order), user.getId());
 	}
-
+	
+//	public void testOrder() {
+//		List<Order> orderrs=orderRepo.testOrder(100);
+//		Set<String> u=new HashSet<>();
+//		for(Order o:orderrs) {
+//			String firstName = o.getUser().getFirstName();
+//			u.add(firstName);
+//		}
+//		for(String s:u) {
+//			
+//			System.out.println(s);
+//		}
+		
+		
+//		List<String> nameList=orderrs
 }

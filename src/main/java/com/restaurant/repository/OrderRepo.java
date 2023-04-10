@@ -65,5 +65,8 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 
 	@Query("SELECT o FROM Order o WHERE o.user =1 AND o.deleted = false")
 	List<Order> getUserOrders(Specification<Order> specification);
+	
+//	@Query("select o from order o where o.totalPrice>:price")
+//	List<Order> testOrder(long price);
 
 }
