@@ -54,4 +54,30 @@ public class UserDTO {
 		this.mobileNumber = user.getMobileNumber();
 		this.imageName = user.getImageName();
 	}
+	
+	/**
+	 * Parameterized UserDTO constructor
+	 * 
+	 * @param firstName
+	 * @param lastName
+	 * @param role
+	 * @param email
+	 * @param address
+	 * @param imageName
+	 * @param mobileNumber
+	 * @param deleted
+	 */
+
+	public UserDTO(String firstName, String lastName, String role, String email, String address, String imageName,
+			String mobileNumber, boolean deleted,String password) {
+		this.firstName=firstName;
+		this.lastName=lastName;
+		this.role=role;
+		this.email=email;
+		this.address=address;
+		this.imageName=imageName;
+		this.mobileNumber=mobileNumber;
+		this.password=password;
+		
+	}
 }

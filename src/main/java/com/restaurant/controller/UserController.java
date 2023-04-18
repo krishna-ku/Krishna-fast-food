@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +33,17 @@ import org.springframework.web.multipart.MultipartFile;
 import com.restaurant.dto.ApiResponse;
 import com.restaurant.dto.PagingDTO;
 import com.restaurant.dto.UserDTO;
+import com.restaurant.entity.User;
+import com.restaurant.repository.UserRepo;
 import com.restaurant.service.UserService;
 
 @RestController
 @RequestMapping("/users")
 //@CrossOrigin(origins = "http://localhost:4200/",maxAge = 3600)
 public class UserController {
+	
+	@Autowired
+	private UserRepo userRepo;
 
 	@Autowired
 	private UserService userService;
@@ -195,5 +201,11 @@ public class UserController {
 		UserDTO loggedInUser = userService.getLoggedInUser(email);
 
 		return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+	}
+	
+	@QueryMapping("getUser")
+	public List<User> get(){
+		List<User> findAll = userRepo.findAll();
+		return findAll;
 	}
 }
