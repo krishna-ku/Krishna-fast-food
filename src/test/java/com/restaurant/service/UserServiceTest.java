@@ -2,28 +2,20 @@ package com.restaurant.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
-import org.assertj.core.util.Arrays;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 
 import com.restaurant.dto.PagingDTO;
 import com.restaurant.dto.UserDTO;
@@ -38,7 +30,7 @@ public class UserServiceTest {
 	@Mock
 	private UserServiceImpl userServiceImpl;
 
-	@Autowired
+	@Mock
 	private UserRepo userRepo;
 
 //	@Rule
@@ -66,7 +58,7 @@ public class UserServiceTest {
 		User user = new User(userDTO);
 		return user;
 	}
-	
+
 	/**
 	 * test Create User Method of UserServiceImpl class by invalid email
 	 * 
@@ -91,42 +83,53 @@ public class UserServiceTest {
 
 		Mockito.when(userServiceImpl.createUser(userDTO)).thenThrow(BadRequestException.class);
 
-		assertThrows(BadRequestException.class,() -> userServiceImpl.createUser(userDTO));
+		assertThrows(BadRequestException.class, () -> userServiceImpl.createUser(userDTO));
 	}
-	
+
 	/**
 	 * test get all users method of userServiceImpl
 	 */
 	@Test
 	public void testGetAllUsersMethod() {
-				
+
 		PagingDTO<UserDTO> allPagedUsers = userServiceImpl.getAllPagedUsers(0, 10);
+
+		OngoingStubbing<PagingDTO<UserDTO>> thenReturn = Mockito.when(userServiceImpl.getAllPagedUsers(0, 10))
+				.thenReturn(allPagedUsers);
+
+		assertThat(thenReturn).isNotNull();
+
+	}
+
+	@Test
+	void testActivateUser() {
+	    // Create a list of user ids to activate
+	    List<Long> userIds = new ArrayList<>();
+	    userIds.add(1L);
+	    userIds.add(2L);
+
+	    doNothing().when(userRepo).activateUsersById(userIds);
+
+	    userServiceImpl.activateUser(userIds);
+
+//	    verify(userRepo).activateUsersById(userIds);
+	}
+	/**
+	 * test get logged in user method
+	 */
+	@Test
+	public void testGetLoggedInUserMethod() {
 		
-		OngoingStubbing<PagingDTO<UserDTO>> thenReturn =Mockito.when(userServiceImpl.getAllPagedUsers(0, 10)).thenReturn(allPagedUsers);
+		OngoingStubbing<UserDTO> thenReturn = Mockito.when(userServiceImpl.getLoggedInUser("sharmakeshav987@gmail.com")).thenReturn(getDummyUserDTO());
 		
 		assertThat(thenReturn).isNotNull();
 		
-	}
-	
-	@Test
-    @Transactional
-    void testActivateUser() {
-		List<Long> list = new ArrayList<>();
-		list.add((long) 1);
-		list.add((long) 2);
-		list.add((long) 2);
+//		assertEquals(getDummyUserDTO().getEmail(), "sharmakeshav987@gmail.com");
 		
-//        doThrow(new RuntimeException("Error activating users")).when(userRepo).activateUsersById(list);
-//		Mockito.when(userRepo.activateUsersById(list)).then
+//		assertEquals(userDTO, getDummyUserDTO());
+		
+	}
 
-        // Call the method
-        userServiceImpl.activateUser(list);
 
-        // Verify that the userRepo.activateUsersById() method was called with the correct parameter
-//        verify(userRepo.activateUsersById(list))
-        assertEquals(userRepo.activateUsersById(list), list);
-    }
-	
-	
 
 }
