@@ -1,9 +1,5 @@
 package com.restaurant.controller;
 
-import static org.hamcrest.CoreMatchers.any;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -59,11 +55,11 @@ public class UserControllerTest {
 
 		ResponseEntity<UserDTO> expectResponse = new ResponseEntity<>(getDummyUserDTO(), HttpStatus.CREATED);
 
-		when(userServiceImpl.createUser(userDTO)).thenReturn(userDTO);
+		Mockito.when(userServiceImpl.createUser(userDTO)).thenReturn(userDTO);
 
 		ResponseEntity<UserDTO> actualResponse = userController.createUser(userDTO);
 
-		assertEquals(expectResponse, actualResponse);
+		Assertions.assertEquals(expectResponse, actualResponse);
 
 	}
 
@@ -72,12 +68,12 @@ public class UserControllerTest {
 	 */
 	@Test
 	public void testUpdateUser_AndReturnStatus200() {
-		long userId=1;
-		UserDTO userDto=getDummyUserDTO();
+		long userId = 1;
+		UserDTO userDto = getDummyUserDTO();
 
 		ResponseEntity<UserDTO> expectedResponse = new ResponseEntity<>(userDto, HttpStatus.OK);
 
-		when(userServiceImpl.updateUser(userDto,userId)).thenReturn(userDto);
+		Mockito.when(userServiceImpl.updateUser(userDto, userId)).thenReturn(userDto);
 
 		ResponseEntity<UserDTO> actualResponse = userController.updateUser(userDto, userId);
 

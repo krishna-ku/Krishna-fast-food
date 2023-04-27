@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +28,20 @@ import com.restaurant.dto.MenuDTO;
 import com.restaurant.dto.PagingDTO;
 import com.restaurant.service.MenuService;
 
+import lombok.AllArgsConstructor;
+
 @RestController
 @RequestMapping("/menus")
+//@AllArgsConstructor
 public class MenuController {
 
 	@Autowired
 	private MenuService menuService;
+	
+//	public MenuController(MenuService service) {
+//		
+//		this.menuService=service;
+//	}
 
 	/**
 	 * Add Menu service url : /menus method : Post

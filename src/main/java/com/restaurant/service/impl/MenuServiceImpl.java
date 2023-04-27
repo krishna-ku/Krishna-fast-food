@@ -183,6 +183,7 @@ public class MenuServiceImpl implements MenuService {
 	public String activateMenu(long menuId) {
 		Menu menu = menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
+//		menu.setAvailability(MenuAvailabilityStatus.AVAILABLE);
 		menu.setDeleted(false);
 		menuRepo.save(menu);
 		return "Menu is Activated";

@@ -1,10 +1,9 @@
 package com.restaurant.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.restaurant.dto.MenuCategoryDTO;
@@ -34,11 +33,11 @@ public class MenuServiceImplTest {
 		menuDTO.setType("Nomral");
 		menuDTO.setCategory(categoryDTO);
 
-		when(menuServiceImpl.createMenu(menuDTO)).thenReturn(menuDTO);
+		Mockito.when(menuServiceImpl.createMenu(menuDTO)).thenReturn(menuDTO);
 
 		MenuDTO returnMenuDTO = menuServiceImpl.createMenu(menuDTO);
 
-		assertEquals(menuDTO.getName(), returnMenuDTO.getName());
+		Assertions.assertEquals(menuDTO.getName(), returnMenuDTO.getName());
 
 	}
 
@@ -52,11 +51,11 @@ public class MenuServiceImplTest {
 
 		menuDTO.setName("keshav");
 
-		when(menuServiceImpl.updateMenu(menuDTO, 1L)).thenReturn(menuDTO);
+		Mockito.when(menuServiceImpl.updateMenu(menuDTO, 1L)).thenReturn(menuDTO);
 
 		MenuDTO returnMenuDTO = menuServiceImpl.updateMenu(menuDTO, 1L);
 
-		assertEquals(menuDTO.getName(), returnMenuDTO.getName());
+		Assertions.assertEquals(menuDTO.getName(), returnMenuDTO.getName());
 
 	}
 

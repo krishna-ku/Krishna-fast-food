@@ -1,16 +1,9 @@
 package com.restaurant.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -70,7 +63,7 @@ public class UserServiceTest {
 
 		Mockito.when(userServiceImpl.createUser(userDTO)).thenThrow(BadRequestException.class);
 
-		assertThrows(BadRequestException.class, () -> userServiceImpl.createUser(userDTO));
+		Assertions.assertThrows(BadRequestException.class, () -> userServiceImpl.createUser(userDTO));
 	}
 
 	/**
@@ -83,7 +76,7 @@ public class UserServiceTest {
 
 		Mockito.when(userServiceImpl.createUser(userDTO)).thenThrow(BadRequestException.class);
 
-		assertThrows(BadRequestException.class, () -> userServiceImpl.createUser(userDTO));
+		Assertions.assertThrows(BadRequestException.class, () -> userServiceImpl.createUser(userDTO));
 	}
 
 	/**
@@ -97,39 +90,39 @@ public class UserServiceTest {
 		OngoingStubbing<PagingDTO<UserDTO>> thenReturn = Mockito.when(userServiceImpl.getAllPagedUsers(0, 10))
 				.thenReturn(allPagedUsers);
 
-		assertThat(thenReturn).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(thenReturn).isNotNull();
 
 	}
 
 	@Test
 	void testActivateUser() {
-	    // Create a list of user ids to activate
-	    List<Long> userIds = new ArrayList<>();
-	    userIds.add(1L);
-	    userIds.add(2L);
+		// Create a list of user ids to activate
+		List<Long> userIds = new ArrayList<>();
+		userIds.add(1L);
+		userIds.add(2L);
 
-	    doNothing().when(userRepo).activateUsersById(userIds);
+		org.mockito.Mockito.doNothing().when(userRepo).activateUsersById(userIds);
 
-	    userServiceImpl.activateUser(userIds);
+		userServiceImpl.activateUser(userIds);
 
 //	    verify(userRepo).activateUsersById(userIds);
 	}
+
 	/**
 	 * test get logged in user method
 	 */
 	@Test
 	public void testGetLoggedInUserMethod() {
-		
-		OngoingStubbing<UserDTO> thenReturn = Mockito.when(userServiceImpl.getLoggedInUser("sharmakeshav987@gmail.com")).thenReturn(getDummyUserDTO());
-		
-		assertThat(thenReturn).isNotNull();
-		
+
+		OngoingStubbing<UserDTO> thenReturn = Mockito.when(userServiceImpl.getLoggedInUser("sharmakeshav987@gmail.com"))
+				.thenReturn(getDummyUserDTO());
+
+		org.assertj.core.api.Assertions.assertThat(thenReturn).isNotNull();
+
 //		assertEquals(getDummyUserDTO().getEmail(), "sharmakeshav987@gmail.com");
-		
+
 //		assertEquals(userDTO, getDummyUserDTO());
-		
+
 	}
-
-
 
 }
