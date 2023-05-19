@@ -8,6 +8,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -163,7 +164,12 @@ public class PdfGenerator {
 
 			contentStream.close();
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//			document.save("C:\\Users\\user\\Desktop\\restro.pdf");
+			
+			//save bill pdf in local so customer can download his bills when ever he wants
+			String fileName="bill "+UUID.randomUUID().toString()+" .pdf";
+			document.save("D:\\Eclips IDE\\RestaurantApp\\src\\main\\resources\\bills\\"+fileName);
+
+//			document.save("C:\\Users\\user\\Desktop\\restroBill.pdf");
 			document.save(byteArrayOutputStream);
 			document.close();
 			log.info("PDF created successfully");

@@ -303,13 +303,12 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<OrderDTO> filterOrders(OrderDTO orderDTO, String userName,
 			Collection<? extends GrantedAuthority> authorities) {
-		
+
 //		orderRepo.findbyu
 
 		Specification<Order> specification = Specification
 				.where(OrderSpecification.filterOrders(orderDTO, userName, authorities));
-		
-		
+
 		return orderRepo.findAll(specification).stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
 //		List<Order> userOrders = orderRepo.getUserOrders(userName, specification);
 //		return userOrders.stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
@@ -352,7 +351,7 @@ public class OrderServiceImpl implements OrderService {
 
 		return placedOrder(new OrderDTO(order), user.getId());
 	}
-	
+
 //	public void testOrder() {
 //		List<Order> orderrs=orderRepo.testOrder(100);
 //		Set<String> u=new HashSet<>();
@@ -364,7 +363,6 @@ public class OrderServiceImpl implements OrderService {
 //			
 //			System.out.println(s);
 //		}
-		
-		
+
 //		List<String> nameList=orderrs
 }
