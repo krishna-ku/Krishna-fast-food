@@ -2,6 +2,7 @@ package com.restaurant.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.mail.internet.MimeMessage;
 import javax.validation.constraints.NotEmpty;
@@ -14,6 +15,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +33,9 @@ public class EmailService {
 
 	@Value("${spring.mail.username}")
 	private String sender;
+
+	@Autowired
+	private AmazonS3 s3;
 
 	/**
 	 * Send mail to user when user is created account
@@ -86,10 +93,21 @@ public class EmailService {
 			helper.setFrom(sender, "Delhi-fast-food");
 
 //			String path="C:\\Users\\user\\Desktop\\restro.pdf";
-
 //			FileSystemResource file=new FileSystemResource(new File(path));
 			ByteArrayResource byteArrayResource = new ByteArrayResource(byteArray);
 			helper.addAttachment("bill.pdf", byteArrayResource);
+
+			// save bill pdf on AWS S3 restaurantbills bucket so customer can download his
+			// bills when ever he wants
+//			BillInvoicesDetails invoicesDetails=new BillInvoicesDetails();
+			String fileName = "bill" + UUID.randomUUID().toString() + ".pdf";
+//			invoicesDetails.setBillInvoice(fileName);
+//			invoicesDetails.setEmailId(email);
+//			invoicesDetails.setOrderNo(0);
+			ObjectMetadata data = new ObjectMetadata();
+			data.setContentType("application/pdf");
+			data.setContentLength(byteArray.length);
+			s3.putObject("restaurantbills", fileName, byteArrayResource.getInputStream(), data);
 
 			emailSender.send(mailMessage);
 		} catch (Exception e) {
