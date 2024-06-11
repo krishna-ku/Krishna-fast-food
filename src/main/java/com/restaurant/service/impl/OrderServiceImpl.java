@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private MenuRepo menuRepo;
-	
+
 	@Autowired
 	private CronServices cronServices;
 
@@ -198,12 +198,6 @@ public class OrderServiceImpl implements OrderService {
 			Long lastOrderNumber = orderRepo.findLastOrderNumber();
 			order.setOrderNumber(lastOrderNumber + 1);
 			orderRepo.save(order);
-			CompletableFuture.runAsync(()->{
-			try {
-				cronServices.changeOrderStatus();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}});
 //			eventPublisher.publishEvent(new orderPlacedEvent(order));
 		}
 	}
@@ -310,9 +304,15 @@ public class OrderServiceImpl implements OrderService {
 	public List<OrderDTO> filterOrders(OrderDTO orderDTO, String userName,
 			Collection<? extends GrantedAuthority> authorities) {
 
+//		orderRepo.findbyu
+
 		Specification<Order> specification = Specification
 				.where(OrderSpecification.filterOrders(orderDTO, userName, authorities));
+
 		return orderRepo.findAll(specification).stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
+//		List<Order> userOrders = orderRepo.getUserOrders(userName, specification);
+//		return userOrders.stream().map(o -> new OrderDTO(o)).collect(Collectors.toList());
+//		return orderRepo.getUserOrders(specification).stream().map(o-> new OrderDTO(o)).collect(Collectors.toList());
 	}
 
 	/**
@@ -352,4 +352,17 @@ public class OrderServiceImpl implements OrderService {
 		return placedOrder(new OrderDTO(order), user.getId());
 	}
 
+//	public void testOrder() {
+//		List<Order> orderrs=orderRepo.testOrder(100);
+//		Set<String> u=new HashSet<>();
+//		for(Order o:orderrs) {
+//			String firstName = o.getUser().getFirstName();
+//			u.add(firstName);
+//		}
+//		for(String s:u) {
+//			
+//			System.out.println(s);
+//		}
+
+//		List<String> nameList=orderrs
 }

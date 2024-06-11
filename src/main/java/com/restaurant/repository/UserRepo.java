@@ -25,4 +25,8 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 	@Modifying
 	@Query(value = "UPDATE User u SET u.deleted = true WHERE u.id IN (:userList)")
 	void deleteUserById(List<Long> userList);
+	
+	@Modifying
+	@Query("update User u set u.deleted=false where u.id IN (:usersList)")
+	void activateUsersById(List<Long> usersList);
 }

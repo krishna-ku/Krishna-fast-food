@@ -15,6 +15,7 @@ import org.hibernate.engine.jdbc.StreamUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -156,27 +157,28 @@ public class UserServiceImpl implements UserService {
 //			throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId);
 //		}
 //	}
-	
+
 	/**
 	 * Delete Multiple users by them Id
+	 * 
 	 * @param Arrays of usersId
 	 * @return void
 	 */
 	@Transactional
 	public void deleteMultipleUsers(List<Long> usersList) {
-		
+
 //		for(long userId : usersList) {
-			log.info("Deleting User for {}");
-			try {
-				userRepo.deleteUserById(usersList);;
-				log.info("User deleted Successfully");
-			}
-			catch (Exception e) {
-				log.error(e.getMessage());
+		log.info("Deleting User for {}");
+		try {
+			userRepo.deleteUserById(usersList);
+			;
+			log.info("User deleted Successfully");
+		} catch (Exception e) {
+			log.error(e.getMessage());
 //				throw new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, usersList);
-			}
+		}
 //		}
-		
+
 	}
 
 	/**
@@ -209,11 +211,14 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 */
 	@Override
-	public List<UserDTO> filterUsers(UserDTO userDTO, String userName,
-			Collection<? extends GrantedAuthority> authorities) {
+	public Page<UserDTO> filterUsers(UserDTO userDTO, String userName,
+			Collection<? extends GrantedAuthority> authorities, int page, int pageSize) {
 		Specification<User> specification = Specification
 				.where(UserSpecification.filterUsers(userDTO, userName, authorities));
-		return userRepo.findAll(specification).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
+		Pageable pageable = PageRequest.of(page, pageSize);
+		Page<User> users = userRepo.findAll(specification, pageable);
+		List<UserDTO> userDTOs = users.getContent().stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
+		return new PageImpl<>(userDTOs, pageable, users.getTotalElements());
 	}
 
 	/**
@@ -224,13 +229,24 @@ public class UserServiceImpl implements UserService {
 	 * @see com.restaurant.entity.User
 	 */
 	@Override
-	public String activateUser(long userId) {
+	@Transactional
+	public void activateUser(List<Long> userIds) {
 
-		User user = userRepo.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
-		user.setDeleted(false);
-		userRepo.save(user);
-		return "User is active";
+		log.info("Activate users for {}");
+		try {
+			userRepo.activateUsersById(userIds);
+			log.info("Activate users successfully {}");
+
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+
+//		long userId=userIds.get(0);
+//		User user = userRepo.findById(userId)
+//				.orElseThrow(() -> new ResourceNotFoundException(Keywords.USER, Keywords.USER_ID, userId));
+//		user.setDeleted(false);
+//		userRepo.save(user);
+//		return "User is active";
 	}
 
 	/**
@@ -269,33 +285,37 @@ public class UserServiceImpl implements UserService {
 		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 		StreamUtils.copy(resource, response.getOutputStream());
 	}
+
 	/**
 	 * check email is exists in database or not
+	 * 
 	 * @param email
 	 * @return
 	 */
 	public boolean checkEmailExist(String email) {
 		User user = userRepo.findByEmail(email);
-		if(user!=null)
-		return true;
+		if (user != null)
+			return true;
 		else {
 			return false;
 		}
 	}
+
 	/**
 	 * get logged in user
+	 * 
 	 * @param email
 	 * @return UserDTO
 	 */
 	@Override
-	public UserDTO getLoggedInUser(String email){
-		
+	public UserDTO getLoggedInUser(String email) {
+
 		log.info("getting user details {}");
-		
+
 		User user = userRepo.findByEmail(email);
-		
+
 		log.info("get user successfully");
-		
+
 		return new UserDTO(user);
 	}
 }

@@ -1,0 +1,26 @@
+
+type query{
+
+ getUser:[User]
+}
+
+
+type User{
+
+    firstName:String
+    
+	lastName:String
+
+	email:String
+
+	address:String
+
+	mobileNumber:String
+
+	imageName:String
+
+	role:String
+
+	password:String
+
+}

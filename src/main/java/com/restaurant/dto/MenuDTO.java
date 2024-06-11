@@ -33,6 +33,9 @@ public class MenuDTO {
 	private MenuAvailabilityStatus availability = MenuAvailabilityStatus.AVAILABLE;
 
 	private String imageName;
+	
+	@NotEmpty(message = "please specify type normal or add on")
+	private String type;
 
 //	@Range(min = 1,message = "category cannot be null")
 //	private int category;
@@ -48,6 +51,7 @@ public class MenuDTO {
 		this.id = menu.getId();
 		this.name = menu.getName();
 		this.price = menu.getPrice();
+		this.type=menu.getType();
 		this.description = menu.getDescription();
 		this.deleted = menu.isDeleted();
 		this.dishRating = menu.getDishRating();
@@ -94,4 +98,5 @@ public class MenuDTO {
 	public String toString() {
 		return "Menu [name=" + name + ", price=" + price + ", desc=" + description + "]";
 	}
+
 }

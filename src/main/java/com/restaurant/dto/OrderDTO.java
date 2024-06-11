@@ -24,7 +24,7 @@ public class OrderDTO {
 		this.totalPrice = order.getTotalPrice();
 		this.totalPriceWithGst = order.getTotalPriceWithGst();
 		this.totalPriceAfterDiscount = order.getTotalPriceAfterDiscount();
-		this.orderDate = new Date();
+		this.orderDate = order.getCreatedOn();
 		this.orderItems = order.getOrderItems().stream().map(o -> {
 
 //			this.totalPrice += o.getMenu().getPrice() * o.getItemQuantity();

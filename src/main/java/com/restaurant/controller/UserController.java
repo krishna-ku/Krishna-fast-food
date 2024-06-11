@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +33,17 @@ import org.springframework.web.multipart.MultipartFile;
 import com.restaurant.dto.ApiResponse;
 import com.restaurant.dto.PagingDTO;
 import com.restaurant.dto.UserDTO;
+import com.restaurant.entity.User;
+import com.restaurant.repository.UserRepo;
 import com.restaurant.service.UserService;
 
 @RestController
 @RequestMapping("/users")
 //@CrossOrigin(origins = "http://localhost:4200/",maxAge = 3600)
 public class UserController {
+	
+	@Autowired
+	private UserRepo userRepo;
 
 	@Autowired
 	private UserService userService;
@@ -69,7 +76,8 @@ public class UserController {
 	}
 
 	/**
-	 * Delete single and multiple User by them ids Method : DELETE Service url: /users
+	 * Delete single and multiple User by them ids Method : DELETE Service url:
+	 * /users
 	 * 
 	 * @param its accept long arrays
 	 * @return string
@@ -81,10 +89,10 @@ public class UserController {
 //		return new ResponseEntity<>(new ApiResponse("User delete successfully", true), HttpStatus.OK);
 //	}
 	@DeleteMapping
-	public ResponseEntity<ApiResponse> deleteMultipleUsers(@RequestBody List<Long> userList){
+	public ResponseEntity<ApiResponse> deleteMultipleUsers(@RequestBody List<Long> userList) {
 		userService.deleteMultipleUsers(userList);
-		return new ResponseEntity<>(new ApiResponse("Users Deleted Successfully",true),HttpStatus.OK);
-		
+		return new ResponseEntity<>(new ApiResponse("Users Deleted Successfully", true), HttpStatus.OK);
+
 	}
 
 	/**
@@ -108,7 +116,6 @@ public class UserController {
 //		return new ResponseEntity<>(users,HttpStatus.OK);
 //	}
 
-
 	/**
 	 * filter users on the basis of id,firstName,email,deleted Service url:
 	 * /users/filter method :GET
@@ -118,12 +125,13 @@ public class UserController {
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
 	@PostMapping("/filter")
-	public ResponseEntity<List<UserDTO>> filterUsers(@RequestBody UserDTO userDTO,
-			@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+	public ResponseEntity<Page<UserDTO>> filterUsers(@RequestBody UserDTO userDTO,
+			@CurrentSecurityContext(expression = "authentication") Authentication authentication,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int pageSize) {
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 		String userName = (String) authentication.getPrincipal();
-		List<UserDTO> filterusers = userService.filterUsers(userDTO, userName, authorities);
-		return new ResponseEntity<>(filterusers, HttpStatus.OK);
+		Page<UserDTO> filteredUsers = userService.filterUsers(userDTO, userName, authorities, page, pageSize);
+		return new ResponseEntity<>(filteredUsers, HttpStatus.OK);
 	}
 
 	/**
@@ -133,9 +141,10 @@ public class UserController {
 	 * @return
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-	@PutMapping("/activate/{userId}")
-	public ResponseEntity<String> activateUserEntity(@PathVariable long userId) {
-		return ResponseEntity.ok(userService.activateUser(userId));
+	@PutMapping("/activate")
+	public ResponseEntity<ApiResponse> activateUserEntity(@RequestBody List<Long> userId) {
+		userService.activateUser(userId);
+		return new ResponseEntity<>(new ApiResponse("Users Activate Successfully", true), HttpStatus.OK);
 	}
 
 	/**
@@ -167,26 +176,36 @@ public class UserController {
 
 		userService.viewImage(imageName, response);
 	}
+
 	/**
 	 * check email is exists in database or not
+	 * 
 	 * @param email
 	 * @return
 	 */
 	@PostMapping("/email")
-	public ResponseEntity<Boolean> checkEmailExist(@RequestBody String email){
+	public ResponseEntity<Boolean> checkEmailExist(@RequestBody String email) {
 		return ResponseEntity.ok(userService.checkEmailExist(email));
 	}
+
 	/**
 	 * get logged in user details
+	 * 
 	 * @param email
 	 * @return
 	 */
 	@PreAuthorize("hasAnyRole('ADMIN','MANAGER','USER')")
 	@GetMapping("/profile")
-	public ResponseEntity<UserDTO> getLoggedInUser(@AuthenticationPrincipal String email){
-		
+	public ResponseEntity<UserDTO> getLoggedInUser(@AuthenticationPrincipal String email) {
+
 		UserDTO loggedInUser = userService.getLoggedInUser(email);
-		
-		return new ResponseEntity<>(loggedInUser,HttpStatus.OK);
+
+		return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+	}
+	
+	@QueryMapping("getUser")
+	public List<User> get(){
+		List<User> findAll = userRepo.findAll();
+		return findAll;
 	}
 }

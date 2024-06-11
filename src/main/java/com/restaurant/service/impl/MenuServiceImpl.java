@@ -21,6 +21,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.mediastoredata.model.PutObjectRequest;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.UploadPartRequest;
 import com.restaurant.dto.ExcelHelper;
 import com.restaurant.dto.Keywords;
 import com.restaurant.dto.MenuDTO;
@@ -53,6 +57,9 @@ public class MenuServiceImpl implements MenuService {
 
 	@Value("${project.image}")
 	private String path;
+	
+	@Autowired
+	private AmazonS3 s3;
 
 	/**
 	 * add Menu.
@@ -183,6 +190,7 @@ public class MenuServiceImpl implements MenuService {
 	public String activateMenu(long menuId) {
 		Menu menu = menuRepo.findById(menuId)
 				.orElseThrow(() -> new ResourceNotFoundException(Keywords.MENU, Keywords.MENU_ID, menuId));
+//		menu.setAvailability(MenuAvailabilityStatus.AVAILABLE);
 		menu.setDeleted(false);
 		menuRepo.save(menu);
 		return "Menu is Activated";
@@ -208,6 +216,9 @@ public class MenuServiceImpl implements MenuService {
 				return menu;
 			}).collect(Collectors.toList());
 			this.menuRepo.saveAll(menuList);
+//			ObjectMetadata metadata=new ObjectMetadata();
+//			metadata.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+//			s3.putObject("billinvoices","123.xls",uploadMenusFromExcelfile.getInputStream(),metadata);
 			log.info("Successfully data saved in Database");
 		} catch (IOException e) {
 			log.error("Error while saving data from excel file to database", e.getMessage());

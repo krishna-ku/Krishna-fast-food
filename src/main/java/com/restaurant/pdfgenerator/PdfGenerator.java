@@ -68,8 +68,8 @@ public class PdfGenerator {
 
 			pdfText.addSingleLineText(Keywords.RESTAURANT_NAME, 25, pageHeight - 150, font, 50, Color.red);
 
-			pdfText.addSingleLineText(Keywords.CUSTOMER_NAME + order.getUser().getFirstName(), 25, pageHeight - 250, font,
-					16, Color.black);
+			pdfText.addSingleLineText(Keywords.CUSTOMER_NAME + order.getUser().getFirstName(), 25, pageHeight - 250,
+					font, 16, Color.black);
 			pdfText.addSingleLineText(Keywords.STATUS + order.getStatus(), 25, pageHeight - 274, font, 16, Color.black);
 
 			String orderID = Keywords.ORDERID + order.getOrderNumber();
@@ -78,13 +78,13 @@ public class PdfGenerator {
 					Color.black);
 
 			float dateTextWidth = pdfText.getTextWidth(Keywords.DATE + dateFormat.format(new Date()), font, 16);
-			pdfText.addSingleLineText(Keywords.DATE + dateFormat.format(new Date()), (int) (pageWidth - 25 - dateTextWidth),
-					pageHeight - 274, font, 16, Color.black);
+			pdfText.addSingleLineText(Keywords.DATE + dateFormat.format(new Date()),
+					(int) (pageWidth - 25 - dateTextWidth), pageHeight - 274, font, 16, Color.black);
 
 //			String time = timeFormat.format(new Date());
 			float timeTextWidth = pdfText.getTextWidth(Keywords.TIME + timeFormat.format(new Date()), font, 16);
-			pdfText.addSingleLineText(Keywords.TIME + timeFormat.format(new Date()), (int) (pageWidth - 25 - timeTextWidth),
-					pageHeight - 298, font, 16, Color.black);
+			pdfText.addSingleLineText(Keywords.TIME + timeFormat.format(new Date()),
+					(int) (pageWidth - 25 - timeTextWidth), pageHeight - 298, font, 16, Color.black);
 
 			addTableInPdf table = new addTableInPdf(document, contentStream);
 
@@ -146,7 +146,7 @@ public class PdfGenerator {
 			contentStream.lineTo(pageWidth - 25, 150);
 			contentStream.stroke();
 
-			String autoSign =Keywords.AUTHORIZED_SIGNATORY;
+			String autoSign = Keywords.AUTHORIZED_SIGNATORY;
 			float autoSignWidth = pdfText.getTextWidth(autoSign, italicFont, 16);
 			int xpos = pageWidth - 250 + pageWidth - 25;
 			pdfText.addSingleLineText(autoSign, (int) (xpos - autoSignWidth) / 2, 125, italicFont, 16, Color.black);
@@ -163,7 +163,14 @@ public class PdfGenerator {
 
 			contentStream.close();
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//			document.save("C:\\Users\\user\\Desktop\\restro.pdf");
+
+			// save bill pdf on AWS S3 restaurantbills bucket so customer can download his
+			// bills when ever he wants
+
+//			String fileName="bill "+UUID.randomUUID().toString()+" .pdf";
+//			document.save("D:\\Eclips IDE\\RestaurantApp\\src\\main\\resources\\bills\\"+fileName);
+
+//			document.save("C:\\Users\\user\\Desktop\\restroBill.pdf");
 			document.save(byteArrayOutputStream);
 			document.close();
 			log.info("PDF created successfully");

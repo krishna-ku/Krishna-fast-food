@@ -30,6 +30,9 @@ public class OrderItem extends BaseClass {
 	@OneToOne
 	@JoinColumn(name = "menu_id")
 	private Menu menu;
+	
+//	@OneToOne
+//	private AdditionalItemsOfMenu itemsOfMenu;
 
 	public OrderItem(OrderItemDTO orderItemDto) {
 //		this.menuId=orderItemDto.getMenuId();
